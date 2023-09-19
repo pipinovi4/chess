@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon main.ts"
   },
-  "keywords": [],
+  "keywords": ["ts", "nodejs"],
   "author": "",
   "license": "ISC",
   "dependencies": {
