@@ -1,6 +1,7 @@
 import { Figure, FigureNames } from '../figures/Figure'
 import { Queen } from '../figures/Queen'
 import { Rook } from '../figures/Rook'
+import getOponentColor from '../helpers/getOponentColors'
 import { Board } from './Board'
 import { Colors } from './Colors'
 
@@ -13,6 +14,7 @@ export class Cell {
     available: boolean
     underAtack: Array<Colors> = []
     id: number
+    kingUnderAttack = false
 
     constructor(board: Board, x: number, y: number, color: Colors) {
         this.x = x
@@ -47,7 +49,10 @@ export class Cell {
         const max = Math.max(this.y, target.y)
 
         for (let y = min + 1; y < max; y++) {
-            if (!this.board.getCell(this.x, y).isEmpty() && this.board.getCell(this.x, y).figure?.name !== FigureNames.KING) {
+            if (
+                !this.board.getCell(this.x, y).isEmpty() &&
+                this.board.getCell(this.x, y).figure?.name !== FigureNames.KING
+            ) {
                 return false
             }
         }
@@ -84,7 +89,10 @@ export class Cell {
         const max = Math.max(this.x, target.x)
 
         for (let x = min + 1; x < max; x++) {
-            if (!this.board.getCell(x, this.y).isEmpty() && this.board.getCell(x, this.y).figure?.name !== FigureNames.KING) {
+            if (
+                !this.board.getCell(x, this.y).isEmpty() &&
+                this.board.getCell(x, this.y).figure?.name !== FigureNames.KING
+            ) {
                 return false
             }
         }
@@ -101,14 +109,20 @@ export class Cell {
         const dx = this.x < target.x ? 1 : -1
 
         for (let i = 1; i < absY; i++) {
-            if (!this.board.getCell(this.x + dx * i, this.y + dy * i).isEmpty() && this.board.getCell(this.x + dx * i, this.y + dy * i).figure?.name !== FigureNames.KING)
+            if (
+                !this.board
+                    .getCell(this.x + dx * i, this.y + dy * i)
+                    .isEmpty() &&
+                this.board.getCell(this.x + dx * i, this.y + dy * i).figure
+                    ?.name !== FigureNames.KING
+            )
                 return false
         }
         return true
     }
 
     updateCellUnderAtack() {
-    this.restingCellsUnderAttack()
+        this.restingCellsUnderAttack()
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
                 const currentIterationCell = this.board.getCell(x, y)
@@ -125,18 +139,16 @@ export class Cell {
                         if (
                             this.board
                                 .getCell(j, i)
-                                .figure?.logicFigureMove(
-                                    cell
-                                ) &&
-                            !cell.underAtack.includes(
-                                this.figure?.color
-                            ) &&
-                            cell !==
-                                this.board.getCell(j, i)
+                                .figure?.logicFigureMove(cell) &&
+                            !cell.underAtack.includes(this.figure?.color) &&
+                            cell !== this.board.getCell(j, i)
                         ) {
                             cell.underAtack.push(
                                 this.board.getCell(j, i).figure?.color
                             )
+                            if (this.kingIsCheck(cell)) {
+                                this.kingUnderAttack = true
+                            }
                         }
                     }
                 }
@@ -144,18 +156,25 @@ export class Cell {
         }
     }
 
+    kingIsCheck(target: Cell) {
+        return target.figure?.name === FigureNames.KING && target.underAtack.includes(getOponentColor(target.figure))
+    }
+
     restingCellsUnderAttack() {
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 const currentIterationCell = this.board.getCell(i, j)
                 currentIterationCell.underAtack = []
+                this.kingUnderAttack = false
             }
         }
     }
-    
+
     moveFigure(target: Cell) {
         if (this.figure && this.figure?.canMove(target)) {
             this.figure.moveFigure(target)
+            if (this.kingUnderAttack) {
+            }
             if (
                 this.figure.name === FigureNames.KING &&
                 Math.abs(target.x - this.x) === 2
