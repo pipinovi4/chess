@@ -1,5 +1,5 @@
 import { Server, Socket } from 'socket.io'
-import workerConfig from '../configs/workerConfig'
+import workerConfig from '../worker'
 
 const engineSocket = (server: Server) => {
     server.on('connect', (socket: Socket) => {
