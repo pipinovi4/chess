@@ -1,0 +1,119 @@
+@import '../../../../../shared/globalStyle/colors.scss';
+@import '../../../../../shared/globalStyle/fonts.scss';
+
+.login-modal__form {
+    width: 100%;
+    height: 100%;
+    grid-row: 4 / 8;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    .personal-information__input,
+    .password-input {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        width: 12.5rem;
+        height: 1.5rem;
+        background-color: hsla(0, 0%, 100%, 0.1);
+        outline: none;
+        border: 0.1px solid $greySupportiveColor;
+        border-radius: 0.1rem;
+        color: $globalColorThemeMid;
+        font-size: 0.575rem;
+        border: 0.05rem solid $greySupportiveColor;
+        text-align: start;
+        padding-left: 1.3rem;
+        margin-top: .5rem;
+
+        &:hover {
+            border: 0.01rem solid #fff;
+        }
+    }
+    
+    .checkmark-personal__information {
+        position: absolute;
+        width: .8rem;
+        height: .8rem;
+        margin-top: -1.1rem;
+        margin-left: 11.2rem;
+    }
+
+    .utility-function {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        margin-left: 2.7rem;
+        margin-top: .8rem;
+    
+        .checkbox-remember__account {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .checkbox-label {
+            display: flex;
+            cursor: pointer; 
+        }
+    
+
+        .custom-checkbox-label {
+            position: relative;
+            width: .5rem;
+            height: .5rem;
+            border-radius: .1rem;
+            border: .01rem solid $globalColorThemeMid;
+            z-index: 99999;
+        }
+
+        .active {
+            background-color: $globalColorThemeLow;
+        }
+
+        .checkbox-checkmark__label {
+            fill: $globalColorThemeHigh;
+            position: absolute;
+            width: .4rem;
+            height: .4rem;
+            top: 50%; /* Положение по вертикали в середину родительского элемента */
+            left: 50%; /* Положение по горизонтали в середину родительского элемента */
+            transform: translate(-50%, -50%); /* Сдвигаем элемент на 50% его собственной ширины и высоты в обе стороны */
+        }
+        
+
+        .label-checkbox__text {
+            font-size: .5em;
+            margin-left: .3rem;
+            font-weight: 600;
+            color: $globalColorThemeMid;
+        }
+
+        .text-question__password {
+            font-size: .48rem;
+            padding-left: 4.5rem;
+            color: $color-text-link;
+            font-weight: 400;
+            cursor: pointer;
+        }
+    }
+    
+
+    .lock-in__input,
+    .person-in__input {
+        position: absolute;
+        width: 0.7rem;
+        height: 0.7rem;
+        margin-top: -1.05rem;
+        margin-left: 0.3rem;
+    }
+
+    .eye-password__visible {
+        width: .8rem;
+        height: .8rem;
+        margin-top: -1.1rem;
+        margin-left: 11.3rem;
+        position: absolute;
+    }
+}

@@ -11,4 +11,3 @@ const mongooseConfig = () => {
     db.once('open', () => console.log('Connected to mongodb'));
 };
 exports.default = mongooseConfig;
-//# sourceMappingURL=mongoose-config.js.map

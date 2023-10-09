@@ -1,0 +1,16 @@
+.board {
+    margin-left: 8dvw;
+    margin-top: 6.25dvh;
+    width: 87dvh;
+    height: 87dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    z-index: 999;
+}
+
+.container-board {
+    width: 100dvw;
+    height: 100dvh;
+}

@@ -6,4 +6,3 @@ const TokenModel = new mongoose_1.Schema({
     refreshToken: { type: String, required: true }
 });
 exports.default = (0, mongoose_1.model)('Token', TokenModel);
-//# sourceMappingURL=TokenModel.js.map

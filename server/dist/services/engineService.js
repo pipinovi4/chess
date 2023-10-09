@@ -1,106 +1,119 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const child_process_1 = require("child_process");
-const enginePath = 'C:/Users/Пипин/Downloads/stockfish-windows-x86-64-modern2/stockfish/stockfish-windows-x86-64-modern.exe';
+const path = __importStar(require("path"));
+const worker_threads_1 = require("worker_threads");
+const ApiError_1 = __importDefault(require("../exceptions/ApiError"));
+const workerPath = path.join(__dirname, '..', 'workers', 'worker.js');
 class EngineService {
     constructor() {
         this.engineProcess = null;
+        this.engineWorker = null;
+    }
+    createWorker() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                const worker = new worker_threads_1.Worker(workerPath);
+                this.engineWorker = worker;
+                resolve();
+            });
+        });
+    }
+    getEngineWorker() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!this.engineWorker) {
+                    console.log('The worker doesn not exist, create a new worker and start the engine');
+                    yield this.createWorker();
+                    this.startEngine((status) => console.log(status));
+                }
+                return this.engineWorker;
+            }
+            catch (error) {
+                console.error(error);
+                throw ApiError_1.default.UnforseenError();
+            }
+        });
+    }
+    getEngineProcess() {
+        if (this.engineProcess) {
+            return this.engineProcess;
+        }
     }
     startEngine(callback) {
-        var _a;
-        if (!this.engineProcess) {
-            this.engineProcess = (0, child_process_1.spawn)(enginePath);
-            console.log(this.engineProcess);
-            (_a = this.engineProcess.stdout) === null || _a === void 0 ? void 0 : _a.on('data', (data) => {
-                console.log(`Engine Output: ${data.toString()}`);
-            });
-            this.engineProcess.on('error', (error) => {
-                console.error(`Engine Error: ${error.message}`);
-                callback(`Error starting engine: ${error.message}`);
-            });
-            this.engineProcess.on('close', (code) => {
-                console.log(`Engine Exited with Code ${code}`);
-                if (code === 0) {
-                    callback('Engine started successfully');
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                var _a;
+                if (this.engineProcess) {
+                    callback('Engine is already running');
+                    resolve();
+                    return;
                 }
-                else {
-                    callback(`Engine exited with code ${code}`);
-                }
-            });
-        }
-        else {
-            callback('Engine is already running');
-        }
-    }
-    sendCommand(command) {
-        var _a;
-        if (this.engineProcess) {
-            (_a = this.engineProcess.stdin) === null || _a === void 0 ? void 0 : _a.write(`${command}\n`);
-        }
-        else {
-            console.error('Engine is not running. Start it first.');
-        }
-    }
-    calculateBestMoves(fen, depth, callback) {
-        var _a, _b;
-        if (!this.engineProcess) {
-            return callback("Engine process is not running.");
-        }
-        const bestMoves = [];
-        (_a = this.engineProcess.stdout) === null || _a === void 0 ? void 0 : _a.on('error', (error) => {
-            console.error('Error in engine stdout:', error);
-            callback("Error in engine stdout", error.message);
+                const enginePath = path.join(__dirname, '..', '..', 'engine', 'stockfish.exe');
+                this.engineProcess = (0, child_process_1.spawn)(enginePath);
+                (_a = this.engineProcess.stdout) === null || _a === void 0 ? void 0 : _a.on('data', (data) => {
+                    console.log(`Engine Output: ${data.toString()}`);
+                });
+                this.engineProcess.on('error', (error) => {
+                    console.error(`Engine Error: ${error.message}`);
+                    callback(`Error starting engine: ${error.message}`);
+                    reject(error);
+                });
+                this.engineProcess.on('close', (code) => {
+                    console.log(`Engine Exited with Code ${code}`);
+                    if (code === 0) {
+                        callback('Engine started successfully');
+                        resolve();
+                    }
+                    else {
+                        callback(`Engine exited with code ${code}`);
+                        reject(`Engine exited with code ${code}`);
+                    }
+                });
+            }));
         });
-        (_b = this.engineProcess.stdout) === null || _b === void 0 ? void 0 : _b.on('data', (data) => {
-            var _a;
-            const output = data.toString();
-            const moves = this.extractBestMoves(output);
-            for (const move of moves) {
-                if (!bestMoves.includes(move)) {
-                    bestMoves.push(move);
-                }
-            }
-            if (bestMoves.length >= 3) {
-                console.log('Best Moves:', bestMoves);
-                (_a = this.engineProcess) === null || _a === void 0 ? void 0 : _a.kill();
-                callback("Calculation completed successfully");
-            }
-        });
-        this.engineProcess.on('error', (error) => {
-            console.error('Error in engine process:', error);
-            callback("Error in engine process", error.message);
-        });
-        this.engineProcess.on('close', (code) => {
-            if (code !== 0) {
-                console.error(`Engine process closed with code ${code}`);
-                callback(`Engine process closed with code ${code}`);
-            }
-        });
-    }
-    extractBestMoves(output) {
-        const moves = [];
-        const lines = output.split('\n');
-        for (const line of lines) {
-            if (line.includes('bestmove')) {
-                const match = line.match(/bestmove\s+(\S+)/);
-                if (match && match[1] !== null) {
-                    const move = match[1];
-                    moves.push(move);
-                }
-            }
-        }
-        return moves.slice(0, 3);
-    }
-    calculateMove(move, depth) {
-        this.sendCommand(`go depth ${depth} movetime 10000 ${move}`);
     }
     stopEngine(callback) {
         if (this.engineProcess) {
             this.engineProcess.kill();
             this.engineProcess = null;
-            console.log(this.engineProcess);
         }
+        callback('Engine stopped');
     }
 }
 exports.default = new EngineService();
-//# sourceMappingURL=engineService.js.map

@@ -1,5 +1,4 @@
 import { Figure, FigureNames } from '../figures/Figure'
-import { Queen } from '../figures/Queen'
 import { Rook } from '../figures/Rook'
 import getOponentColor from '../figures/helper/getOponentColors'
 import { Board } from '../board/Board'
@@ -176,14 +175,12 @@ export class Cell {
     moveFigure(target: Cell) {
         if (this.figure && this.figure?.canMove(target)) {
             this.figure.moveFigure(target)
-            if (this.kingUnderAttack) {
-            }
             if (
                 this.figure.name === FigureNames.KING &&
                 Math.abs(target.x - this.x) === 2
             ) {
                 this.castleMove(target)
-            }
+            } 
             target.setFigure(this.figure)
             this.figure = null
             this.updateCellUnderAtack()

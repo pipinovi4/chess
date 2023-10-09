@@ -16,4 +16,3 @@ const validateUserData = (email, password, req, next) => {
     }
 };
 exports.default = validateUserData;
-//# sourceMappingURL=validateUserData.js.map

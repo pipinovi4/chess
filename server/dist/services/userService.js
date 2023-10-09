@@ -43,7 +43,7 @@ const uuid = __importStar(require("uuid"));
 const tokenService_1 = __importDefault(require("./tokenService"));
 const mailService_1 = __importDefault(require("./mailService"));
 class userService {
-    registration(email, password) {
+    registration(email, password, userName) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const candidate = yield UserModel_1.default.findOne({ email });
@@ -56,6 +56,7 @@ class userService {
                     email,
                     password: hashPassword,
                     activationLink,
+                    userName
                 });
                 yield mailService_1.default.sendActivationLink(email, `${process.env.API_URL}/authorization/activate/${activationLink}`);
                 const userDto = new userDto_1.default(user);
@@ -72,10 +73,16 @@ class userService {
             }
         });
     }
-    login(email, password) {
+    login(email, userName, password) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield UserModel_1.default.findOne({ email });
+                let user;
+                if (email) {
+                    user = yield UserModel_1.default.findOne({ email });
+                }
+                else {
+                    user = yield UserModel_1.default.findOne({ userName });
+                }
                 if (!user) {
                     throw ApiError_1.default.BadRequest('User was not found');
                 }
@@ -140,4 +147,3 @@ class userService {
     }
 }
 exports.default = new userService();
-//# sourceMappingURL=userService.js.map

@@ -1,0 +1,64 @@
+@import '../../../../../shared/globalStyle/colors.scss';
+
+.container-registration__form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.15rem;
+
+    .username-input,
+    .password-input,
+    .email-input {
+        width: 16rem;
+        margin-bottom: 0.9rem;
+        background-color: hsla(0, 0%, 100%, 0.1);
+        outline: none;
+        border: 0.1px solid $greySupportiveColor;
+        border-radius: 0.1rem;
+        color: $globalColorThemeMid;
+        font-size: 0.575rem;
+        padding: 0.4rem 1.75rem 0.4rem;
+        border: 0.05rem solid $greySupportiveColor;
+
+        &:hover {
+            border: 0.01rem solid #fff;
+        }
+    }
+
+    .username-input__image,
+    .email-input__image,
+    .password-input__image {
+        width: 0.8rem;
+        height: 0.8rem;
+        z-index: 1;
+        margin-left: -14.25rem;
+        margin-top: -2.2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .input-password__switch {
+        width: 0.9rem;
+        height: 0.9rem;
+        z-index: 1;
+        margin-top: -1.8rem;
+        margin-right: -14rem;
+    }
+
+    .checkmark-validation__email {
+        width: 0.9rem;
+        height: 0.9rem;
+        position: absolute;
+        top: 22.7%;
+        right: 11%;
+    }
+
+    .checkmark-validation__userName {
+        width: 0.9rem;
+        height: 0.9rem;
+        position: absolute;
+        top: 16.2%;
+        right: 11%;
+    }
+}

@@ -10,4 +10,3 @@ const UserModel = new mongoose_1.Schema({
     avatar: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Image' },
 });
 exports.default = (0, mongoose_1.model)('User', UserModel);
-//# sourceMappingURL=UserModel.js.map

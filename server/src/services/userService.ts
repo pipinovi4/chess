@@ -10,7 +10,7 @@ import { ClientSession, startSession } from 'mongoose'
 import { userModel } from '../types/userTypes'
 
 class userService {
-    async registration(email: string, password: string) {
+    async registration(email: string, password: string, userName: string) {
         try {
             const candidate = await UserModel.findOne({ email })
 
@@ -24,6 +24,7 @@ class userService {
                 email,
                 password: hashPassword,
                 activationLink,
+                userName
             })
 
             await MailService.sendActivationLink(
@@ -47,9 +48,14 @@ class userService {
         }
     }
 
-    async login(email: string, password: string) {
+    async login(email: string, userName: string, password: string) {
         try {
-            const user = await UserModel.findOne({ email })
+            let user
+            if (email)  {
+                user = await UserModel.findOne({ email })
+            } else {
+                user = await UserModel.findOne({ userName })
+            }
             if (!user) {
                 throw ApiError.BadRequest('User was not found')
             }

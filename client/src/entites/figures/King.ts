@@ -1,8 +1,8 @@
 import { Cell } from '../cell/Cell'
 import { Colors } from '../../constants/Colors'
 import { Figure, FigureNames } from './Figure'
-import blackLogo from '../assets/black-king.png'
-import whiteLogo from '../assets/white-king.png'
+import blackLogo from '../../assets/black-king.png'
+import whiteLogo from '../../assets/white-king.png'
 import { Rook } from './Rook'
 import getOponentColor from './helper/getOponentColors'
 

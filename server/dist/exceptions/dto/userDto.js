@@ -8,4 +8,3 @@ class userDto {
     }
 }
 exports.default = userDto;
-//# sourceMappingURL=userDto.js.map

@@ -1,9 +1,7 @@
-const PlayComputer = () => {
-    return (
-        <div>
-            Play bot
-        </div>
-    );
-};
+import GamePage from './PlayPage/PlayPage'
 
-export default PlayComputer;
+const PlayComputer = () => {
+    return <div></div>
+}
+
+export default PlayComputer

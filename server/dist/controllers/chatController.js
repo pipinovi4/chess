@@ -31,4 +31,3 @@ class chatController {
     }
 }
 exports.default = new chatController();
-//# sourceMappingURL=chatController.js.map

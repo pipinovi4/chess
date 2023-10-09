@@ -1,51 +1,47 @@
-import { Server, Socket } from 'socket.io'
-import workerConfig from '../worker'
+import { Namespace, Socket } from 'socket.io'
+import { parentPort, Worker } from 'worker_threads'
+import setupWorkerMessageListener from '../workers/setupWorkerMessageListener'
+import engineService from '../services/engineService'
 
-const engineSocket = (server: Server) => {
-    server.on('connect', (socket: Socket) => {
-        console.log(32131)
+const engineSocket = (server: Namespace) => {
+    const onConnection = (socket: Socket) => {
 
-        // Handle errors in the socket connection
         socket.on('error', (error) => {
             console.error('Socket error:', error)
         })
 
-        socket.on('start-engine', (payload) => {
-            try {
-                workerConfig('start-engine', payload)
-            } catch (error) {
-                console.error('Error starting engine:', error)
-            }
+        socket.on('start-engine', async (payload) => {
+            const worker = await engineService.getEngineWorker()
+
+            console.log('Socket message to worker to start engine')
+            worker.postMessage(payload)
+            setupWorkerMessageListener(socket, worker)
+          });
+          
+
+        socket.on('calculate-move', async (payload) => {
+            const worker = await engineService.getEngineWorker()
+
+            console.log('Socket message to worker to calculate move')
+            console.log(payload)
+            worker.postMessage(payload)
+            setupWorkerMessageListener(socket, worker)
         })
 
-        socket.on('started-engine', () => {
-            try {
-                socket.emit('started-engine')
-            } catch (error) {
-                console.error('Error emitting "started-engine" event:', error)
-            }
-        })
+        socket.on('stop-engine', async (payload) => {
+            const worker = await engineService.getEngineWorker()
 
-        socket.on('calculate-move', (payload) => {
-            try {
-                workerConfig('calculate-move', payload)
-            } catch (error) {
-                console.error('Error triggering calculate move:', error)
-            }
-        })
-
-        socket.on('stop-engine', (payload) => {
-            try {
-                workerConfig('stop-engine', payload)
-            } catch (error) {
-                console.error('Error engine has not stopped:', error)
-            }
+            console.log('Socket message to worker to stop engine')
+            worker.postMessage(payload)
+            setupWorkerMessageListener(socket, worker)
         })
 
         socket.on('disconnect', () => {
             console.log('Engine socket disconnected')
         })
-    })
+    }
+
+    server.on('connection', onConnection)
 }
 
 export default engineSocket

@@ -7,8 +7,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     https: {
-      key: fs.readFileSync('C:/Users/Пипин/chess/certs/client/client.key'),
-      cert: fs.readFileSync('C:/Users/Пипин/chess/certs/client/client.crt')
+      key: fs.readFileSync('C:/Users/Пипин/certs/client/client.key'),
+      cert: fs.readFileSync('C:/Users/Пипин/certs/client/client.crt')
     }
   },
 })

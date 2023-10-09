@@ -50,4 +50,3 @@ class mailService {
     }
 }
 exports.default = new mailService();
-//# sourceMappingURL=mailService.js.map

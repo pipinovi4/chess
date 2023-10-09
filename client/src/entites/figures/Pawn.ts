@@ -1,8 +1,8 @@
 import { Cell } from '../cell/Cell'
 import { Colors } from '../../constants/Colors'
 import { Figure, FigureNames } from './Figure'
-import blackLogo from '..//assets/black-pawn.png'
-import whiteLogo from '../assets/white-pawn.png'
+import blackLogo from '../../assets/black-pawn.png'
+import whiteLogo from '../../assets/white-pawn.png'
 
 export class Pawn extends Figure {
     isFirstStep = true
@@ -23,7 +23,10 @@ export class Pawn extends Figure {
         if (
             (target.y === this.cell.y + direction ||
                 (this.isFirstStep &&
-                    target.y === this.cell.y + firstStepDirection)) &&
+                    target.y === this.cell.y + firstStepDirection &&
+                    this.cell.board
+                        .getCell(this.cell.x, this.cell.y + firstStepDirection)
+                        .isEmpty())) &&
             target.x === this.cell.x &&
             this.cell.board
                 .getCell(this.cell.x, this.cell.y + direction)

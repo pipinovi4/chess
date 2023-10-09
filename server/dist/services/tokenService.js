@@ -98,4 +98,3 @@ class tokenService {
     }
 }
 exports.default = new tokenService();
-//# sourceMappingURL=tokenService.js.map

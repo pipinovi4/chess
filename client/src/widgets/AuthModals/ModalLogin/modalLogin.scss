@@ -1,0 +1,139 @@
+@import '../../../shared/globalStyle/colors.scss';
+@import '../../../shared/globalStyle/fonts.scss';
+
+.container-modal__login {
+    position: relative;
+    display: grid;
+    grid-template-rows: repeat(20, 3.75dvh);
+    width: 22dvw;
+    height: 75dvh;
+    background-color: $globalOverlayBackground;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 0.4rem;
+    overflow: hidden;
+}
+
+.overlay-login {
+    position: absolute;
+    width: 100dvw;
+    height: 100dvh;
+    background-color: rgba(0, 0, 0, 0.682);
+    z-index: 999;
+}
+
+.login-modal__header {
+    grid-row: 1 / 4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0.4rem;
+
+    .login-logo__image {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .login-logo__title {
+        margin-left: -0.8rem;
+        font-size: 1.2rem;
+    }
+
+    .login-logo__title > span {
+        font-size: 0.9rem;
+    }
+}
+
+.submit-logIn__container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.3rem;
+    grid-row: 9 / 12;
+
+    .submit-logIn {
+        width: 82%;
+        height: 60%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
+        background-color: $greenMainColor;
+        box-shadow: 0px 3px 0px $greenInnerBoxShadowrg;
+        border-radius: 0.4rem;
+        border: none;
+        border-bottom: 0.05rem solid $greenBorderBottomLine;
+        position: relative; /* Add this line to allow pseudo-element positioning */
+        font-size: 0.8rem;
+        font-weight: 800;
+        font-family: $globalSecondaryFont;
+        color: #fff;
+
+        &:hover {
+            background-color: $greenBackgroundHover;
+            border-bottom: 0.01rem solid $greenBorderBottomLineHover;
+            box-shadow: 0px 3px 0px $innerBoxShadow;
+            cursor: pointer;
+            transition: box-shadow 0.3s;
+
+            &:hover:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                box-shadow: 0px 0px 14px $innerBoxShadow;
+                background-color: #d7ff9222;
+                border-radius: 0.4rem;
+            }
+        }
+    }
+}
+
+.footers {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    grid-row: 12;
+    margin-top: 0.7rem;
+
+    .text-footers {
+        font-size: 0.5rem;
+        font-weight: 400;
+        color: $whiteSupportiveColor;
+        margin: 0 0.72rem;
+    }
+
+    .line {
+        border-top: 1px solid $globalBorder; /* You can adjust the color as needed */
+        width: 34%; /* This will make the line span the entire width */
+        margin: 0.5rem 0; /* Adjust the margin as needed */
+    }
+}
+
+.footer {
+    grid-row: 19 / -1;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 1.8rem;
+    background-color: rgba(22, 21, 19, 0.3725490196);
+    margin-top: .7rem;
+
+    .footer-text {
+        font-size: .5rem;
+        font-weight: 500;
+        color: $globalColorThemeLow;
+
+        .activate-modal__registration {
+            color: $color-text-link;
+            margin-left: .4rem;
+            font-weight: 400;
+            cursor: pointer;
+        }
+    }
+}

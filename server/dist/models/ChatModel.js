@@ -12,4 +12,3 @@ const ChatSchema = new mongoose_1.Schema({
     messages: [MessageSchema]
 });
 exports.default = (0, mongoose_1.model)('Chat', ChatSchema);
-//# sourceMappingURL=ChatModel.js.map

@@ -9,5 +9,5 @@ const router = (0, express_1.default)();
 router.post('/registration', userController_1.default.registration);
 router.post('/login', userController_1.default.login);
 router.get('/refresh', userController_1.default.refresh);
+router.post('/find-auth-data', userController_1.default.findAuthData);
 exports.default = router;
-//# sourceMappingURL=userRoute.js.map

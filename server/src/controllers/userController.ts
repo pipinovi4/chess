@@ -2,40 +2,29 @@ import { NextFunction, Request, Response } from 'express'
 import ApiError from '../exceptions/ApiError'
 import userService from '../services/userService'
 import validateUserData from '../helpers/validateUserData'
+import UserModel from '../models/UserModel'
 
 class userController {
     async registration(req: Request, res: Response, next: NextFunction) {
         try {
-            const userIp = req.headers['x-forwarded-for']
-            console.log(userIp)
-            if (typeof userIp === 'string') {
-                // Проверяем, что userIp действительно строка
-                const trimmedUserIp = userIp.trim()
+            const { email, password, userName } = req.body
 
-                const ips = trimmedUserIp.split(',')
-                const userIpTrimmed = ips[0].trim()
-                console.log('userIp', userIpTrimmed)
-                console.log('userIp', userIp)
-                const { email, password } = req.body
-                validateUserData(email, password, req, next)
+            const userData = await userService.registration(email, password, userName)
 
-                const userData = await userService.registration(email, password)
+            res.cookie('refreshToken', userData.refreshToken, {
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+                sameSite: 'none',
+                secure: true,
+            })
+            res.cookie('userId', userData.user._id, {
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+                sameSite: 'none',
+                secure: true,
+            })
 
-                res.cookie('refreshToken', userData.refreshToken, {
-                    maxAge: 30 * 24 * 60 * 60 * 1000,
-                    httpOnly: true,
-                    sameSite: 'none',
-                    secure: true,
-                })
-                res.cookie('userId', userData.user._id, {
-                    maxAge: 30 * 24 * 60 * 60 * 1000,
-                    httpOnly: true,
-                    sameSite: 'none',
-                    secure: true,
-                })
-
-                return res.status(200).json({ userData, userIp })
-            }
+            return res.status(200).json({ userData })
         } catch (e) {
             next(e)
         }
@@ -43,11 +32,11 @@ class userController {
 
     async login(req: Request, res: Response, next: NextFunction) {
         try {
-            const { email, password } = req.body
+            const { email, userName, password } = req.body
             validateUserData(email, password, req, next)
 
-            const userData = await userService.login(email, password)
-
+            const userData = await userService.login(email, userName, password)
+            console.log('user', userData)
             res.cookie('refreshToken', userData.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
@@ -107,6 +96,26 @@ class userController {
         } catch (e) {
             console.error(e)
             return ApiError.UnforseenError()
+        }
+    }
+
+    async findAuthData(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { data, nameData } = req.body
+
+            if (!data) {
+                return new ApiError(400, 'Not correct userName')
+            }
+
+            const user = await UserModel.findOne({ [nameData]: data })
+
+            if (!user) {
+                return res.status(200).json(null)
+            }
+
+            return res.status(200).json(user)
+        } catch (e) {
+            next(e)
         }
     }
 }

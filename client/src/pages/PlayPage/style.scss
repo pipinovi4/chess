@@ -1,0 +1,13 @@
+@import '../../shared/globalStyle/colors.scss';
+
+.container-play__page {
+    position: absolute;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    height: 100dvh;
+    width: 91dvw;
+    background-color: $greyBackground;
+    top: 0;
+    right: 0;
+    overflow: hidden;
+}

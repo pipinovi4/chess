@@ -28,4 +28,3 @@ class chatService {
     }
 }
 exports.default = new chatService();
-//# sourceMappingURL=chatService.js.map

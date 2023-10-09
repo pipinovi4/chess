@@ -34,4 +34,3 @@ class gameController {
     }
 }
 exports.default = new gameController();
-//# sourceMappingURL=gameController.js.map
