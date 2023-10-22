@@ -9,9 +9,9 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "esModuleInterop": true,
-        "target": "es6",
+        "target": "ES2022",
         "module": "commonjs"
     },
     "exclude": ["node_modules", "**/*.spec.ts", "out/**"],
-    "include": ["**/*.ts", "./workers/worker.js"]
+    "include": ["**/*.ts"]
 }

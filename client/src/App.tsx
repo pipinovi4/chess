@@ -8,7 +8,7 @@ const RegistrationPage = lazy(() => import('./pages/RegistrationPage.tsx'))
 const LoginPage = lazy(() => import('./pages/LoginPage.tsx'))
 const ProfilePage = lazy(() => import('./pages/ProfilePage.tsx'))
 const PlayPage = lazy(() => import('./pages/PlayPage/PlayPage.tsx'))
-const PlayComputer = lazy(() => import('./pages/PlayComputer.tsx'))
+const PlayComputer = lazy(() => import('./pages/PlayComputer/PlayComputer.tsx'))
 const PlayOnline = lazy(() => import('./pages/PlayOnline/PlayOnline.tsx'))
 
 const App = () => {

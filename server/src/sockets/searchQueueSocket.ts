@@ -1,11 +1,9 @@
-import { Namespace, Socket } from "socket.io"
-import searchQueueService from "../services/searchQueueService"
-
+import { Namespace, Socket } from 'socket.io'
+import searchQueueService from '../services/GameServices/searchQueueService'
 
 const searchQueue = (server: Namespace) => {
-
     const onConnection = (socket: Socket) => {
-        socket.on('search-opponent', async() => {
+        socket.on('search-opponent', async () => {
             searchQueueService.searchOpponent(socket.id)
         })
     }

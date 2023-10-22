@@ -13,7 +13,6 @@
 .cell img {
     width: 57px;
     height: 57px;
-    position: absolute;
     z-index: 1;
     cursor: grab;
 
@@ -34,6 +33,7 @@
     top: 0;
     left: 0;
     right: 0;
+    z-index: 2;
 }
 
 .figure-threatened {
@@ -49,7 +49,7 @@
     background-color: #6eb5d1;
 }
 
-// .figure-threatened::before {
+// .figure-threatened::before { 
 //     content: '';
 //     position: absolute;
 //     width: 100%;

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import chatService from '../services/chatService'
+import chatService from '../services/GameServices/chatService'
 
 class chatController {
     async createChat(req: Request, res: Response, next: NextFunction) {

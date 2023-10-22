@@ -22,15 +22,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -45,31 +36,25 @@ class tokenService {
             return { accessToken, refreshToken };
         }
     }
-    saveToken(userId, refreshToken) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const tokenData = yield TokenModel_1.default.findOne({ user: userId });
-            if (tokenData) {
-                tokenData.refreshToken = refreshToken;
-                return tokenData.save();
-            }
-            const token = yield TokenModel_1.default.create({
-                user: userId,
-                refreshToken
-            });
-            return token;
+    async saveToken(userId, refreshToken) {
+        const tokenData = await TokenModel_1.default.findOne({ user: userId });
+        if (tokenData) {
+            tokenData.refreshToken = refreshToken;
+            return tokenData.save();
+        }
+        const token = await TokenModel_1.default.create({
+            user: userId,
+            refreshToken,
         });
+        return token;
     }
-    removeToken(refreshToken) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const tokenData = yield TokenModel_1.default.findOneAndDelete({ refreshToken });
-            return tokenData;
-        });
+    async removeToken(refreshToken) {
+        const tokenData = await TokenModel_1.default.findOneAndDelete({ refreshToken });
+        return tokenData;
     }
-    findToken(refreshToken) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const tokenData = yield TokenModel_1.default.findOne({ refreshToken });
-            return tokenData;
-        });
+    async findToken(refreshToken) {
+        const tokenData = await TokenModel_1.default.findOne({ refreshToken });
+        return tokenData;
     }
     validateAccessToken(token) {
         try {

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import ApiError from '../exceptions/ApiError'
-import userService from '../services/userService'
+import userService from '../services/UserServices/userService'
 import validateUserData from '../helpers/validateUserData'
 import UserModel from '../models/UserModel'
 
@@ -9,7 +9,11 @@ class userController {
         try {
             const { email, password, userName } = req.body
 
-            const userData = await userService.registration(email, password, userName)
+            const userData = await userService.registration(
+                email,
+                password,
+                userName
+            )
 
             res.cookie('refreshToken', userData.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,

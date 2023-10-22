@@ -85,20 +85,24 @@ const DefaultLeftBar = () => {
                     />
                     <h2 className="title">Friend</h2>
                 </div>
-                <div className="choose-authorization ">
-                    <button
-                        onClick={() => setModalActiveRegistration(true)}
-                        className="sign-up button"
-                    >
-                        Sign Up
-                    </button>
-                    <button
-                        onClick={() => setModalActiveLogin(true)}
-                        className="sign-in button"
-                    >
-                        Sign In
-                    </button>
-                </div>
+                {localStorage.getItem('accessToken') ? (
+                    <h2>auth</h2>
+                ) : (
+                    <div className="choose-authorization ">
+                        <button
+                            onClick={() => setModalActiveRegistration(true)}
+                            className="sign-up button"
+                        >
+                            Sign Up
+                        </button>
+                        <button
+                            onClick={() => setModalActiveLogin(true)}
+                            className="sign-in button"
+                        >
+                            Sign In
+                        </button>
+                    </div>
+                )}
                 <div className="utility-card card">
                     <div className="choose-language">
                         <img className="utility-image" src={earth} alt="" />

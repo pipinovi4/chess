@@ -1,39 +1,48 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-const { isMainThread, parentPort } = require('worker_threads');
-const engineService = require('../services/engineService.js');
-const engineCalculateService = require('../services/engineCalculateService.js');
-if (!isMainThread && parentPort) {
-    parentPort.on('message', (payload) => __awaiter(void 0, void 0, void 0, function* () {
+Object.defineProperty(exports, "__esModule", { value: true });
+const worker_threads_1 = require("worker_threads");
+const engineCalculateService_1 = __importDefault(require("../services/EngineServices/engineCalculateService"));
+const engineService_1 = __importDefault(require("../services/EngineServices/engineService"));
+const child_process_1 = require("child_process");
+const path_1 = __importDefault(require("path"));
+const chalk_1 = __importDefault(require("chalk"));
+const DEPTH = 20;
+const enginePath = path_1.default.join(__dirname, '..', '..', 'engine', 'stockfish.exe');
+if (!worker_threads_1.isMainThread) {
+    let engineService;
+    let engineProcess;
+    let engineCalculateService;
+    worker_threads_1.parentPort.on('message', async (payload) => {
+        console.log(payload);
         switch (payload.message) {
             case 'start-engine':
-                yield engineService.default.startEngine((status) => {
-                    console.log('Status:', status);
+                engineProcess = (0, child_process_1.spawn)(enginePath);
+                engineService = new engineService_1.default(engineProcess, DEPTH);
+                engineCalculateService = new engineCalculateService_1.default(engineProcess, DEPTH);
+                console.log('Starting the engine...');
+                engineService.startEngine((status) => {
+                    console.log(chalk_1.default.bgWhite(), 'Status:', status);
                 });
-                parentPort.postMessage({ message: payload.message });
-                break;
-            case 'stop-engine':
-                engineService.default.stopEngine((status) => {
-                    console.log('Status:', status);
-                });
-                parentPort.postMessage({ message: payload.message });
+                worker_threads_1.parentPort.postMessage({ message: 'ENGINE_STARTED' });
                 break;
             case 'calculate-move':
-                console.log('start');
-                const bestsMove = yield engineCalculateService.default.calculateBestMoves(payload.move, (status) => {
-                    console.log('Status:', status);
+                console.log('Calculating the best move...');
+                await engineCalculateService.calculateBestMovesAndScore(payload.move);
+                worker_threads_1.parentPort.postMessage({
+                    message: 'MOVE_CALCULATED',
+                    bestMoves: engineCalculateService.bestMoves,
+                    pawnAdvantage: engineCalculateService.pawnAdvantage,
                 });
-                console.log('result calculateBestMove', bestsMove);
-                parentPort.postMessage({ message: payload.message, result: bestsMove });
+                break;
+            case 'stop-engine':
+                console.log(chalk_1.default.bgGreen(), 'Stopping the engine...');
+                engineService.stopEngine((status) => {
+                    console.log(chalk_1.default.bgWhite, 'Status:', status);
+                });
                 break;
         }
-    }));
+    });
 }

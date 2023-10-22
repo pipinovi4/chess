@@ -1,5 +1,5 @@
 import { Namespace, Socket } from 'socket.io'
-import gameService from '../services/gameService'
+import gameService from '../services/GameServices/gameService'
 import gameStatus from '../types/gameStatusEnum'
 
 const gameSocket = (server: Namespace) => {
@@ -8,7 +8,7 @@ const gameSocket = (server: Namespace) => {
 
         socket.on('create-game', async () => {
             const usersSocketId: Array<string> = []
-            
+
             usersSocketId.push(socket.id)
             if (usersSocketId.length === 2) {
                 const gameId = await gameService.createGame(usersSocketId)

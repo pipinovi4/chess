@@ -1,0 +1,125 @@
+@import '../../shared/globalStyle/colors.scss';
+@import '../../shared/globalStyle/fonts.scss';
+
+.container-computer__board {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 15% 70% 15%;
+    overflow: hidden;
+
+    .computer-board__title {
+        grid-row: 1;
+        text-align: center;
+        margin-top: 7%;
+        font-weight: 800;
+        font-size: 1.3rem;
+    }
+
+    .container-cards__bots {
+        grid-row: 2;
+        display: grid;
+        grid-template-rows: repeat(3, 33%);
+        justify-content: center; /* Выравнивание по горизонтали по центру */
+        align-items: center; /* Выравнивание по вертикали по центру */
+
+        .card-bot {
+            position: relative;
+            display: flex;
+            width: 100%;
+            height: 60%;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border-radius: 5%;
+            background-color: $globalGraySoft;
+            cursor: pointer;
+            transition: border 0.3s;
+            padding: 1.4rem 0.7rem;
+
+            &:hover {
+                background-color: $globalGraySoftHover;
+            }
+
+            &.active::before {
+                content: '';
+                position: absolute;
+                top: -0.2rem;
+                right: -0.2rem;
+                bottom: -0.2rem;
+                left: -0.2rem;
+                border: 0.1rem solid $greenMainColor; /* Border with 10px padding */
+                border-radius: 0.37rem;
+            }
+
+            .bot-name {
+                font-weight: 700;
+                font-size: 0.7rem;
+                color: $globalColorThemeMid;
+            }
+        }
+
+        .bot-card__begginer {
+            grid-row: 1;
+        }
+        .bot-card__amateur {
+            grid-row: 2;
+        }
+        .bot-card__professional {
+            grid-row: 3;
+        }
+
+        .bot-image {
+            width: 1.7rem;
+            margin-bottom: 0.4rem;
+            height: 1.7rem;
+        }
+    }
+
+    .footer-computer__board {
+        z-index: 10;
+        background-color: $secondaryGreyBg;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .button-choose__bot {
+            width: 90%;
+            height: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-self: center;
+            background-color: $greenMainColor;
+            box-shadow: 0px 3px 0px $greenInnerBoxShadowrg;
+            border-radius: 0.4rem;
+            border: none;
+            border-bottom: 0.05rem solid $greenBorderBottomLine;
+            position: relative; /* Add this line to allow pseudo-element positioning */
+            font-size: 0.8rem;
+            font-weight: 800;
+            font-family: $globalSecondaryFont;
+            color: #fff;
+
+            &:hover {
+                background-color: $greenBackgroundHover;
+                border-bottom: 0.01rem solid $greenBorderBottomLineHover;
+                box-shadow: 0px 3px 0px $innerBoxShadow;
+                cursor: pointer;
+                transition: box-shadow 0.3s;
+
+                &:hover:before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    box-shadow: 0px 0px 14px $innerBoxShadow;
+                    background-color: #d7ff9222;
+                    border-radius: 0.4rem;
+                }
+            }
+        }
+    }
+}

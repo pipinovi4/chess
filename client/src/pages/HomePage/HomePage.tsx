@@ -5,7 +5,6 @@ const HomePage = () => {
     return (
         <div>
             <HomeContent/>
-            <LeftBar />
         </div>
     )
 }

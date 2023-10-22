@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -8,15 +31,15 @@ const express_1 = __importDefault(require("express"));
 const https_1 = __importDefault(require("https"));
 const express_config_1 = __importDefault(require("./configs/express-config"));
 const socketConfig_1 = __importDefault(require("./configs/socketConfig"));
-const fs_1 = __importDefault(require("fs"));
+const fs = __importStar(require("fs"));
 const userRoute_1 = __importDefault(require("./routes/userRoute"));
 const engineRoute_1 = __importDefault(require("./routes/engineRoute"));
 const error_middleware_1 = __importDefault(require("./middlewares/error-middleware"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const options = {
-    key: fs_1.default.readFileSync('C:/Users/Пипин/certs/client/client.key'),
-    cert: fs_1.default.readFileSync('C:/Users/Пипин/certs/client/client.crt'),
+    key: fs.readFileSync('C:/Users/Пипин/certs/client/client.key'),
+    cert: fs.readFileSync('C:/Users/Пипин/certs/client/client.crt'),
 };
 const app = (0, express_1.default)();
 const httpsServer = https_1.default.createServer(options, app);

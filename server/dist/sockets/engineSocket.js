@@ -1,45 +1,42 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const worker_threads_1 = require("worker_threads");
 const setupWorkerMessageListener_1 = __importDefault(require("../workers/setupWorkerMessageListener"));
-const engineService_1 = __importDefault(require("../services/engineService"));
+const path_1 = __importDefault(require("path"));
+const workerPath = path_1.default.join(__dirname, '..', 'workers', 'worker.js');
 const engineSocket = (server) => {
     const onConnection = (socket) => {
+        let engineWorker = null;
+        console.log('Socket with id', socket.id, 'connected');
         socket.on('error', (error) => {
             console.error('Socket error:', error);
         });
-        socket.on('start-engine', (payload) => __awaiter(void 0, void 0, void 0, function* () {
-            const worker = yield engineService_1.default.getEngineWorker();
+        socket.on('start-engine', async (payload) => {
+            engineWorker = new worker_threads_1.Worker(workerPath);
+            (0, setupWorkerMessageListener_1.default)(socket, engineWorker);
             console.log('Socket message to worker to start engine');
-            worker.postMessage(payload);
-            (0, setupWorkerMessageListener_1.default)(socket, worker);
-        }));
-        socket.on('calculate-move', (payload) => __awaiter(void 0, void 0, void 0, function* () {
-            const worker = yield engineService_1.default.getEngineWorker();
-            console.log('Socket message to worker to calculate move');
-            console.log(payload);
-            worker.postMessage(payload);
-            (0, setupWorkerMessageListener_1.default)(socket, worker);
-        }));
-        socket.on('stop-engine', (payload) => __awaiter(void 0, void 0, void 0, function* () {
-            const worker = yield engineService_1.default.getEngineWorker();
+            console.log('Main', payload);
+            engineWorker.postMessage({
+                message: 'start-engine',
+                mode: payload.mode,
+            });
+        });
+        socket.on('calculate-move', async (move) => {
+            console.log('Move', move);
+            engineWorker.postMessage({ message: 'calculate-move', move });
+        });
+        socket.on('stop-engine', async (payload) => {
             console.log('Socket message to worker to stop engine');
-            worker.postMessage(payload);
-            (0, setupWorkerMessageListener_1.default)(socket, worker);
-        }));
+            engineWorker.postMessage({ message: 'stop-engine', payload });
+        });
         socket.on('disconnect', () => {
             console.log('Engine socket disconnected');
+            if (engineWorker) {
+                engineWorker.terminate();
+            }
         });
     };
     server.on('connection', onConnection);

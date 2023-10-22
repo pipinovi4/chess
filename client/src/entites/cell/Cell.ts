@@ -172,6 +172,32 @@ export class Cell {
         }
     }
 
+    isCheckmate() {
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                if (
+                    this.board.getCell(i, j).figure?.name ===
+                    FigureNames.KING && this.figure?.color === Colors.BLACK
+                    ) {
+                    console.log('о нет черный')
+                    let moved = false; 
+                    for (let m = 0; m < 8; m++) {
+                        for (let n = 0; n < 8; n++) {
+                            if (this.figure?.canMove(this.board.getCell(m, n))) {
+                                moved = true;
+                                break;
+                            }
+                        }
+                        if (moved) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+
     moveFigure(target: Cell) {
         if (this.figure && this.figure?.canMove(target)) {
             this.figure.moveFigure(target)
@@ -180,7 +206,7 @@ export class Cell {
                 Math.abs(target.x - this.x) === 2
             ) {
                 this.castleMove(target)
-            } 
+            }
             target.setFigure(this.figure)
             this.figure = null
             this.updateCellUnderAtack()
