@@ -19,7 +19,7 @@ class EngineService extends baseEngineService_1.default {
                 callback('Engine work timeout');
             }, TIMEOUT_MS);
             this.engineProcess.on('error', (error) => {
-                this.handleEngineError(error, timeoutId, callback);
+                this.handleEngineError(error, callback);
             });
             this.engineProcess.on('close', (code) => {
                 this.handleEngineClose(code, timeoutId, callback);

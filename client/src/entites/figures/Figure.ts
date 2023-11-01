@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { Cell } from '../cell/Cell'
 import { Colors } from '../../constants/Colors'
 import logo from '../../assets/bishop-black.png'
+import KingAttackService from '../cell/CellServices/KingAttackService'
 
 export enum FigureNames {
     FIGURE = 'Figure',
@@ -32,14 +35,15 @@ export class Figure {
     }
 
     canMove(target: Cell): boolean {
+        if (target.figure?.name === FigureNames.KING) return false
         if (target.figure?.color === this.color) return false
-        if (target.figure?.name === FigureNames.KING) {
+        if (!KingAttackService.validateMoveUnderCheck(target, this.cell)) {
             return false
         }
         return true
     }
 
-    logicFigureMove(target: Cell) {}
+    logicFigureMove(_target: Cell) {}
 
-    moveFigure(target: Cell) {}
+    moveFigure(_target: Cell) {}
 }

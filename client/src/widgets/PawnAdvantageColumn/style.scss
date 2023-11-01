@@ -1,0 +1,61 @@
+@import '../../shared/globalStyle/colors.scss';
+@import '../../shared/globalStyle/fonts.scss';
+
+.pawn-advantage__column {
+    width: 1.25dvw;
+    height: 87.5dvh;
+    position: relative; /* Устанавливаем position: relative; */
+    z-index: 1;
+    border: 0.25dvh solid transparent;
+    border-radius: 0.1dvh;
+    left: 7.5dvw;
+    top: 6dvh;
+    
+
+    &::before {
+        content: attr(data-content);
+        color: $globalOverlayBackground;
+        font-weight: 700;
+        position: absolute;
+        z-index: 11;
+        font-size: 0.35rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%; /* Занимает всю ширину блока */
+        height: 100%; /* Занимает всю высоту блока */
+        margin-top: 42dvh;
+    }
+
+    &:hover::before {
+        content: attr(data-content);
+        width: 2dvw;
+        height: 1dvw;
+        background-color: #fff;
+        color: #403d39;
+        font-weight: 700;
+        border-radius: 0.1rem;
+        position: absolute;
+        z-index: 11;
+        left: -0.5dvw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.45rem;
+    }
+
+    .black-scale {
+        background-color: #403d39;
+    }
+
+    .white-scale {
+        background-color: #fff;
+        bottom: 0;
+    }
+
+    .pawn-advantage__scale {
+        width: 100%;
+        transition: all 0.5s;
+        position: absolute;
+    }
+}

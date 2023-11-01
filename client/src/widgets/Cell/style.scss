@@ -17,12 +17,15 @@
     cursor: grab;
 
     &:active {
-        cursor: grab;
+        cursor: grabbing;
     }
+
 }
 
 .selected {
     background-color: #c7bfe6;
+    width: 12.5%;
+    height: 12.5%;
 }
 
 .available {    
@@ -33,7 +36,7 @@
     top: 0;
     left: 0;
     right: 0;
-    z-index: 2;
+    z-index: 10000;
 }
 
 .figure-threatened {
@@ -47,6 +50,7 @@
 
 .king-attacked {
     background-color: #6eb5d1;
+    z-index: 21321321;
 }
 
 // .figure-threatened::before { 

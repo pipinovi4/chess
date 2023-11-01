@@ -1,18 +1,19 @@
-import { useState } from 'react'
+import { FC, useState } from 'react'
 import pawn from '../../widgets/AuthModals/assets/whitePawnLogo.svg'
 import rook from '../../widgets/AuthModals/assets/whiteRookLogo.svg'
 import queen from '../../widgets/AuthModals/assets/whiteQueenLogo.svg'
 import './style.scss'
-import useAppDispatch from '../../global/hooks/useAppDispatch'
-import { createGameBotAction } from '../../global/actions'
+import EngineModel from '../../entites/EngineModel'
 
-const ComputerGameBoard = () => {
+interface ComputerBoardProps {
+    engineModel: EngineModel
+}
+
+const ComputerGameBoard: FC<ComputerBoardProps> = ({engineModel}) => {
     const [difficultyBot, setDifficultyBot] = useState<string>('')
-    const dispatch = useAppDispatch()
 
-    const handlePickBot = () => {
-        console.log(difficultyBot)
-        dispatch(createGameBotAction({mode: difficultyBot}))
+    const handleStartEngine = async () => {
+        await engineModel.prepareAndStartEngine()
     }
 
     return (
@@ -54,7 +55,7 @@ const ComputerGameBoard = () => {
                 </div>
             </div>
             <div className="footer-computer__board">
-                <button onClick={handlePickBot} className="button-choose__bot">Choose</button>
+                <button onClick={async() => await handleStartEngine()} className="button-choose__bot">Choose</button>
             </div>
         </div>
     )

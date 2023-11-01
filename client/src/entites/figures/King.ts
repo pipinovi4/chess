@@ -15,20 +15,18 @@ export class King extends Figure {
 
     canMove(target: Cell): boolean {
         if (!super.canMove(target)) return false
-        if (
-            this.logicFigureMove(target) &&
-            !target.underAtack.includes(getOponentColor(this))
-        )
-            return true
-        if (this.canCastle(target)) return true
+        if (this.logicFigureMove(target)) return true
         return false
     }
 
     logicFigureMove(target: Cell): boolean {
-        const xDiff = Math.abs(this.cell.x - target.x)
-        const yDiff = Math.abs(this.cell.y - target.y)
+        if (this.canCastle(target)) return true
+        if (!target.underAtack.includes(getOponentColor(this))) {
+            const xDiff = Math.abs(this.cell.x - target.x)
+            const yDiff = Math.abs(this.cell.y - target.y)
 
-        if (xDiff <= 1 && yDiff <= 1) return true
+            if (xDiff <= 1 && yDiff <= 1) return true
+        }
         return false
     }
 
@@ -40,7 +38,6 @@ export class King extends Figure {
             Math.abs(this.cell.x - target.x) === 2
         ) {
             if (target.x > this.cell.x) {
-                // Castle left
                 for (let x = this.cell.x + 1; x < target.x; x++) {
                     const intermediateCell = this.cell.board.getCell(
                         x,
@@ -67,7 +64,6 @@ export class King extends Figure {
                     return true
                 }
             } else {
-                // Castle right
                 for (let x = this.cell.x - 1; x > target.x; x--) {
                     const intermediateCell = this.cell.board.getCell(
                         x,
@@ -101,6 +97,7 @@ export class King extends Figure {
     }
 
     moveFigure(target: Cell): void {
+        super.moveFigure(target)
         this.isMoved = true
     }
 }

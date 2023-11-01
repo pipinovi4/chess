@@ -3,6 +3,7 @@ import { Colors } from '../../constants/Colors'
 import { Figure, FigureNames } from './Figure'
 import blackLogo from '../../assets/black-bishop.png'
 import whiteLogo from '../../assets/white-bishop.png'
+import MoveDirectionService from '../cell/CellServices/MoveDirectionService'
 
 export class Bishop extends Figure {
     constructor(color: Colors, cell: Cell) {
@@ -18,7 +19,7 @@ export class Bishop extends Figure {
     }
 
     logicFigureMove(target: Cell): boolean {
-        if (this.cell.isEmptyDiagonal(target)) return true
+        if (MoveDirectionService.isEmptyDiagonal(target, this.cell)) return true
         return false
     }
 }

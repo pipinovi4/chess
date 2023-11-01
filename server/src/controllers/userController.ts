@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import ApiError from '../exceptions/ApiError'
 import userService from '../services/UserServices/userService'
 import validateUserData from '../helpers/validateUserData'
-import UserModel from '../models/UserModel'
+import UserModel from '../models/DB/UserModel'
 
 class userController {
     async registration(req: Request, res: Response, next: NextFunction) {

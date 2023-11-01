@@ -7,7 +7,7 @@ const setupWorkerMessageListener = (socket: Socket, worker: Worker) => {
         console.error(chalk.bgRed('Worker is undefined'))
         return
     }
-    worker.on('message', (payload: any) => {
+    worker.once('message', (payload: any) => {
         //New object without a message to send to the client.
         const payloadWithoutMessage = { ...payload }
         delete payloadWithoutMessage.message
@@ -19,7 +19,6 @@ const setupWorkerMessageListener = (socket: Socket, worker: Worker) => {
                 break
             case 'ENGINE_STOPPED':
                 console.log(chalk.bgGreen('listener', JSON.stringify(payloadWithoutMessage, null, 2)))
-                console.log(payloadWithoutMessage)
                 socket.emit('engine-stopped', payloadWithoutMessage)
                 break
             case 'MOVE_CALCULATED':

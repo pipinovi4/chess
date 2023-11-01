@@ -1,7 +1,8 @@
-import { Namespace, Socket } from 'socket.io'
+import { Socket } from 'socket.io'
 import { Worker } from 'worker_threads'
 import setupWorkerMessageListener from '../workers/setupWorkerMessageListener'
 import path from 'path'
+import { Namespace } from 'socket.io'
 
 const workerPath = path.join(__dirname, '..', 'workers', 'worker.js')
 
@@ -12,29 +13,24 @@ const workerPath = path.join(__dirname, '..', 'workers', 'worker.js')
  */
 const engineSocket = (server: Namespace) => {
     const onConnection = (socket: Socket) => {
-        let engineWorker: Worker | null = null;
+        const engineWorker = new Worker(workerPath)
         console.log('Socket with id', socket.id, 'connected')
-        
-        // Socket error handler.
         socket.on('error', (error) => {
             console.error('Socket error:', error)
         })
-        
-        socket.on('start-engine', async (payload) => {
-            engineWorker = new Worker(workerPath)
-            setupWorkerMessageListener(socket, engineWorker)
 
-            console.log('Socket message to worker to start engine')
-            console.log('Main', payload)
+        socket.on('start-engine', async () => {
+            setupWorkerMessageListener(socket, engineWorker);
+            console.log('Socket message to worker to start engine', engineWorker)
 
             // Send a message to the worker to start the engine.
             engineWorker.postMessage({
                 message: 'start-engine',
-                mode: payload.mode,
             })
         })
 
         socket.on('calculate-move', async (move: string) => {
+            setupWorkerMessageListener(socket, engineWorker);
             console.log('Move', move)
 
             // Send a message to the worker to calculate a move.
@@ -42,6 +38,7 @@ const engineSocket = (server: Namespace) => {
         })
 
         socket.on('stop-engine', async (payload) => {
+            setupWorkerMessageListener(socket, engineWorker);
             console.log('Socket message to worker to stop engine')
 
             // Send a message to the worker to stop the engine.
@@ -51,12 +48,10 @@ const engineSocket = (server: Namespace) => {
         socket.on('disconnect', () => {
             console.log('Engine socket disconnected')
             if (engineWorker) {
-                engineWorker.terminate();
+                engineWorker.terminate()
             }
         })
     }
-
-    // Handler for a client's connection to the server.
     server.on('connection', onConnection)
 }
 

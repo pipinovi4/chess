@@ -1,6 +1,6 @@
 import { Types } from 'mongoose'
 import userDto from '../../dto/userDto'
-import TokenModel from '../../models/TokenModel'
+import TokenModel from '../../models/DB/TokenModel'
 import * as jwt from 'jsonwebtoken'
 
 class tokenService {

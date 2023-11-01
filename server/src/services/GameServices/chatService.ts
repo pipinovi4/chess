@@ -1,5 +1,5 @@
 import ApiError from '../../exceptions/ApiError'
-import ChatModel from '../../models/ChatModel'
+import ChatModel from '../../models/DB/ChatModel'
 
 class chatService {
     async createChat(users: Array<string>) {

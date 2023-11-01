@@ -27,8 +27,9 @@ class BaseEngineService {
     ) {
         const dataText = data.toString()
         eventFunction(dataText)
+        console.log(dataText)
 
-        if (dataText.match(/bestmove\s\w{4}\sponder\s\w{4}/)) {
+        if (dataText.match(/bestmove\s\w{4}(?:\sponder\s\w{4})?/)) {
             console.log('Calculated move end')
             callback('Engine calculation complete')
         }
@@ -54,10 +55,8 @@ class BaseEngineService {
      */
     protected handleEngineClose(
         code: number,
-        timeoutId: NodeJS.Timeout,
         callback: (status: string) => void
     ) {
-        clearTimeout(timeoutId)
         if (code !== 0) {
             callback(`Engine process closed with code ${code}`)
         }

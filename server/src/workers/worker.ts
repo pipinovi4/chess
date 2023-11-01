@@ -1,6 +1,6 @@
 import { Worker, isMainThread, parentPort } from 'worker_threads'
 import EngineCalculateService from '../services/EngineServices/engineCalculateService'
-import EngineService from '../services/EngineServices/engineService'
+import EngineService from '../models/customModels/EngineModel'
 import { ChildProcess, spawn } from 'child_process'
 import path from 'path'
 import chalk from 'chalk'
@@ -21,19 +21,14 @@ if (!isMainThread) {
         console.log(payload)
         switch (payload.message) {
             case 'start-engine':
-                // Spawn a child process for the Stockfish engine
                 engineProcess = spawn(enginePath)
 
-                // Create an instance of the EngineService
                 engineService = new EngineService(engineProcess, DEPTH)
-
-                // Create an instance of EngineCalculateService to calculate the best move
 
                 engineCalculateService = new EngineCalculateService(
                     engineProcess,
                     DEPTH
                 )
-
                 // Start the chess engine
                 console.log('Starting the engine...')
                 engineService.startEngine((status: string) => {

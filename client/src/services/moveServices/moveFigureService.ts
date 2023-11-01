@@ -1,5 +1,6 @@
+/* eslint-disable no-dupe-else-if */
 import { RefObject } from 'react'
-import { Cell } from '../entites/cell/Cell'
+import { Cell } from '../../entites/cell/Cell'
 
 type coordinates = { x: number; y: number }
 
@@ -7,18 +8,26 @@ class moveFigureService {
     public positionFigure: coordinates
     public startPositionMouse: coordinates
     public isMouseDown: boolean
-    public figureRef: RefObject<HTMLImageElement> | null
-    public currentCell: Cell | null = null
+    public figureRef: RefObject<HTMLImageElement> | null = null
+    public boardRef: RefObject<HTMLDivElement> | null = null
+    public cellRef: RefObject<HTMLDivElement> | null = null
 
     constructor() {
         this.positionFigure = { x: 0, y: 0 }
         this.startPositionMouse = { x: 0, y: 0 }
         this.isMouseDown = false
-        this.figureRef = null
     }
 
-    public setCurrentCell(cell: Cell) {
-        this.currentCell = cell
+    public handleMouseUp = () => {
+        if (this.figureRef?.current) {
+            this.figureRef.current.style.transform = `translate(0, 0)`
+        }
+        this.positionFigure = { x: 0, y: 0 }
+        this.startPositionMouse = { x: 0, y: 0 }
+        this.isMouseDown = false
+        this.boardRef = null
+        this.figureRef = null
+        this.cellRef = null
     }
 
     public setPositionFigure(positionFigure: coordinates) {
@@ -33,66 +42,65 @@ class moveFigureService {
         this.isMouseDown = isMouseDown
     }
 
-    public setFigureRef(figureRef: RefObject<HTMLImageElement>) {
-        this.figureRef = figureRef
-    }
-
     public handleMoveFigure(
         cell: Cell,
         selectedCell: Cell | null,
         setSelectedCell: (cell: Cell | null) => void
     ) {
         if (
+            cell &&
             selectedCell &&
             selectedCell !== cell &&
             selectedCell.figure?.canMove(cell)
         ) {
             selectedCell.moveFigure(cell)
             setSelectedCell(null)
-        } else if (selectedCell !== cell) {
+        } else {
             setSelectedCell(cell)
         }
     }
 
-    public handleMouseMove = (
-        cellRef: React.RefObject<HTMLDivElement | null>,
-        boardRef: React.RefObject<HTMLDivElement | null>,
-        event: MouseEvent
-    ) => {
+    public handleMouseMove = (event: MouseEvent) => {
         if (
             this.figureRef?.current &&
-            boardRef.current &&
-            cellRef.current &&
+            this.boardRef?.current &&
             this.isMouseDown
         ) {
-            const figureRect = this.figureRef.current.getBoundingClientRect()
-            const containerRect = boardRef.current.getBoundingClientRect()
-            const cellRect = cellRef.current.getBoundingClientRect()
-
-            const left = event.clientX - containerRect.left
-            const top = event.clientY - containerRect.top
-            const right = left + figureRect.width
-            const bottom = top + figureRect.height
-
-            this.setPositionFigure({
-                x: event.clientX - this.startPositionMouse.x,
-                y: event.clientY - this.startPositionMouse.y,
-            })
+            const boardRect = this.boardRef.current.getBoundingClientRect()
+    
+            const left = event.clientX - boardRect.left
+            const top = event.clientY - boardRect.top
+            const right = boardRect.right - event.clientX
+            const bottom = boardRect.bottom - event.clientY
+    
+            const xCorrection = left < -2 ? -left : right < -2 ? right : 0;
+            const yCorrection = top < -2 ? -top : bottom < -2 ? bottom : 0;
+    
             this.figureRef.current.style.transform = `translate(${
-                event.clientX - this.startPositionMouse.x
-            }px, ${event.clientY - this.startPositionMouse.y}px)`
+                event.clientX - this.startPositionMouse.x + xCorrection
+            }px, ${
+                event.clientY - this.startPositionMouse.y + yCorrection
+            }px)`;
         }
     }
+    
 
-    public handleMouseDown = (event: React.MouseEvent) => {
-        if (this.figureRef?.current) {
+    public handleMouseDown = (
+        event: React.MouseEvent,
+        figureRef: RefObject<HTMLImageElement>,
+        cellRef: RefObject<HTMLDivElement>,
+        boardRef: RefObject<HTMLDivElement>
+    ) => {
+        if (figureRef?.current) {
             this.setIsMouseDown(true)
-            const figureRect = this.figureRef.current.getBoundingClientRect()
+            this.figureRef = figureRef
+            this.cellRef = cellRef
+            this.boardRef = boardRef
+            const figureRect = figureRef.current.getBoundingClientRect()
             const cursorRelativeBoard = {
                 x: event.clientX,
                 y: event.clientY,
             }
-
             const offsetStartPositionX =
                 cursorRelativeBoard.x - figureRect.left - figureRect.width / 2
             const offsetStartPositionY =
@@ -102,24 +110,14 @@ class moveFigureService {
                 x: event.clientX - offsetStartPositionX,
                 y: event.clientY - offsetStartPositionY,
             })
-            this.figureRef.current.style.transform = `translate(${offsetStartPositionX}px, ${offsetStartPositionY}px)`
+
+            figureRef.current.style.transform = `translate(${offsetStartPositionX}px, ${offsetStartPositionY}px)`
         }
     }
 
-    public handleMouseUp = () => {
-        if (this.figureRef?.current) {
-            this.setIsMouseDown(false)
-            this.figureRef.current.style.transform = `translate(0, 0)`
-        }
-    }
-
-    public detectedTargetCell = (
-        cellRef: React.RefObject<HTMLDivElement | null>,
-        cell: Cell,
-        event: MouseEvent
-    ) => {
-        if (cellRef.current) {
-            const cellRect = cellRef.current.getBoundingClientRect()
+    public detectedTargetCell = (cell: Cell | null, event: MouseEvent) => {
+        if (this.cellRef?.current && cell) {
+            const cellRect = this.cellRef.current.getBoundingClientRect()
             const offsetFigureX =
                 event.clientX - this.startPositionMouse.x - cellRect.width / 2
             const offsetFigureY =
@@ -127,10 +125,6 @@ class moveFigureService {
 
             const targetCellX = Math.ceil(offsetFigureX / cellRect.width)
             const targetCellY = Math.ceil(offsetFigureY / cellRect.height)
-
-            console.log(
-                cell.board.cells[cell.y + targetCellY][cell.x + targetCellX]
-            )
 
             return cell.board.cells[cell.y + targetCellY][cell.x + targetCellX]
         }

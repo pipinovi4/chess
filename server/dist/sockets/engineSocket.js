@@ -9,26 +9,25 @@ const path_1 = __importDefault(require("path"));
 const workerPath = path_1.default.join(__dirname, '..', 'workers', 'worker.js');
 const engineSocket = (server) => {
     const onConnection = (socket) => {
-        let engineWorker = null;
+        const engineWorker = new worker_threads_1.Worker(workerPath);
         console.log('Socket with id', socket.id, 'connected');
         socket.on('error', (error) => {
             console.error('Socket error:', error);
         });
-        socket.on('start-engine', async (payload) => {
-            engineWorker = new worker_threads_1.Worker(workerPath);
+        socket.on('start-engine', async () => {
             (0, setupWorkerMessageListener_1.default)(socket, engineWorker);
-            console.log('Socket message to worker to start engine');
-            console.log('Main', payload);
+            console.log('Socket message to worker to start engine', engineWorker);
             engineWorker.postMessage({
                 message: 'start-engine',
-                mode: payload.mode,
             });
         });
         socket.on('calculate-move', async (move) => {
+            (0, setupWorkerMessageListener_1.default)(socket, engineWorker);
             console.log('Move', move);
             engineWorker.postMessage({ message: 'calculate-move', move });
         });
         socket.on('stop-engine', async (payload) => {
+            (0, setupWorkerMessageListener_1.default)(socket, engineWorker);
             console.log('Socket message to worker to stop engine');
             engineWorker.postMessage({ message: 'stop-engine', payload });
         });

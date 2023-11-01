@@ -3,6 +3,7 @@ import { Colors } from '../../constants/Colors'
 import { Figure, FigureNames } from './Figure'
 import blackLogo from '../../assets/black-rook.png'
 import whiteLogo from '../../assets/white-rook.png'
+import MoveDirectionService from '../cell/CellServices/MoveDirectionService'
 
 export class Rook extends Figure {
     constructor(color: Colors, cell: Cell) {
@@ -18,8 +19,8 @@ export class Rook extends Figure {
     }
 
     logicFigureMove(target: Cell): boolean {
-        if (this.cell.isEmptyHorizontal(target)) return true
-        if (this.cell.isEmptyVertical(target)) return true
+        if (MoveDirectionService.isEmptyHorizontal(target, this.cell)) return true
+        if (MoveDirectionService.isEmptyVertical(target, this.cell)) return true
         return false
     }
 }

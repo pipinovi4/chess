@@ -9,7 +9,7 @@ const setupWorkerMessageListener = (socket, worker) => {
         console.error(chalk_1.default.bgRed('Worker is undefined'));
         return;
     }
-    worker.on('message', (payload) => {
+    worker.once('message', (payload) => {
         const payloadWithoutMessage = { ...payload };
         delete payloadWithoutMessage.message;
         switch (payload.message) {
@@ -19,7 +19,6 @@ const setupWorkerMessageListener = (socket, worker) => {
                 break;
             case 'ENGINE_STOPPED':
                 console.log(chalk_1.default.bgGreen('listener', JSON.stringify(payloadWithoutMessage, null, 2)));
-                console.log(payloadWithoutMessage);
                 socket.emit('engine-stopped', payloadWithoutMessage);
                 break;
             case 'MOVE_CALCULATED':
