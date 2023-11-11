@@ -33,10 +33,11 @@ const express_config_1 = __importDefault(require("./configs/express-config"));
 const socketConfig_1 = __importDefault(require("./configs/socketConfig"));
 const fs = __importStar(require("fs"));
 const userRoute_1 = __importDefault(require("./routes/userRoute"));
-const engineRoute_1 = __importDefault(require("./routes/engineRoute"));
 const error_middleware_1 = __importDefault(require("./middlewares/error-middleware"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const mongoose_config_1 = __importDefault(require("./configs/mongoose-config"));
+const dataRoutes_1 = __importDefault(require("./routes/dataRoutes"));
 const options = {
     key: fs.readFileSync('C:/Users/Пипин/certs/client/client.key'),
     cert: fs.readFileSync('C:/Users/Пипин/certs/client/client.crt'),
@@ -59,11 +60,12 @@ app.use((0, cors_1.default)({
     credentials: true,
 }));
 app.use('/authorization', userRoute_1.default);
-app.use('/engine', engineRoute_1.default);
+app.use('/data', dataRoutes_1.default);
 app.use(error_middleware_1.default);
 const start = () => {
     (0, express_config_1.default)(app);
     (0, socketConfig_1.default)(httpsServer);
+    (0, mongoose_config_1.default)();
     httpsServer.listen(process.env.PORT, () => {
         console.log(`Server started port: ${process.env.PORT}`);
     });

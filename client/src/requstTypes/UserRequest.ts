@@ -1,8 +1,9 @@
 export default interface UserRequest {
     email: string,
     userName: string,
-    avatar: Uint8Array,
+    avatar: string,
     activationLink: string,
     isActivated: boolean,
     password: string,
+    id: string,
 }

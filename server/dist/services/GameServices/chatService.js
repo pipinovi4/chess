@@ -4,14 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const ApiError_1 = __importDefault(require("../../exceptions/ApiError"));
-const ChatModel_1 = __importDefault(require("../../models/ChatModel"));
+const ChatModel_1 = __importDefault(require("../../models/DB/ChatModel"));
 class chatService {
     async createChat(users) {
         const chatData = await ChatModel_1.default.create({
             users,
         });
         if (!chatData) {
-            throw ApiError_1.default.UnforseenError();
+            throw ApiError_1.default.UnforeseenError();
         }
         return chatData;
     }

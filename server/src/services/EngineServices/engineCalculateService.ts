@@ -1,16 +1,17 @@
 import { ChildProcess } from 'child_process'
 import { Chess } from 'chess.js'
-import EngineService from '../../models/customModels/EngineModel'
 import ApiError from '../../exceptions/ApiError'
+import EngineModel from '../../models/customModels/EngineModel'
 
-class EngineCalculateService extends EngineService {
+class EngineCalculateService extends EngineModel {
     private chess: Chess = new Chess()
     private fen: string = this.chess.fen()
     public bestMoves: string[] = []
     public pawnAdvantage: number | string = 0
+    public currentStrokeRate = this.bestMoves.length - 1
 
-    constructor(engineProcess: ChildProcess, depth: number) {
-        super(engineProcess, depth)
+    constructor(engineProcess: ChildProcess) {
+        super(engineProcess)
 
         // Set up an event handler for the 'data' event when creating an instance of the class
         this.engineProcess.stdout?.on('data', (data) => {
@@ -40,10 +41,11 @@ class EngineCalculateService extends EngineService {
     /**
      * Calculate the best moves and evaluation score.
      * @param {string} move - The move in Algebraic notation.
+     * @param {difficultyBot} difficultyBot - difficulty bot 
      * @returns {Promise<void>} A Promise that resolves when the calculation is complete.
      */
-    public async calculateBestMovesAndScore(move: string): Promise<void> {
-        return new Promise((resolve, reject) => {
+    public async calculateBestMovesAndScore(move: string): Promise<number | void> {
+        return new Promise<number | void>((resolve, reject) => {
             if (this.bestMoves.length !== 0) {
                 this.bestMoves = []
             }
@@ -60,8 +62,10 @@ class EngineCalculateService extends EngineService {
                 ) {
                     console.log('resolve')
                     listening = false
-                    this.chess.move(this.bestMoves[this.bestMoves.length - 1])
-                    resolve()
+                    this.currentStrokeRate = this.extractDifficaltyBot()
+                    console.log(this.currentStrokeRate, this.bestMoves)
+                    this.chess.move(this.bestMoves[this.currentStrokeRate])
+                    resolve(this.currentStrokeRate)
                 }
             }
 
@@ -113,6 +117,37 @@ class EngineCalculateService extends EngineService {
                 this.pawnAdvantage = parseInt(mateStepsMatch[1], 10).toString()
             }
         }
+    }
+
+    public extractDifficaltyBot() {
+        const randomNumber = Math.random()
+        if (this.difficultyBot === 'begginer') {
+            if (this.bestMoves.length > 1) {
+                return randomNumber > 0.5 ? 0 : 1
+            }
+            return 0
+        }
+        if (this.difficultyBot === 'amateur') {
+            if (this.bestMoves.length > 2) {
+                return randomNumber > 0.5 ? 1 : 2
+            } else if (this.bestMoves.length > 1) {
+                return 1
+            } 
+            return 1
+        }
+        if (this.difficultyBot === 'proffesional') {
+            return this.bestMoves.length - 1
+        }
+    }
+
+    get _currentStrokeRate() {
+        return this.currentStrokeRate
+    }
+    get _pawnAdvantage() {
+        return this.pawnAdvantage
+    }
+    get _bestMoves() {
+        return this.bestMoves
     }
 }
 

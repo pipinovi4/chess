@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ApiError_1 = __importDefault(require("../exceptions/ApiError"));
 const userService_1 = __importDefault(require("../services/UserServices/userService"));
 const validateUserData_1 = __importDefault(require("../helpers/validateUserData"));
-const UserModel_1 = __importDefault(require("../models/UserModel"));
+const UserModel_1 = __importDefault(require("../models/DB/UserModel"));
 class userController {
     async registration(req, res, next) {
         try {
@@ -32,9 +32,10 @@ class userController {
     }
     async login(req, res, next) {
         try {
-            const { email, userName, password } = req.body;
-            (0, validateUserData_1.default)(email, password, req, next);
-            const userData = await userService_1.default.login(email, userName, password);
+            const { personalInformation, password } = req.body;
+            const { refreshToken } = req.cookies;
+            (0, validateUserData_1.default)(personalInformation, password, req);
+            const userData = await userService_1.default.login(personalInformation, password);
             console.log('user', userData);
             res.cookie('refreshToken', userData.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -46,7 +47,7 @@ class userController {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
                 sameSite: 'none',
-                secure: true,
+                secure: true
             });
             return res.status(200).json(userData);
         }
@@ -62,7 +63,7 @@ class userController {
         }
         catch (e) {
             console.error(e);
-            return ApiError_1.default.UnforseenError();
+            return ApiError_1.default.UnforeseenError();
         }
     }
     async logout(req, res, next) {
@@ -93,20 +94,20 @@ class userController {
         }
         catch (e) {
             console.error(e);
-            return ApiError_1.default.UnforseenError();
+            return ApiError_1.default.UnforeseenError();
         }
     }
     async findAuthData(req, res, next) {
         try {
-            const { data, nameData } = req.body;
-            if (!data) {
+            const personalInformation = req.body;
+            if (!personalInformation) {
                 return new ApiError_1.default(400, 'Not correct userName');
             }
-            const user = await UserModel_1.default.findOne({ [nameData]: data });
+            const user = await UserModel_1.default.findOne(personalInformation);
             if (!user) {
                 return res.status(200).json(null);
             }
-            return res.status(200).json(user);
+            res.status(200).json(user);
         }
         catch (e) {
             next(e);

@@ -1,4 +1,10 @@
-import { Schema, model, Types, Document } from 'mongoose';
+import { Schema, model } from 'mongoose';
+import fs from 'fs';
+import path from 'path';
+
+const defaultAvatarPath = path.join(__dirname, '..', '..', 'assets', 'default-user-avatar.png');
+
+const base64DefaultAvatar = fs.readFileSync(defaultAvatarPath, 'base64');
 
 const UserModel = new Schema({
     email: { type: String, unique: true, required: true },
@@ -6,7 +12,7 @@ const UserModel = new Schema({
     userName: { type: String },
     isActivated: { type: Boolean, default: false },
     activationLink: { type: String },
-    avatar: { type: Schema.Types.ObjectId, ref: 'Image' },
+    avatar: { type: String, default: base64DefaultAvatar },
 });
 
 export default model('User', UserModel);

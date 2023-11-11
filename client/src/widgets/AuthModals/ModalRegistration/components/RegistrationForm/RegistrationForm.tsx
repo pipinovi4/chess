@@ -7,8 +7,7 @@ import eye from '../../../assets/eye.svg'
 import eyeCrossed from '../../../assets/eye-crossed.svg'
 import checkmark from '../../../assets/checkmark.svg'
 import './registrationForm.scss'
-import findAuthData from '../../api/asyncThunks/findAuthDataDB'
-import registration from '../../api/asyncThunks/registration'
+import AuthService from '../../../../../https/services/UserServices'
 
 interface RegistrationFormProps {
     registrationStart: boolean
@@ -65,8 +64,8 @@ const RegistrationForm: FC<RegistrationFormProps> = ({
         try {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
             if (emailRegex.test(data)) {
-                console.log('start email')
-                const response = await findAuthData(data, 'email')
+                const response =
+                    await AuthService.validatePersonalInformationData(data)
                 if (response) {
                     setIsValidEmail(false)
                 } else {
@@ -74,7 +73,8 @@ const RegistrationForm: FC<RegistrationFormProps> = ({
                 }
             } else {
                 console.log('start userName')
-                const response = await findAuthData(data, 'userName')
+                const response =
+                    await AuthService.validatePersonalInformationData(data)
                 if (response) {
                     setIsValidUserName(false)
                 } else {
@@ -83,7 +83,7 @@ const RegistrationForm: FC<RegistrationFormProps> = ({
             }
         } catch (error) {
             console.error(
-                'Произошла ошибка при выполнении запроса к базе данных:',
+                'An error occurred while executing a database query:',
                 error
             )
         }
@@ -92,7 +92,7 @@ const RegistrationForm: FC<RegistrationFormProps> = ({
     useEffect(() => {
         if (registrationStart) {
             if (isValidEmail && isValidUserName) {
-                registration(email, userName, password)
+                AuthService.registration(email, userName, password)
                 setRegistrationStart(false)
                 setActiveRegistration(false)
             }

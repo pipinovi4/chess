@@ -50,7 +50,6 @@ class BaseEngineService {
     /**
      * Handles the closure of the engine process.
      * @param {number} code - The exit code of the process.
-     * @param {NodeJS.Timeout} timeoutId - Timer identifier.
      * @param {function} callback - Callback function.
      */
     protected handleEngineClose(

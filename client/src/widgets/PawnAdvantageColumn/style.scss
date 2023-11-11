@@ -4,12 +4,12 @@
 .pawn-advantage__column {
     width: 1.25dvw;
     height: 87.5dvh;
-    position: relative; /* Устанавливаем position: relative; */
+    position: absolute; /* Устанавливаем position: relative; */
     z-index: 1;
     border: 0.25dvh solid transparent;
     border-radius: 0.1dvh;
-    left: 7.5dvw;
-    top: 6dvh;
+    left: 8dvw;
+    top: 6.25dvh;
     
 
     &::before {

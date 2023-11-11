@@ -4,9 +4,7 @@ import EngineService from '../models/customModels/EngineModel'
 import { ChildProcess, spawn } from 'child_process'
 import path from 'path'
 import chalk from 'chalk'
-
-//Depth, magic number for engine
-const DEPTH = 20
+import { difficultyBot } from '../types/engineTypes'
 
 // Define the path to the Stockfish engine executable
 const enginePath = path.join(__dirname, '..', '..', 'engine', 'stockfish.exe')
@@ -23,17 +21,16 @@ if (!isMainThread) {
             case 'start-engine':
                 engineProcess = spawn(enginePath)
 
-                engineService = new EngineService(engineProcess, DEPTH)
+                engineService = new EngineService(engineProcess)
 
                 engineCalculateService = new EngineCalculateService(
-                    engineProcess,
-                    DEPTH
+                    engineProcess
                 )
                 // Start the chess engine
                 console.log('Starting the engine...')
                 engineService.startEngine((status: string) => {
                     console.log(chalk.bgWhite(), 'Status:', status)
-                })
+                }, payload.difficultyBot)
 
                 // Notify the parent thread that the engine has started
                 parentPort.postMessage({ message: 'ENGINE_STARTED' })
@@ -46,8 +43,9 @@ if (!isMainThread) {
                 )
                 parentPort.postMessage({
                     message: 'MOVE_CALCULATED',
-                    bestMoves: engineCalculateService.bestMoves,
-                    pawnAdvantage: engineCalculateService.pawnAdvantage,
+                    bestMoves: engineCalculateService._bestMoves,
+                    pawnAdvantage: engineCalculateService._pawnAdvantage,
+                    currentStrokeRate: engineCalculateService._currentStrokeRate
                 })
                 break
 

@@ -6,10 +6,13 @@ import { Queen } from '../figures/Queen'
 import { Rook } from '../figures/Rook'
 import { Cell } from '../cell/Cell'
 import { Colors } from '../../constants/Colors'
+import { Figure } from '../figures/Figure'
 
 export default class Board {
     cells: Cell[][] = []
     kingCheckCell: Cell | null = null
+    lostFiguresWhite: Array<Figure> = []
+    lostFiguresBlack: Array<Figure> = []
 
     public initCells() {
         for (let i = 0; i < 8; i++) {

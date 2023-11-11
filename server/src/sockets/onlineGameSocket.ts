@@ -1,46 +1,34 @@
 import { Socket } from 'socket.io'
 import { Namespace } from 'socket.io'
 import OnlineGameModel from '../models/customModels/OnlineGameModel'
+import { Types } from 'mongoose'
+import CustomOnlineGameSocket from './CustomSockets/types/TypesCustomSockets'
+import { addCustomMethods } from './CustomSockets/CustomMethods/CustomMethodOnlineGameSocket'
 
 const onlineGameSocket = (server: Namespace) => {
-    const onConnection = (socket: Socket) => {
+    const onConnection = (socket: CustomOnlineGameSocket) => {
         let onlineGame: OnlineGameModel | null = null
 
         // Event handler for when a user initiates an online game
         socket.on('start-online-game', async () => {
             try {
-                // Create a new OnlineGameModel instance for the user
                 onlineGame = new OnlineGameModel(socket)
-                // Prepare and start the online game for the user
-                await onlineGame.prepareAndStartOnlineGame(socket.id, server)
-
-                // Event handler for when the user makes a game move
-                socket.on('game-move', async (move) => {
-                    try {
-                        // Receive and process the opponent's move
-                        await onlineGame?.receiveMove(move, socket)
-                    } catch (error) {
-                        console.error(
-                            'Error while receiving opponent move:',
-                            error.message
-                        )
-                    }
-                })
+                addCustomMethods(socket, onlineGame)
+                await onlineGame.prepareAndStartOnlineGame(server, socket)
             } catch (error) {
                 console.error(
                     'Error while starting an online game:',
                     error.message
                 )
+                throw error
             }
         })
 
-        // Event handler for when the user sends a game move to the opponent
-        socket.on('send-move', async (move: string) => {
+        socket.on('send-move-opponent', async (move: string) => {
             try {
-                // Prepare and send the user's move to the opponent
-                await onlineGame?.prepareAndSendMove(move, server)
+                await onlineGame.processingGameMove(move, server)
             } catch (error) {
-                console.error('Error while sending a move:', error.message)
+                throw new Error('Error when trying send move to opponent: ', error)
             }
         })
 

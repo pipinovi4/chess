@@ -1,4 +1,4 @@
-import { Types } from 'mongoose'
+import { ObjectId, Types } from 'mongoose'
 import { userModel } from '../types/userTypes'
 
 export default class userDto {

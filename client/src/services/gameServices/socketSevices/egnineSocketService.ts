@@ -1,5 +1,5 @@
 import { Socket, io } from 'socket.io-client'
-import { ResponseServer } from '../types'
+import { ResponseServerMove } from '../types'
 
 // Constants
 const TIMEOUT_MS = 20000
@@ -12,10 +12,10 @@ class EngineSocketService {
      * Start a connection with the game engine socket.
      * @returns {Promise<Socket>} A promise that resolves with the socket connection.
      */
-    async startEngine(): Promise<Socket> {
+    async startEngine(difficultyBot: 'begginer' | 'amateur' | 'proffesional'): Promise<Socket> {
         return new Promise((resolve) => {
             const engineSocket: Socket = io('https://localhost:5000/engine')
-            engineSocket.emit('start-engine')
+            engineSocket.emit('start-engine', difficultyBot)
 
             engineSocket.once('engine-started', () => {
                 console.log('Game started')
@@ -33,14 +33,14 @@ class EngineSocketService {
     async sendMoveEngine(
         move: string,
         engineSocket: Socket
-    ): Promise<ResponseServer | void> {
+    ): Promise<ResponseServerMove | void> {
         return new Promise((resolve, reject) => {
             engineSocket.emit('calculate-move', move)
             console.log(313213123)
 
             engineSocket.once(
                 'move-calculated',
-                (engineData: ResponseServer) => {
+                (engineData: ResponseServerMove) => {
                     console.log('Data from engine', engineData)
                     resolve(engineData)
                 }

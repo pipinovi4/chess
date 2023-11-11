@@ -1,9 +1,9 @@
 import { Socket } from 'socket.io-client'
 import { Cell } from '../../../entites/cell/Cell'
-import createChessNotation from '../../../hooks/createChessNotation'
+import createChessNotation from '../../../helpers/createChessNotation'
 import EngineSocketService from '../socketSevices/egnineSocketService'
-import { ProcessedDataServer, ResponseServer } from '../types'
-import convertChessNotation from '../../../hooks/convertChessNotation'
+import { ProcessedDataServer, ResponseServerMove } from '../types'
+import convertChessNotation from '../../../helpers/convertChessNotation'
 import Board from '../../../entites/board/Board'
 import { Colors } from '../../../constants/Colors'
 
@@ -45,14 +45,12 @@ class EngineGameService extends EngineSocketService {
                         serverResponse
                     )
                 }
-                console.log(321321213123, serverResponse)
                 if (serverResponse) {
                     const processedData = this.processServerResponse(
                         serverResponse,
                         selectedCell,
                         movePlayer
                     )
-                    console.log(processedData, 'hhahahahahahahahhahaha')
                     return processedData
                 }
             }
@@ -70,14 +68,13 @@ class EngineGameService extends EngineSocketService {
      * @returns {ProcessedDataServer | null} - Processed data from the server or null in case of an error.
      */
     private processServerResponse(
-        serverResponse: ResponseServer,
+        serverResponse: ResponseServerMove,
         selectedCell: Cell,
         movePlayer: Colors
     ): ProcessedDataServer | null {
-        const moveServer = serverResponse.bestMoves[serverResponse.bestMoves.length - 1]
+        const moveServer =
+            serverResponse.bestMoves[serverResponse.currentStrokeRate]
         const moveCoordinates = convertChessNotation(moveServer)
-
-        console.log('абортыши тыквы', serverResponse)
 
         if (!moveCoordinates) {
             return null
@@ -92,7 +89,10 @@ class EngineGameService extends EngineSocketService {
             moveCoordinates.coordinatesTargetCell
         )
 
-        const correctPawnAdvantage = movePlayer === Colors.BLACK ? -serverResponse.pawnAdvantage : serverResponse.pawnAdvantage
+        const correctPawnAdvantage =
+            movePlayer === Colors.BLACK
+                ? -serverResponse.pawnAdvantage
+                : serverResponse.pawnAdvantage
 
         if (selectedCellEngine && targetCellEngine) {
             return {

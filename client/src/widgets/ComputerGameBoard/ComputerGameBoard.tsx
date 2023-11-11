@@ -5,15 +5,24 @@ import queen from '../../widgets/AuthModals/assets/whiteQueenLogo.svg'
 import './style.scss'
 import EngineModel from '../../entites/EngineModel'
 
+type difficultyBot = 'amateur' | 'begginer' | 'proffesional'
+
 interface ComputerBoardProps {
     engineModel: EngineModel
 }
 
-const ComputerGameBoard: FC<ComputerBoardProps> = ({engineModel}) => {
-    const [difficultyBot, setDifficultyBot] = useState<string>('')
+const ComputerGameBoard: FC<ComputerBoardProps> = ({ engineModel }) => {
+    const [difficultyBot, setDifficultyBot] =
+        useState<difficultyBot>('proffesional')
 
     const handleStartEngine = async () => {
         await engineModel.prepareAndStartEngine()
+    }
+
+    const handleSwitchDifficulty = (_difficultyBot: difficultyBot) => {
+        setDifficultyBot(_difficultyBot)
+        engineModel.setDifficaltyBot(difficultyBot)
+        console.log("dsamasdnjasd")
     }
 
     return (
@@ -21,7 +30,7 @@ const ComputerGameBoard: FC<ComputerBoardProps> = ({engineModel}) => {
             <h2 className="computer-board__title">Play vs...</h2>
             <div className="container-cards__bots">
                 <div
-                    onClick={() => setDifficultyBot('begginer')}
+                    onClick={() => handleSwitchDifficulty('begginer')}
                     className={[
                         'bot-card__begginer',
                         'card-bot',
@@ -32,7 +41,7 @@ const ComputerGameBoard: FC<ComputerBoardProps> = ({engineModel}) => {
                     <p className="bot-name">Begginer</p>
                 </div>
                 <div
-                    onClick={() => setDifficultyBot('amateur')}
+                    onClick={() => handleSwitchDifficulty('amateur')}
                     className={[
                         'bot-card__amateur',
                         'card-bot',
@@ -43,7 +52,7 @@ const ComputerGameBoard: FC<ComputerBoardProps> = ({engineModel}) => {
                     <p className="bot-name">Amateur</p>
                 </div>
                 <div
-                    onClick={() => setDifficultyBot('proffesional')}
+                    onClick={() => handleSwitchDifficulty('proffesional')}
                     className={[
                         'bot-card__professional',
                         'card-bot',
@@ -55,7 +64,12 @@ const ComputerGameBoard: FC<ComputerBoardProps> = ({engineModel}) => {
                 </div>
             </div>
             <div className="footer-computer__board">
-                <button onClick={async() => await handleStartEngine()} className="button-choose__bot">Choose</button>
+                <button
+                    onClick={async () => await handleStartEngine()}
+                    className="button-choose__bot"
+                >
+                    Choose
+                </button>
             </div>
         </div>
     )

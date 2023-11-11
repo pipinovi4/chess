@@ -1,14 +1,15 @@
-import { ObjectId } from 'mongoose'
-import OnlineGameService from '../../services/GameServices/OnlineGameService'
+import { ObjectId, Types } from 'mongoose'
+import OnlineGameService from '../../services/OnlineGameService/OnlineGameService'
 import { Namespace, Socket } from 'socket.io'
+import CustomOnlineGameSocket from '../../sockets/CustomSockets/types/TypesCustomSockets'
+import GameModel from '../DB/GameModel'
 
 /**
  * Represents a model for online games, providing methods for game preparation and management.
  */
 class OnlineGameModel extends OnlineGameService {
-    private players: Array<string> = []
     private onlineGameSocket: Socket | null = null
-    private gameId: ObjectId | null = null
+    private gameId: Types.ObjectId | null = null
     private roomId: string | null = null
 
     /**
@@ -22,20 +23,21 @@ class OnlineGameModel extends OnlineGameService {
 
     /**
      * Prepares and starts an online game for the specified player.
-     * @param {string} player - The player's identifier.
+     * @param {string} sender - Socket id which start online game
      * @param {Namespace} server - The socket server namespace.
      * @throws {Error} Throws an error if the data for starting the game is invalid.
      */
-    async prepareAndStartOnlineGame(player: string, server: Namespace) {
+    async prepareAndStartOnlineGame(
+        server: Namespace,
+        socket: CustomOnlineGameSocket
+    ) {
         try {
-            const { gameId, players, roomId } = await this.startOnlineGame(
-                player,
-                server
-            )
-            if (gameId && player && players.length === 2) {
-                this.gameId = gameId
-                this.players = players
-                this.roomId = roomId
+            const gameData = await this.startOnlineGame(server, socket)
+            console.log(gameData)
+            if (gameData && gameData.roomId && gameData.gameId) {
+                console.log('roomId and gameId exist', gameData.roomId)
+                this.setRoomId(gameData.roomId)
+                this.setGameId(gameData.gameId)
             } else {
                 throw new Error(
                     'Invalid data received when trying to start an online game'
@@ -52,22 +54,20 @@ class OnlineGameModel extends OnlineGameService {
      * @param {Namespace} server - The socket server namespace.
      * @throws {Error} Throws an error if the data for sending the opponent's move is incorrect.
      */
-    async prepareAndSendMove(move: string, server: Namespace) {
+    async processingGameMove(move: string, server: Namespace) {
+        console.log(this.gameId)
         try {
-            if (
-                move &&
-                this.roomId &&
-                this.gameId &&
-                server &&
-                this.onlineGameSocket
-            ) {
-                await this.sendMove(
-                    move,
-                    this.roomId,
-                    server,
-                    this.onlineGameSocket,
-                    this.gameId
-                )
+            if (this.roomId && this.gameId) {
+                let opponentId: string
+                const currentGame = await GameModel.findById(this.gameId)
+                currentGame.users.forEach((user) => {
+                    if (user !== this.onlineGameSocket.id) opponentId = user
+                })
+                const opponentSocket = server.sockets.get(
+                    opponentId
+                ) as CustomOnlineGameSocket
+                await opponentSocket.getGameMove(move)
+                this.updateDatabaseMoves(move, this.gameId)
             } else {
                 throw new Error(
                     "Data for sending the opponent's move is incorrect"
@@ -99,12 +99,20 @@ class OnlineGameModel extends OnlineGameService {
         }
     }
 
-    /**
-     * Get the list of players in the game.
-     * @returns {Array<string>} An array of player identifiers.
-     */
-    getPlayers(): Array<string> {
-        return this.players
+    public setGameId(gameId: Types.ObjectId) {
+        this.gameId = gameId
+    }
+
+    public setRoomId(roomId: string) {
+        this.roomId = roomId
+    }
+
+    public getGameId() {
+        return this.gameId
+    }
+
+    public getRoomId() {
+        return this.roomId
     }
 }
 

@@ -3,6 +3,7 @@ import { Rook } from '../figures/Rook'
 import Board from '../board/Board'
 import { Colors } from '../../constants/Colors'
 import KingAttackService from './CellServices/KingAttackService'
+import _ from 'lodash'
 
 export class Cell {
     readonly x: number
@@ -12,7 +13,6 @@ export class Cell {
     available: boolean
     underAtack: Array<Colors> = []
     id: number
-    lostFigures: Array<Figure> = []
 
     constructor(board: Board, x: number, y: number) {
         this.x = x
@@ -71,11 +71,7 @@ export class Cell {
             this.figure.moveFigure(target)
             target.setFigure(this.figure)
             this.figure = null
-            if (target.figure) {
-                console.log(target.figure)
-                this.lostFigures.push(target.figure)
-            }
-            KingAttackService.updateCellUnderAtack(this.board)
+            KingAttackService.updateCellUnderAttack(this.board)
         }
     }
 }

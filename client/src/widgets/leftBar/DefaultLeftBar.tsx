@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { FC } from 'react'
 import logoPawn from '../../assets/logo.svg'
 import playwhite from '../../assets/playwhite.svg'
 import magnifyingGlass from '../../assets/magnifying-glass.svg'
@@ -10,11 +10,14 @@ import { useNavigate } from 'react-router-dom'
 import ModalRegistration from '../AuthModals/ModalRegistration/ModalRegistration'
 import ModalLogin from '../AuthModals/ModalLogin/ModalLogin'
 
-const DefaultLeftBar = () => {
-    const [modalActiveLogin, setModalActiveLogin] = useState(false)
-    const [modalActiveRegistration, setModalActiveRegistration] =
-        useState(false)
+interface DefaultLeftBarProps {
+    isActiveLogin: boolean
+    isActiveRegistration: boolean
+    setIsActiveLogin: (isActiveLogin: boolean) => void
+    setIsActiveRegistration: (isActiveRegistration: boolean) => void
+}
 
+const DefaultLeftBar: FC<DefaultLeftBarProps> = ({isActiveLogin, isActiveRegistration, setIsActiveLogin, setIsActiveRegistration}) => {
     const navigate = useNavigate()
 
     const handleNavigate = (namePage: string) => {
@@ -22,18 +25,19 @@ const DefaultLeftBar = () => {
     }
     return (
         <div className="main-cotainer">
-            {modalActiveRegistration && (
+            {localStorage.getItem('accessToken') && <></>}
+            {isActiveRegistration && (
                 <ModalRegistration
-                    activeRegistration={modalActiveRegistration}
-                    setActiveRegistration={setModalActiveRegistration}
-                    setActiveLogin={setModalActiveLogin}
+                    activeRegistration={isActiveRegistration}
+                    setActiveRegistration={setIsActiveRegistration}
+                    setActiveLogin={setIsActiveLogin}
                 />
             )}
-            {modalActiveLogin && (
+            {isActiveLogin && (
                 <ModalLogin
-                    activeLogin={modalActiveLogin}
-                    setActiveRegistration={setModalActiveRegistration}
-                    setActiveLogin={setModalActiveLogin}
+                    activeLogin={isActiveLogin}
+                    setActiveRegistration={setIsActiveRegistration}
+                    setActiveLogin={setIsActiveLogin}
                 />
             )}
             <div className="cards-container">
@@ -90,13 +94,13 @@ const DefaultLeftBar = () => {
                 ) : (
                     <div className="choose-authorization ">
                         <button
-                            onClick={() => setModalActiveRegistration(true)}
+                            onClick={() => setIsActiveRegistration(true)}
                             className="sign-up button"
                         >
                             Sign Up
                         </button>
                         <button
-                            onClick={() => setModalActiveLogin(true)}
+                            onClick={() => setIsActiveLogin(true)}
                             className="sign-in button"
                         >
                             Sign In

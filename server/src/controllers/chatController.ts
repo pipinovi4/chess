@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express'
-import chatService from '../services/GameServices/chatService'
 
 class chatController {
     async createChat(req: Request, res: Response, next: NextFunction) {
@@ -8,8 +7,6 @@ class chatController {
             if (users.length < 2) {
                 next()
             }
-            const chatData = await chatService.createChat(users)
-            return res.status(200).json(chatData)
         } catch (e) {
             next(e)
         }

@@ -21,6 +21,7 @@ class userController {
                 sameSite: 'none',
                 secure: true,
             })
+
             res.cookie('userId', userData.user._id, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
@@ -36,10 +37,12 @@ class userController {
 
     async login(req: Request, res: Response, next: NextFunction) {
         try {
-            const { email, userName, password } = req.body
-            validateUserData(email, password, req, next)
+            const { personalInformation, password } = req.body
+            const {refreshToken} = req.cookies
 
-            const userData = await userService.login(email, userName, password)
+            validateUserData(personalInformation, password, req)
+
+            const userData = await userService.login(personalInformation, password)
             console.log('user', userData)
             res.cookie('refreshToken', userData.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -51,7 +54,7 @@ class userController {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
                 sameSite: 'none',
-                secure: true,
+                secure: true
             })
 
             return res.status(200).json(userData)
@@ -67,7 +70,7 @@ class userController {
             return res.redirect('http://localhost:5173')
         } catch (e) {
             console.error(e)
-            return ApiError.UnforseenError()
+            return ApiError.UnforeseenError()
         }
     }
 
@@ -99,25 +102,25 @@ class userController {
             }
         } catch (e) {
             console.error(e)
-            return ApiError.UnforseenError()
+            return ApiError.UnforeseenError()
         }
     }
 
     async findAuthData(req: Request, res: Response, next: NextFunction) {
         try {
-            const { data, nameData } = req.body
+            const personalInformation = req.body
 
-            if (!data) {
+            if (!personalInformation) {
                 return new ApiError(400, 'Not correct userName')
             }
 
-            const user = await UserModel.findOne({ [nameData]: data })
+            const user = await UserModel.findOne(personalInformation)
 
             if (!user) {
                 return res.status(200).json(null)
             }
 
-            return res.status(200).json(user)
+            res.status(200).json(user)
         } catch (e) {
             next(e)
         }

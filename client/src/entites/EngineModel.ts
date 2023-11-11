@@ -4,20 +4,34 @@ import { Cell } from './cell/Cell'
 import { EngineMoveCells } from '../services/gameServices/types'
 import { Colors } from '../constants/Colors'
 import Board from './board/Board'
+import { Player } from './player/Player'
 
 /**
  * Model representing the game engine with various properties and methods.
  */
 class EngineModel extends EngineGameService {
     private _connected = false
-    private _pawnAdvantage: number | string = 0;
+    private _pawnAdvantage: number | string = 0
     private _engineMove: EngineMoveCells | null = null
-    private _movePlayer = Math.random() > 0.5
     private _engineSocket: Socket | null = null
     private currentColorMove: Colors = Colors.WHITE
+    public difficaltyBot: 'begginer' | 'amateur' | 'proffesional' =
+        'proffesional'
+    private players: { currentPlayer: Player; opponentPlayer: Player } | null =
+        null
 
     constructor() {
         super()
+    }
+
+    public setDifficaltyBot(
+        difficaltyBot: 'begginer' | 'amateur' | 'proffesional'
+    ) {
+        this.difficaltyBot = difficaltyBot
+    }
+
+    public getPlayers() {
+        return this.players
     }
 
     /**
@@ -25,13 +39,17 @@ class EngineModel extends EngineGameService {
      */
     async prepareAndStartEngine() {
         try {
-            const engineSocket = await this.startEngine()
-            console.log('socket')
+            const engineSocket = await this.startEngine(this.difficaltyBot)
+            const randomColor =
+                Math.random() > 0.5 ? Colors.WHITE : Colors.BLACK
+            const opponentPlayer = new Player(
+                randomColor === Colors.WHITE ? Colors.BLACK : Colors.WHITE,
+                'bot'
+            )
+            const currentPlayer = new Player(randomColor, 'player')
+            this.players = { currentPlayer, opponentPlayer }
             if (engineSocket) {
                 this._engineSocket = engineSocket
-                return engineSocket
-            } else {
-                return null
             }
         } catch (error) {
             console.error('Error:', error)
@@ -51,11 +69,7 @@ class EngineModel extends EngineGameService {
         setBoard: (board: Board) => void
     ): Promise<void> {
         try {
-            if (
-                selectedCell &&
-                targetCell &&
-                selectedCell.figure?.canMove(targetCell)
-            ) {
+            if (selectedCell && selectedCell.figure?.canMove(targetCell)) {
                 const responseEngine = await this.processMoveAndReceiveResponse(
                     selectedCell,
                     targetCell,
@@ -100,7 +114,7 @@ class EngineModel extends EngineGameService {
      * Get the current pawn advantage.
      * @returns {number} The pawn advantage value.
      */
-    getPawnAdvantage(): number | string {
+    get pawnAdvantage(): number | string {
         return this._pawnAdvantage
     }
 
@@ -110,14 +124,6 @@ class EngineModel extends EngineGameService {
      */
     get engineMove(): EngineMoveCells | null {
         return this._engineMove
-    }
-
-    /**
-     * Get the current move player status.
-     * @returns {boolean} `true` if it's the move player's turn, `false` otherwise.
-     */
-    get movePlayer(): boolean {
-        return this._movePlayer
     }
 
     setCurrentColorPlayer() {

@@ -7,8 +7,7 @@ import greenCheckMark from '../../../assets/checkmark.svg'
 import eye from '../../../assets/eye.svg'
 import croossedEye from '../../../assets/eye-crossed.svg'
 import './loginForm.scss'
-import findAuthDataDB from '../../../ModalRegistration/api/asyncThunks/findAuthDataDB'
-import login from '../../../ModalRegistration/api/asyncThunks/login'
+import AuthService from '../../../../../https/services/UserServices'
 
 interface LoginFormProps {
     loginStart: boolean
@@ -16,12 +15,18 @@ interface LoginFormProps {
     setActiveLogin: (activeLogin: boolean) => void
 }
 
-const LoginForm: FC<LoginFormProps> = ({loginStart, setActiveLogin, setLoginStart}) => {
+const LoginForm: FC<LoginFormProps> = ({
+    loginStart,
+    setActiveLogin,
+    setLoginStart,
+}) => {
     const [personalInformation, setPersonalInformation] = useState<string>('')
     const [activeCheckbox, setActiveCheckbox] = useState<boolean>(false)
-    const [isValidPersonalInformation, setIsValidPersonalInformation] = useState<boolean>(false)
+    const [isValidPersonalInformation, setIsValidPersonalInformation] =
+        useState<boolean>(false)
     const [isVisiblePassword, setIsVisiblePassword] = useState<boolean>(false)
-    const [timeoutInputRequest, setTimeoutInputRequest] = useState<boolean>(false)
+    const [timeoutInputRequest, setTimeoutInputRequest] =
+        useState<boolean>(false)
     const [password, setPassword] = useState<string>('')
 
     const changePersonalInformation = (e: ChangeEvent<HTMLInputElement>) => {
@@ -53,11 +58,12 @@ const LoginForm: FC<LoginFormProps> = ({loginStart, setActiveLogin, setLoginStar
             let responseDb
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
             if (emailRegex.test(personalInformation)) {
-                responseDb = await findAuthDataDB(personalInformation, 'email')
+                responseDb = await AuthService.validatePersonalInformationData(
+                    personalInformation
+                )
             } else {
-                responseDb = await findAuthDataDB(
-                    personalInformation,
-                    'userName'
+                responseDb = await AuthService.validatePersonalInformationData(
+                    personalInformation
                 )
             }
             if (responseDb) {
@@ -67,7 +73,7 @@ const LoginForm: FC<LoginFormProps> = ({loginStart, setActiveLogin, setLoginStar
             }
         } catch (error) {
             console.error(
-                'Произошла ошибка при выполнении запроса к базе данных:',
+                'An error occurred while executing a database query:',
                 error
             )
             setIsValidPersonalInformation(false)
@@ -77,7 +83,7 @@ const LoginForm: FC<LoginFormProps> = ({loginStart, setActiveLogin, setLoginStar
     useEffect(() => {
         if (loginStart) {
             if (isValidPersonalInformation) {
-                login(personalInformation, password)
+                AuthService.login(personalInformation, password)
                 setLoginStart(false)
                 setActiveLogin(false)
             }

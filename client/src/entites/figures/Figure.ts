@@ -37,13 +37,16 @@ export class Figure {
     canMove(target: Cell): boolean {
         if (target.figure?.name === FigureNames.KING) return false
         if (target.figure?.color === this.color) return false
-        if (!KingAttackService.validateMoveUnderCheck(target, this.cell)) {
+        if (!KingAttackService.validateMoveUnderCheck(target, this.cell)) 
             return false
-        }
+
         return true
     }
 
-    logicFigureMove(_target: Cell) {}
+    logicFigureMove(_target: Cell): boolean {
+        if (_target.figure?.color === this.color) return false
+        return true
+    }
 
     moveFigure(_target: Cell) {}
 }

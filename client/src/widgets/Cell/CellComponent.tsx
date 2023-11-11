@@ -6,6 +6,7 @@ import { FigureNames } from '../../entites/figures/Figure'
 import ModalPickFigure from '../ModalPickFigure'
 import moveFigureService from '../../services/moveServices/moveFigureService'
 import { Colors } from '../../constants/Colors'
+import createChessNotation from '../../helpers/createChessNotation'
 
 interface CellProps {
     cell: Cell
@@ -13,7 +14,7 @@ interface CellProps {
     setActiveModal: (activeModal: boolean) => void
     boardRef: RefObject<HTMLDivElement>
     selectedCell: Cell | null
-    moveFigure: (cell: Cell) => void
+    moveFigure: (cell: Cell, figureRef?: RefObject<HTMLImageElement>) => void
 }
 
 const CellComponent: FC<CellProps> = ({
@@ -26,18 +27,22 @@ const CellComponent: FC<CellProps> = ({
 }) => {
     const figureRef = useRef<HTMLImageElement | null>(null)
     const cellRef = useRef<HTMLDivElement | null>(null)
+    const cellChessNotation = createChessNotation(cell)
+    const handleMouseDown = (event: React.MouseEvent) => {
+        if (!selectedCell?.figure?.canMove(cell)) {
+            moveFigureService.handleMouseDown(
+                event,
+                figureRef,
+                cellRef,
+                boardRef
+            )
+        }
+        moveFigure(cell, figureRef)
+    }
 
     return (
         <div
-            onMouseDown={(event: React.MouseEvent) => {
-                moveFigure(cell)
-                moveFigureService.handleMouseDown(
-                    event,
-                    figureRef,
-                    cellRef,
-                    boardRef
-                )
-            }}
+            onMouseDown={handleMouseDown}
             className={[
                 'cell',
                 selectedCell === cell && cell.figure ? 'selected' : '',
@@ -52,7 +57,32 @@ const CellComponent: FC<CellProps> = ({
             ].join(' ')}
             ref={cellRef}
         >
+            <div
+                className={[
+                    'chess-notation__letter',
+                    cell.x % 2
+                        ? 'chess-notation__black'
+                        : 'chess-notation__white',
+                ].join(' ')}
+            >
+                {cell.y === 7 && cellChessNotation[0]}
+            </div>
+            <div
+                className={[
+                    'chess-notation__number',
+                    cell.y % 2
+                        ? 'chess-notation__white'
+                        : 'chess-notation__black',
+                ].join(' ')}
+            >
+                {cell.x === 0 && cellChessNotation[1]}
+            </div>
             {cell.available && !cell.figure && <div className="available" />}
+            {cell.underAtack.includes(
+                cell.figure?.color === Colors.BLACK
+                    ? Colors.WHITE
+                    : Colors.BLACK
+            ) && <div className="king-attacked" />}
             {activeModal &&
                 cell.figure?.name === FigureNames.PAWN &&
                 cell.y === 0 &&
@@ -65,11 +95,17 @@ const CellComponent: FC<CellProps> = ({
                 )}
             <div
                 className={
-                    cell.available && cell.figure  ? 'figure-threatened' : ''
+                    selectedCell?.figure?.canMove(cell) && cell.figure
+                        ? 'figure-threatened'
+                        : ''
                 }
             ></div>
             {cell.figure?.logo && (
-                <img ref={figureRef} src={cell.figure.logo} alt="" />
+                <img
+                    ref={figureRef}
+                    src={cell.figure.logo}
+                    alt=""
+                />
             )}
         </div>
     )

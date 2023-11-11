@@ -1,35 +1,62 @@
-import OnlineGameService from '../services/gameServices/gameServices/onlineGameService'
-import { EngineMoveCells } from '../services/gameServices/types'
+import OnlineGameSocketService from '../services/gameServices/socketSevices/onlineGameSocketService'
+import { Cell } from './cell/Cell'
+import { Player } from './player/Player'
 
 /**
  * GameModel class extends GameService to manage game-related logic and socket communication.
  */
-class OnlineGameModel extends OnlineGameService {
-    protected connection = false
-    protected lastMove: EngineMoveCells | null = null
-    protected currentHalfMove = 0
-    protected players: Array<string> = []
+class OnlineGameModel extends OnlineGameSocketService {
+    private players: {currentPlayer: Player, opponentPlayer: Player} | null
+    private moves: Array<string>
+    private gameDuration: string
+    private additionAfterMove: number
+
+    constructor() {
+        super()
+        this.players = null
+        this.moves = []
+        this.gameDuration = '10 min'
+        this.additionAfterMove = 0
+    }
 
     public async prepareAndStartOnlineGame(): Promise<void> {
         try {
-            const opponent = await this.startOnlineGame()
-            if (opponent) {
-                this.addPlayer(opponent)
-                this.setConnection()
+            const players = await this.startOnlineGame()
+            if (players.currentPlayer && players.opponentPlayer) {
+                this.players = players
             } else {
-                console.error('opponent undefined')
+                console.error(
+                    'Error: Players after successful match-making are incorrect.'
+                )
             }
         } catch (error) {
-            console.error(error)
+            console.error('Error:', error)
         }
     }
 
-    public async prepareAndSendMoveOpponent(move: EngineMoveCells) {
+    public async prepareAndSendMoveOpponent(
+        selectedCell: Cell | null,
+        targetCell: Cell
+    ) {
         try {
-            if (move && move.selectedCell.figure?.canMove(move.targetCell)) {
-                await this.sendMoveOpponent(move)
+            if (selectedCell && selectedCell.figure?.canMove(targetCell)) {
+                const moveChessNotation = await this.sendMoveOpponent(
+                    selectedCell,
+                    targetCell
+                )
+                if (moveChessNotation.match(/[a-h][1-8][a-h][1-8]/)) {
+                    console.log('Move correct', moveChessNotation)
+                    this.moves.push(moveChessNotation)
+                } else {
+                    console.error(
+                        'When trying to send a move to your opponent, it was not correct: ',
+                        moveChessNotation
+                    )
+                }
             } else {
-                console.error('Move is incorrect')
+                console.error(
+                    'Move is incorrect when trying send move opponent'
+                )
                 return null
             }
         } catch (error) {
@@ -46,39 +73,42 @@ class OnlineGameModel extends OnlineGameService {
         }
     }
 
-    get getLastMove(): EngineMoveCells | null {
-        return this.lastMove
-    }
-
-    get getCurrentHalfMove(): number {
-        return this.currentHalfMove
-    }
-
-    get getPlayers(): Array<string> {
+    public getPlayers(): {currentPlayer: Player, opponentPlayer: Player} | null {
         return this.players
     }
 
-    constructor() {
-        super()
-    }
-
-    /**
-     * Add a player to the game.
-     * @param {Player} player - The player to add to the game.
-     */
-    protected addPlayer(player: string) {
-        if (this.players.length !== 2) {
-            this.players.push(player)
+    public setGameDurationMode(gameDurationMove: string) {
+        this.gameDuration = gameDurationMove
+        if (gameDurationMove.includes('min')) {
+            this.additionAfterMove = 0
         } else {
-            console.error('Max number of players in the game')
+            const match = gameDurationMove.match(/\| (\d+)/)
+            if (match) {
+                this.additionAfterMove = parseInt(match[1], 10)
+            } else {
+                console.error(
+                    'Game duration mode is not correct when trying set it'
+                )
+                this.additionAfterMove = 0
+            }
         }
     }
 
-    /**
-     * Toggle the connected state.
-     */
-    protected setConnection() {
-        this.connection = !this.connection
+    public getAdditionAfterMove() {
+        return this.additionAfterMove
+    }
+
+    get _gameDuration() {
+        return this.converteDuration(this.gameDuration)
+    }
+
+    public converteDuration(gameDuration: string) {
+        const durationMatch = gameDuration.match(/\d+/)
+        if (durationMatch) {
+            const durationValue = parseInt(durationMatch[0])
+            return durationValue * 60
+        }
+        return 10 * 60
     }
 }
 

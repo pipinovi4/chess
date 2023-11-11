@@ -4,15 +4,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const chess_js_1 = require("chess.js");
-const EngineModel_1 = __importDefault(require("../../models/EngineModel"));
 const ApiError_1 = __importDefault(require("../../exceptions/ApiError"));
+const EngineModel_1 = __importDefault(require("../../models/customModels/EngineModel"));
 class EngineCalculateService extends EngineModel_1.default {
     chess = new chess_js_1.Chess();
     fen = this.chess.fen();
     bestMoves = [];
     pawnAdvantage = 0;
-    constructor(engineProcess, depth) {
-        super(engineProcess, depth);
+    currentStrokeRate = this.bestMoves.length - 1;
+    constructor(engineProcess) {
+        super(engineProcess);
         this.engineProcess.stdout?.on('data', (data) => {
             const dataText = data.toString();
             this.onEngineData(data, (status) => {
@@ -39,8 +40,10 @@ class EngineCalculateService extends EngineModel_1.default {
                     dataText.match(/bestmove\s\w{4}(?:\sponder\s\w{4})?/)) {
                     console.log('resolve');
                     listening = false;
-                    this.chess.move(this.bestMoves[this.bestMoves.length - 1]);
-                    resolve();
+                    this.currentStrokeRate = this.extractDifficaltyBot();
+                    console.log(this.currentStrokeRate, this.bestMoves);
+                    this.chess.move(this.bestMoves[this.currentStrokeRate]);
+                    resolve(this.currentStrokeRate);
                 }
             };
             const onData = (data) => {
@@ -79,6 +82,36 @@ class EngineCalculateService extends EngineModel_1.default {
                 this.pawnAdvantage = parseInt(mateStepsMatch[1], 10).toString();
             }
         }
+    }
+    extractDifficaltyBot() {
+        const randomNumber = Math.random();
+        if (this.difficultyBot === 'begginer') {
+            if (this.bestMoves.length > 1) {
+                return randomNumber > 0.5 ? 0 : 1;
+            }
+            return 0;
+        }
+        if (this.difficultyBot === 'amateur') {
+            if (this.bestMoves.length > 2) {
+                return randomNumber > 0.5 ? 1 : 2;
+            }
+            else if (this.bestMoves.length > 1) {
+                return 1;
+            }
+            return 1;
+        }
+        if (this.difficultyBot === 'proffesional') {
+            return this.bestMoves.length - 1;
+        }
+    }
+    get _currentStrokeRate() {
+        return this.currentStrokeRate;
+    }
+    get _pawnAdvantage() {
+        return this.pawnAdvantage;
+    }
+    get _bestMoves() {
+        return this.bestMoves;
     }
 }
 exports.default = EngineCalculateService;

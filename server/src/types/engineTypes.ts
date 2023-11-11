@@ -1,0 +1,1 @@
+export type difficultyBot = 'begginer' | 'amateur' | 'proffesional'

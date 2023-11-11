@@ -28,7 +28,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const ApiError_1 = __importDefault(require("../../exceptions/ApiError"));
 const userDto_1 = __importDefault(require("../../dto/userDto"));
-const UserModel_1 = __importDefault(require("../../models/UserModel"));
+const UserModel_1 = __importDefault(require("../../models/DB/UserModel"));
 const bcrypt = __importStar(require("bcrypt"));
 const uuid = __importStar(require("uuid"));
 const tokenService_1 = __importDefault(require("./tokenService"));
@@ -52,27 +52,32 @@ class userService {
             const userDto = new userDto_1.default(user);
             const tokens = tokenService_1.default.generateToken({ ...userDto });
             if (!tokens) {
-                throw ApiError_1.default.UnforseenError();
+                throw ApiError_1.default.UnforeseenError();
             }
             await tokenService_1.default.saveToken(userDto._id, tokens.refreshToken);
             return { ...tokens, user: userDto };
         }
         catch (e) {
             console.error(e);
-            throw ApiError_1.default.UnforseenError();
+            throw ApiError_1.default.UnforeseenError();
         }
     }
-    async login(email, userName, password) {
+    async login(personalInformation, password) {
         try {
             let user;
-            if (email) {
-                user = await UserModel_1.default.findOne({ email });
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailRegex.test(personalInformation)) {
+                console.log('ебать ты что себя тыквой возомнил я тебя на арьуз умножу');
+                user = await UserModel_1.default.findOne({ email: personalInformation });
+                console.log(user, 'mama tukvi ne dovolona');
             }
             else {
-                user = await UserModel_1.default.findOne({ userName });
+                user = await UserModel_1.default.findOne({
+                    userName: personalInformation,
+                });
             }
             if (!user) {
-                throw ApiError_1.default.BadRequest('User was not found');
+                throw ApiError_1.default.UnAuthorizedError();
             }
             const isPassEqual = await bcrypt.compare(password, user.password);
             if (!isPassEqual) {
@@ -81,14 +86,19 @@ class userService {
             const userDto = new userDto_1.default(user);
             const tokens = tokenService_1.default.generateToken({ ...userDto });
             if (!tokens) {
-                throw ApiError_1.default.UnforseenError();
+                throw ApiError_1.default.UnforeseenError('Error when trying create tokens');
             }
             await tokenService_1.default.saveToken(userDto._id, tokens.refreshToken);
             return { ...tokens, user: userDto };
         }
-        catch (e) {
-            console.error(e);
-            throw ApiError_1.default.UnforseenError();
+        catch (error) {
+            console.error('An error occurred during login:', error.message);
+            if (error instanceof ApiError_1.default) {
+                throw error;
+            }
+            else {
+                throw ApiError_1.default.UnforeseenError('An unexpected error occurred during login');
+            }
         }
     }
     async activate(activationLink) {

@@ -5,10 +5,11 @@ import expressConfig from './configs/express-config'
 import socketConfig from './configs/socketConfig'
 import * as fs from 'fs'
 import userRoutes from './routes/userRoute'
-import engineRoutes from './routes/engineRoute'
 import errorMiddleware from './middlewares/error-middleware'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import mongooseConfig from './configs/mongoose-config'
+import dataRoutes from './routes/dataRoutes'
 
 
 const options = {
@@ -36,12 +37,13 @@ app.use(
     })
 )
 app.use('/authorization', userRoutes)
-app.use('/engine', engineRoutes)
+app.use('/data', dataRoutes)
 app.use(errorMiddleware)
 
 const start = () => {
     expressConfig(app)
     socketConfig(httpsServer)
+    mongooseConfig()
 
     httpsServer.listen(process.env.PORT, () => {
         console.log(`Server started port: ${process.env.PORT}`)

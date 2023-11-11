@@ -1,9 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import './style.scss'
 import ModalLeftBar from './ModalLeftBar'
 import DefaultLeftBar from './DefaultLeftBar'
 
-const LeftBar = () => {
+interface LeftBarProps {
+    isActiveLogin: boolean
+    isActiveRegistration: boolean
+    setIsActiveLogin: (isActiveLogin: boolean) => void
+    setIsActiveRegistration: (isActiveRegistration: boolean) => void
+}
+
+const LeftBar: FC<LeftBarProps> = ({isActiveLogin, isActiveRegistration, setIsActiveLogin, setIsActiveRegistration}) => {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     useEffect(() => {
@@ -37,7 +44,7 @@ const LeftBar = () => {
                     <p>Это ваше модальное окно с содержимым.</p>
                 </ModalLeftBar>
             ) : (
-                <DefaultLeftBar />
+                <DefaultLeftBar isActiveLogin={isActiveLogin} isActiveRegistration={isActiveRegistration} setIsActiveLogin={setIsActiveLogin} setIsActiveRegistration={setIsActiveRegistration}/>
             )}
         </div>
     )

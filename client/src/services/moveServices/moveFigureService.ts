@@ -1,37 +1,34 @@
 /* eslint-disable no-dupe-else-if */
-import { RefObject } from 'react'
+import React, { RefObject } from 'react'
 import { Cell } from '../../entites/cell/Cell'
+import AnimationMoveFigureService from './AnimationMoveFigureServer'
 
 type coordinates = { x: number; y: number }
 
 class moveFigureService {
-    public positionFigure: coordinates
-    public startPositionMouse: coordinates
+    private startPositionMouse: coordinates
     public isMouseDown: boolean
-    public figureRef: RefObject<HTMLImageElement> | null = null
-    public boardRef: RefObject<HTMLDivElement> | null = null
-    public cellRef: RefObject<HTMLDivElement> | null = null
+    private figureRef: RefObject<HTMLImageElement> | null
+    private boardRef: RefObject<HTMLDivElement> | null
+    private cellRef: RefObject<HTMLDivElement> | null
 
     constructor() {
-        this.positionFigure = { x: 0, y: 0 }
         this.startPositionMouse = { x: 0, y: 0 }
         this.isMouseDown = false
+        this.cellRef = null
+        this.figureRef = null
+        this.boardRef = null
     }
 
     public handleMouseUp = () => {
         if (this.figureRef?.current) {
-            this.figureRef.current.style.transform = `translate(0, 0)`
+            this.figureRef.current.style.transform = 'translate(0, 0)'
         }
-        this.positionFigure = { x: 0, y: 0 }
         this.startPositionMouse = { x: 0, y: 0 }
         this.isMouseDown = false
         this.boardRef = null
         this.figureRef = null
         this.cellRef = null
-    }
-
-    public setPositionFigure(positionFigure: coordinates) {
-        this.positionFigure = positionFigure
     }
 
     public setStartPositionMouse(startPositionMouse: coordinates) {
@@ -42,10 +39,15 @@ class moveFigureService {
         this.isMouseDown = isMouseDown
     }
 
-    public handleMoveFigure(
+    public async handleMoveFigure(
         cell: Cell,
         selectedCell: Cell | null,
-        setSelectedCell: (cell: Cell | null) => void
+        setSelectedCell: (cell: Cell | null) => void,
+        selectedFigureRef: RefObject<HTMLImageElement> | null,
+        setSelectedFigureRef: (
+            figureRef: RefObject<HTMLImageElement> | null
+        ) => void,
+        figureRef?: RefObject<HTMLImageElement> | undefined
     ) {
         if (
             cell &&
@@ -53,9 +55,26 @@ class moveFigureService {
             selectedCell !== cell &&
             selectedCell.figure?.canMove(cell)
         ) {
-            selectedCell.moveFigure(cell)
-            setSelectedCell(null)
+            const tartgetCellIsFigure = cell.figure === null ? false : true
+            await AnimationMoveFigureService.animateMoveFigure(
+                selectedFigureRef,
+                cell,
+                selectedCell,
+                setSelectedCell,
+                setSelectedFigureRef,
+                figureRef
+            )
+            if (!figureRef) {
+                selectedCell.moveFigure(cell)
+                setSelectedCell(null)
+            }
+            AnimationMoveFigureService.soundMove(
+                cell,
+                selectedCell,
+                tartgetCellIsFigure
+            )
         } else {
+            if (figureRef) setSelectedFigureRef(figureRef)
             setSelectedCell(cell)
         }
     }
@@ -67,23 +86,20 @@ class moveFigureService {
             this.isMouseDown
         ) {
             const boardRect = this.boardRef.current.getBoundingClientRect()
-    
+
             const left = event.clientX - boardRect.left
             const top = event.clientY - boardRect.top
             const right = boardRect.right - event.clientX
             const bottom = boardRect.bottom - event.clientY
-    
-            const xCorrection = left < -2 ? -left : right < -2 ? right : 0;
-            const yCorrection = top < -2 ? -top : bottom < -2 ? bottom : 0;
-    
+
+            const xCorrection = left < -2 ? -left : right < -2 ? right : 0
+            const yCorrection = top < -2 ? -top : bottom < -2 ? bottom : 0
+
             this.figureRef.current.style.transform = `translate(${
                 event.clientX - this.startPositionMouse.x + xCorrection
-            }px, ${
-                event.clientY - this.startPositionMouse.y + yCorrection
-            }px)`;
+            }px, ${event.clientY - this.startPositionMouse.y + yCorrection}px)`
         }
     }
-    
 
     public handleMouseDown = (
         event: React.MouseEvent,
@@ -92,11 +108,11 @@ class moveFigureService {
         boardRef: RefObject<HTMLDivElement>
     ) => {
         if (figureRef?.current) {
+            const figureRect = figureRef.current.getBoundingClientRect()
             this.setIsMouseDown(true)
             this.figureRef = figureRef
             this.cellRef = cellRef
             this.boardRef = boardRef
-            const figureRect = figureRef.current.getBoundingClientRect()
             const cursorRelativeBoard = {
                 x: event.clientX,
                 y: event.clientY,

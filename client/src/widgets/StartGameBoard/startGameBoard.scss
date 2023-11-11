@@ -3,16 +3,16 @@
 
 .container-board__startGame {
     width: calc(100dvw - 11dvw);
-    height: 100vh;
+    height: 100dvh;
 
     .container-board {
         position: absolute;
-        right: 10dvw; /* Расстояние от правого края на 200px */
+        right: 12dvw; /* Расстояние от правого края на 200px */
         width: 25dvw;
         height: 96dvh;
         background-color: $globalOverlayBackground;
         border-radius: 5px;
-        margin: 2dvh;
+        margin: 1dvh;
         overflow: hidden;
         display: flex;
         align-items: center;

@@ -1,13 +1,10 @@
 import ApiError from '../../exceptions/ApiError'
 import UserDto from '../../dto/userDto'
-import TokenModel from '../../models/DB/TokenModel'
 import UserModel from '../../models/DB/UserModel'
 import * as bcrypt from 'bcrypt'
 import * as uuid from 'uuid'
 import tokenService from './tokenService'
 import MailService from './mailService'
-import { ClientSession, startSession } from 'mongoose'
-import { userModel } from '../../types/userTypes'
 
 class userService {
     async registration(email: string, password: string, userName: string) {
@@ -36,7 +33,7 @@ class userService {
             const tokens = tokenService.generateToken({ ...userDto })
 
             if (!tokens) {
-                throw ApiError.UnforseenError()
+                throw ApiError.UnforeseenError()
             }
 
             await tokenService.saveToken(userDto._id, tokens.refreshToken)
@@ -44,20 +41,28 @@ class userService {
             return { ...tokens, user: userDto }
         } catch (e) {
             console.error(e)
-            throw ApiError.UnforseenError()
+            throw ApiError.UnforeseenError()
         }
     }
 
-    async login(email: string, userName: string, password: string) {
+    async login(personalInformation: string, password: string) {
         try {
             let user
-            if (email) {
-                user = await UserModel.findOne({ email })
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+            if (emailRegex.test(personalInformation)) {
+                console.log(
+                    'ебать ты что себя тыквой возомнил я тебя на арьуз умножу'
+                )
+                user = await UserModel.findOne({ email: personalInformation })
+                console.log(user, 'mama tukvi ne dovolona')
             } else {
-                user = await UserModel.findOne({ userName })
+                user = await UserModel.findOne({
+                    userName: personalInformation,
+                })
             }
+
             if (!user) {
-                throw ApiError.BadRequest('User was not found')
+                throw ApiError.UnAuthorizedError()
             }
 
             const isPassEqual = await bcrypt.compare(password, user.password)
@@ -70,15 +75,21 @@ class userService {
             const tokens = tokenService.generateToken({ ...userDto })
 
             if (!tokens) {
-                throw ApiError.UnforseenError()
+                throw ApiError.UnforeseenError(
+                    'Error when trying create tokens'
+                )
             }
 
             await tokenService.saveToken(userDto._id, tokens.refreshToken)
 
             return { ...tokens, user: userDto }
-        } catch (e) {
-            console.error(e)
-            throw ApiError.UnforseenError()
+        } catch (error) {
+            console.error('An error occurred during login:', error.message);
+            if (error instanceof ApiError) {
+                throw error;
+            } else {
+                throw ApiError.UnforeseenError('An unexpected error occurred during login');
+            }
         }
     }
 

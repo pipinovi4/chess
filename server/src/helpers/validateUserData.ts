@@ -2,12 +2,12 @@ import { validationResult } from "express-validator"
 import { NextFunction, Request } from "express"
 import ApiError from "../exceptions/ApiError"
 
-const validateUserData = (email: string, password: string, req: Request, next: NextFunction) => {
+const validateUserData = (personalInformation: string, password: string, req: Request) => {
         const errors = validationResult(req)
         const validationError = errors.array().map(error => new Error(error.msg))
-        
-        if (!email || !password) {
-            throw ApiError.BadRequest('Email and password required')
+        console.log(personalInformation, 'abetka dolboeb')
+        if (!personalInformation || !password) {
+            throw ApiError.BadRequest('Personal information and password required')
         }
         
         if (!errors.isEmpty()) {

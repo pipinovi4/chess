@@ -1,0 +1,31 @@
+@import '../../shared/globalStyle/colors.scss';
+
+.container-timer {
+    width: 8%;
+    height: 4.5%;
+    background-color: black;
+    position: absolute;
+    left: 49%;
+    border-radius: 3%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.white-timer {
+    background-color: $whiteMainColor;
+    bottom: 1%;
+
+    .timer-time {
+        color: $globalOverlayBackground;
+    }
+}
+
+.black-timer {
+    background-color: $globalOverlayBackground;
+    top: 1%;
+
+    .timer-time {
+        color: $whiteMainColor;
+    }
+}
