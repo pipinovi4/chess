@@ -1,0 +1,266 @@
+@import '../../shared/globalStyle/colors.scss';
+@import '../../shared/globalStyle/fonts.scss';
+
+.home-content__container {
+    position: absolute;
+    width: calc(40dvw + 40dvh);
+    height: calc((40dvw + 40dvh) / 2);
+    background-color: $greyBackground;
+    top: calc((100dvh - (40dvw + 40dvh) / 2) / 2);
+    left: calc((100dvw - (40dvw + 40dvh)) / 2);
+    overflow: hidden;
+
+    @media (max-width: 900px) {
+        width: calc(20dvw + 20dvh);
+        height: calc(40dvw + 40dvh);
+        top: 2dvw;
+        left: calc((100dvw - (20dvw + 20dvh)) / 2);
+    }
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: repeat(2, calc(20dvw + 20dvh));
+
+    @media (max-width: 900px) {
+        grid-template-rows: repeat(2, calc(20dvw + 20dvh));
+    }
+}
+
+.image-container {
+    grid-column: 1;
+
+    @media (max-width: 900px) {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .main-image {
+        width: calc(20dvw + 20dvh);
+        height: calc(20dvw + 20dvh);
+    }
+}
+
+.content-container {
+    grid-column: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+
+    @media (max-width: 900px) {
+        grid-column: 1;
+        grid-row: 2;
+        margin-top: 2dvw;
+        width: 90%;
+    }
+
+    .title-content__container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding-bottom: 10%;
+        margin-top: 2dvw;
+
+        .title-content__home {
+            font-family: $globalSecondaryFont;
+            font-size: calc(2dvh + 2dvw);
+            font-weight: 900;
+            text-wrap: nowrap;
+
+            @media (max-width: 900px) {
+                font-size: calc(2.5dvh + 2.5dvw);
+            }
+        }
+    }
+
+    .text-content__container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        width: 100%;
+        padding-bottom: 10%;
+        text-align: center;
+
+        .text-games__today,
+        .text-games__now {
+            font-family: $globalSecondaryFont;
+            font-size: calc(0.55dvh + 0.55dvw);
+            font-weight: 400;
+            text-wrap: nowrap;
+
+            @media (max-width: 900px) {
+                font-size: calc(0.7dvh + 0.7dvw);
+            }
+        }
+
+        .games-today__quantity,
+        .games-now__quantity {
+            font-weight: 700;
+            margin-right: 0.7dvh;
+        }
+
+        .text-games__today {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .text-games__now {
+            display: flex;
+            justify-content: flex-end;
+        }
+    }
+}
+
+.game-button__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 70%;
+    margin-bottom: -24%;
+    margin-top: 5%;
+
+    .button-online__game {
+        width: inherit;
+        height: 30%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
+        background-color: $greenMainColor;
+        box-shadow: 0px 3px 0px $greenInnerBoxShadowrg;
+        border-radius: 0.5dvw;
+        border: none;
+        border-bottom: 0.09rem solid $greenBorderBottomLine;
+        position: relative; /* Add this line to allow pseudo-element positioning */
+        font-weight: 800;
+        font-family: $globalSecondaryFont;
+        color: #fff;
+
+        &:hover {
+            background-color: $greenBackgroundHover;
+            border-bottom: 0.015rem solid $greenBorderBottomLineHover;
+            box-shadow: 0px 3px 0px $innerBoxShadow;
+            cursor: pointer;
+            transition: box-shadow 0.3s;
+
+            &:hover:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                box-shadow: 0 0 1rem $innerBoxShadow;
+                background-color: #d7ff9222;
+                border-radius: 0.7rem;
+            }
+        }
+        @media (max-width: 900px) {
+            width: 100%;
+            height: 40%;
+        }
+    }
+
+    .button-computer__game {
+        margin-top: calc(1dvh + 1dvw);
+        width: inherit;
+        height: 30%;
+        background-color: hsla(0, 0%, 100%, 0.08);
+        box-shadow: 0 0.1rem hsla(0, 0%, 100%, 0.1);
+        border-radius: 0.5dvw;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
+        border-bottom: 0.09rem solid hsla(0, 0%, 100%, 0.1);
+        position: relative;
+        font-weight: 800;
+        font-family: $globalSecondaryFont;
+        color: hsla(0, 0%, 100%, 0.72);
+
+        &:hover {
+            background-color: hsla(0, 0%, 100%, 0.16);
+            border-bottom: 0.015rem solid hsla(0, 0%, 100%, 0.2);
+            cursor: pointer;
+            transition: box-shadow 0.3s;
+            color: #fff;
+
+            &:hover:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                box-shadow: 0 0 1rem hsla(0, 0, 100%, 0.1);
+                background-color: hsla(0, 0%, 100%, 0.08);
+                border-radius: 0.7rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            width: 100%;
+            height: 40%;
+        }
+    }
+}
+
+.text-container__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    flex-direction: column;
+    text-align: center;
+
+    .button-text__appeal {
+        font-size: 0.8dvw;
+        font-weight: 400;
+        margin-top: 0.5dvw;
+
+        @media (max-width: 900px) {
+            font-size: 1.2dvw;
+            margin-top: 0.7dvw;
+        }
+
+    }
+
+    .button-title__computer {
+        margin-left: -1.5dvw;
+        font-size: 1.5dvw;
+
+        @media (max-width: 900px) {
+            font-size: 2.2dvw;
+            margin-left: -2.5dvw;
+        }
+    }
+    .button-title__online {
+        margin-left: -3.3dvw;
+        font-size: 1.5dvw;
+
+        @media (max-width: 900px) {
+            font-size: 2.2dvw;
+            margin-left: -5dvw;
+        }
+    }
+}
+
+.button-online__image,
+.button-bot__image {
+    width: 3.2dvw;
+    height: 3.2dvw;
+    margin-left: -5dvh;
+    margin-right: 5dvh;
+
+    @media (max-width: 900px) {
+        width: 5dvw;
+        height: 5dvw;
+        margin-right: 3dvh;
+    }
+}

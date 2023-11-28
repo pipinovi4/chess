@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useEffect, useRef, useState } from 'react'
-import './modalLogin.scss'
+import './style.scss'
 import logoPawn from '../../../assets/logo.svg'
 import SocailLogin from './components/SocialLogin/SocailLogin'
 import LoginForm from './components/LoginForm/LoginForm'
@@ -50,6 +50,11 @@ const ModalLogin: FC<ModalLoginProps> = ({
 
     return (
         <div className="overlay-login">
+            <button
+                className="close-button__login"
+            >
+                &times;
+            </button>
             <div className="container-modal__login" ref={containerModalRef}>
                 <div className="login-modal__header">
                     <img className="login-logo__image" src={logoPawn} alt="" />
@@ -63,7 +68,12 @@ const ModalLogin: FC<ModalLoginProps> = ({
                     setActiveLogin={setActiveLogin}
                 />
                 <div className="submit-logIn__container">
-                    <button onClick={() => setLoginStart(true)} className="submit-logIn">Log in</button>
+                    <button
+                        onClick={() => setLoginStart(true)}
+                        className="submit-logIn"
+                    >
+                        Log in
+                    </button>
                 </div>
                 <div className="footers">
                     <div className="line" />

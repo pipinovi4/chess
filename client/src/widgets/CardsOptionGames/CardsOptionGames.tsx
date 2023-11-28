@@ -1,7 +1,7 @@
-import './cardOptionGames.scss'
+import './style.scss'
 import lightning from '../../assets/lightning.svg'
 import clock from '../../assets/clock.svg'
-import bullet from '../../assets/bullet.svg'
+import bullet from '../../assets/bullet.png'
 import { FC } from 'react'
 
 interface CardOptionGameProps {

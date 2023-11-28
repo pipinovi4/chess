@@ -54,9 +54,7 @@ class KingAttackService {
             selectedCell.figure.logicFigureMove(targetCell)
         ) {
             const virtualBoard = _.cloneDeep(targetCell.board)
-            console.log('virtual board exsists')
             if (selectedCell.figure?.logicFigureMove(targetCell)) {
-                console.log('selected cell figure ex')
                 const virtualSelectedCell = virtualBoard.getCell(
                     selectedCell.x,
                     selectedCell.y
@@ -65,9 +63,7 @@ class KingAttackService {
                     targetCell.x,
                     targetCell.y
                 )
-                console.log(virtualSelectedCell, virtualTargetCell)
                 if (virtualSelectedCell.figure && virtualTargetCell) {
-                    console.log('virtual cells')
                     const copy = _.cloneDeep(virtualBoard.kingCheckCell)
                     virtualTargetCell.setFigure(virtualSelectedCell.figure)
                     virtualSelectedCell.figure = null

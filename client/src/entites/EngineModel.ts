@@ -1,10 +1,10 @@
-import { Socket } from 'socket.io-client'
 import EngineGameService from '../services/gameServices/gameServices/engineGameService'
 import { Cell } from './cell/Cell'
 import { EngineMoveCells } from '../services/gameServices/types'
 import { Colors } from '../constants/Colors'
-import Board from './board/Board'
 import { Player } from './player/Player'
+import moveFigureService from '../services/moveServices/moveFigureService'
+import Board from './board/Board'
 
 /**
  * Model representing the game engine with various properties and methods.
@@ -13,15 +13,21 @@ class EngineModel extends EngineGameService {
     private _connected = false
     private _pawnAdvantage: number | string = 0
     private _engineMove: EngineMoveCells | null = null
-    private _engineSocket: Socket | null = null
     private currentColorMove: Colors = Colors.WHITE
     public difficaltyBot: 'begginer' | 'amateur' | 'proffesional' =
         'proffesional'
-    private players: { currentPlayer: Player; opponentPlayer: Player } | null =
-        null
+    private opponentPlayer: Player | null = null
+    public setBoard: React.Dispatch<React.SetStateAction<Board>>
+    public board: Board
+    public gameStarted = false
 
-    constructor() {
+    constructor(
+        setBoard: React.Dispatch<React.SetStateAction<Board>>,
+        board: Board
+    ) {
         super()
+        this.setBoard = setBoard
+        this.board = board
     }
 
     public setDifficaltyBot(
@@ -30,8 +36,8 @@ class EngineModel extends EngineGameService {
         this.difficaltyBot = difficaltyBot
     }
 
-    public getPlayers() {
-        return this.players
+    public getOpponentPlayer() {
+        return this.opponentPlayer
     }
 
     /**
@@ -39,21 +45,11 @@ class EngineModel extends EngineGameService {
      */
     async prepareAndStartEngine() {
         try {
-            const engineSocket = await this.startEngine(this.difficaltyBot)
-            const randomColor =
-                Math.random() > 0.5 ? Colors.WHITE : Colors.BLACK
-            const opponentPlayer = new Player(
-                randomColor === Colors.WHITE ? Colors.BLACK : Colors.WHITE,
-                'bot'
-            )
-            const currentPlayer = new Player(randomColor, 'player')
-            this.players = { currentPlayer, opponentPlayer }
-            if (engineSocket) {
-                this._engineSocket = engineSocket
-            }
+            await this.startEngine(this.difficaltyBot)
+            this.gameStarted = true
         } catch (error) {
             console.error('Error:', error)
-            throw error // Передаем ошибку дальше
+            throw error
         }
     }
 
@@ -65,25 +61,26 @@ class EngineModel extends EngineGameService {
      */
     async prepareAndSendMoveEngine(
         selectedCell: Cell | null,
-        targetCell: Cell,
-        setBoard: (board: Board) => void
+        targetCell: Cell
     ): Promise<void> {
         try {
             if (selectedCell && selectedCell.figure?.canMove(targetCell)) {
                 const responseEngine = await this.processMoveAndReceiveResponse(
                     selectedCell,
                     targetCell,
-                    this._engineSocket,
                     this.currentColorMove
                 )
                 if (responseEngine) {
                     this._pawnAdvantage = responseEngine.pawnAdvantage
                     this._engineMove = responseEngine.engineMoveCells
-                    responseEngine.engineMoveCells.selectedCell.moveFigure(
-                        responseEngine.engineMoveCells.targetCell
-                    )
-                    const copyBoard = selectedCell.board.getCopyBoard()
-                    setBoard(copyBoard)
+                    setTimeout(() => {
+                        moveFigureService.handleMoveFigure(
+                            responseEngine.engineMoveCells.targetCell,
+                            responseEngine.engineMoveCells.selectedCell,
+                            undefined,
+                            this.setBoard
+                        )
+                    }, 500)
                 }
             }
         } catch (error) {
@@ -98,8 +95,8 @@ class EngineModel extends EngineGameService {
      */
     async prepareAndStopEngine(): Promise<void> {
         try {
-            if (this._engineSocket && this._connected) {
-                const isStopped = await this.stopEngine(this._engineSocket)
+            if (this.engineSocket && this._connected) {
+                const isStopped = await this.stopEngine(this.engineSocket)
                 if (!isStopped) {
                     console.error('Engine is not stopped')
                 }

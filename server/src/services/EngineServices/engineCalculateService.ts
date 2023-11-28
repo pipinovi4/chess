@@ -41,7 +41,6 @@ class EngineCalculateService extends EngineModel {
     /**
      * Calculate the best moves and evaluation score.
      * @param {string} move - The move in Algebraic notation.
-     * @param {difficultyBot} difficultyBot - difficulty bot 
      * @returns {Promise<void>} A Promise that resolves when the calculation is complete.
      */
     public async calculateBestMovesAndScore(move: string): Promise<number | void> {
@@ -63,8 +62,8 @@ class EngineCalculateService extends EngineModel {
                     console.log('resolve')
                     listening = false
                     this.currentStrokeRate = this.extractDifficaltyBot()
-                    console.log(this.currentStrokeRate, this.bestMoves)
                     this.chess.move(this.bestMoves[this.currentStrokeRate])
+                    console.log('321321313', this.currentStrokeRate, this._bestMoves[this.currentStrokeRate])
                     resolve(this.currentStrokeRate)
                 }
             }

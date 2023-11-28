@@ -1,0 +1,65 @@
+.alternative-registration__cards {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    grid-row: 15 / 18;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3dvh;
+
+    .facebook-registration,
+    .google-registration,
+    .apple-registration {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.2dvh;
+        width: 84%;
+        height: 5dvh;
+        padding: 3%;
+        font-size: 1.5dvh;
+        cursor: pointer;
+    }
+
+    .apple-registration {
+        margin-top: 4dvh;
+        background-color: #000000;
+    }
+
+    .google-registration {
+        margin-top: 1.5dvh;
+        background-color: #fff;
+    }
+
+    .facebook-registration {
+        margin-top: 1.5dvh;
+        background-color: #1877f2;
+    }
+
+    .apple-logo {
+        position: absolute;
+        width: 2.3dvh;
+        height: 2.3dvh;
+        margin-left: -75%;
+    }
+    
+    .google-logo {
+        position: absolute;
+        width: 2.3dvh;
+        height: 2.3dvh;
+        margin-left: -75%;
+    }
+
+    .facebook-logo {
+        position: absolute;
+        width: 3.5dvh;
+        height: 3.5dvh;
+        margin-left: -75%;
+    }
+
+    .text-signUp__google {
+        color: #000000;
+    }
+}

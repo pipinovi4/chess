@@ -9,10 +9,15 @@ import { Colors } from '../../constants/Colors'
 import { Figure } from '../figures/Figure'
 
 export default class Board {
-    cells: Cell[][] = []
-    kingCheckCell: Cell | null = null
-    lostFiguresWhite: Array<Figure> = []
-    lostFiguresBlack: Array<Figure> = []
+    public cells: Cell[][] = []
+    public kingCheckCell: Cell | null = null
+    public lostFigures: Array<Figure> = []
+    public historyMoves: Array<{
+        engleashNotation: string,
+        algebraicNotation: string,
+        selectedFigureLogo: string | undefined | null
+    }> = []
+    public historyBoardCells: Array<Board> = []
 
     public initCells() {
         for (let i = 0; i < 8; i++) {
@@ -28,20 +33,23 @@ export default class Board {
         }
     }
 
-    getCopyBoard(): Board {
-        const newBoard = new Board();
-        newBoard.cells = this.cells;
-        return newBoard;
+    public getCopyBoard(): Board {
+        const newBoard = new Board()
+        newBoard.cells = this.cells
+        newBoard.lostFigures = this.lostFigures
+        newBoard.historyBoardCells = this.historyBoardCells
+        newBoard.historyMoves = this.historyMoves
+        return newBoard
     }
 
     public highlightCells(selectedCell: Cell | null) {
         for (let i = 0; i < this.cells.length; i++) {
-            const row = this.cells[i];
+            const row = this.cells[i]
             for (let j = 0; j < row.length; j++) {
-              const target = row[j];
-              target.available = !!selectedCell?.figure?.canMove(target)
+                const target = row[j]
+                target.available = !!selectedCell?.figure?.canMove(target)
             }
-          }
+        }
     }
 
     public getCell(x: number, y: number) {

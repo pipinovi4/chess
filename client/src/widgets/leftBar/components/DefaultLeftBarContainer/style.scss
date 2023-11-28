@@ -1,0 +1,11 @@
+@import '../../../../shared/globalStyle/colors.scss';
+
+.left-bar__container {
+    width: 9dvw;
+    height: 100dvh;
+    color: $whiteMainColor;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background-color: $greyMainColor;
+}

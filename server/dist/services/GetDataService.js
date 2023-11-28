@@ -10,20 +10,38 @@ class GetDataService {
         try {
             let userId = req.body.userId;
             if (!userId) {
-                userId = req.cookies.userId;
-            }
-            if (!userId) {
                 res.status(400).json({ message: 'User ID is missing' });
             }
             const user = await UserModel_1.default.findById(userId);
             if (!user) {
-                res.status(401).json({ message: 'Unauthorized error, user was not found in the database' });
+                res.status(401).json({
+                    message: 'Unauthorized error, user was not found in the database',
+                });
                 throw ApiError_1.default.UnAuthorizedError();
             }
             res.status(200).json(user);
         }
         catch (error) {
             console.error('Unforeseen error when trying to fetch user by ID', error.message);
+            next(error);
+        }
+    }
+    async getCurrentUserId(req, res, next) {
+        try {
+            const { userId } = req.cookies;
+            if (!userId) {
+                res.status(400).json({ message: 'User ID in cookie is missing' });
+            }
+            const user = await UserModel_1.default.findById(userId);
+            if (!user) {
+                res.status(401).json({
+                    message: 'Unauthorized error, user was not found in the database',
+                });
+            }
+            res.status(200).json(user);
+        }
+        catch (error) {
+            console.error('Unforeseen error when trying to fetch user by cookie ID');
             next(error);
         }
     }

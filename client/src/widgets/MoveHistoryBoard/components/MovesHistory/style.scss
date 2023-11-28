@@ -1,0 +1,61 @@
+@import '../../../../shared/globalStyle/colors.scss';
+
+.history-moves {
+    width: 100%;
+    height: calc(96dvh * 0.89);
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        width: 0.8dvh;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.45);
+        border-radius: 1dvw;
+    }
+
+    .moves-container {
+        height: calc((96dvh * 0.89) / 22);
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding-left: 5%;
+        font-size: 0.65dvw;
+
+        .row-number {
+            display: flex;
+            align-items: center;
+            width: 3%;
+            height: 100%;
+            color: hsla(0, 0%, 100%, 0.5);
+            margin-right: -7%;
+        }
+        .container-notation__move {
+            width: 6%;
+            height: 75%;
+            display: flex;
+            align-items: center;
+            justify-content: start;
+            margin-left: 13%;
+            cursor: pointer;
+
+            .notation-figure__logo {
+                width: 1dvw;
+                height: 1dvw;
+                margin-left: -13%;
+                margin-right: -6%;
+            }
+
+            .move {
+                font-weight: 700;
+                color: hsla(0, 0%, 100%, 0.72);
+                font-size: 0.7dvw;
+                text-wrap: nowrap;
+            }
+        }
+    }
+
+    .even-row {
+        background-color: hsla(0, 0%, 100%, 0.02);
+    }
+}

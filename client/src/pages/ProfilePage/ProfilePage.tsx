@@ -1,6 +1,8 @@
+import './style.scss'
+
 const ProfilePage = () => {
     return (
-        <div>
+        <div className='container-profile_page'>
             Profile
         </div>
     );

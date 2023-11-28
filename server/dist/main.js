@@ -45,8 +45,7 @@ const options = {
 const app = (0, express_1.default)();
 const httpsServer = https_1.default.createServer(options, app);
 const allowedOrigins = ['https://localhost:5173'];
-app.use(express_1.default.json());
-app.use(express_1.default.urlencoded({ extended: true }));
+app.use(express_1.default.json({ limit: '10mb' }));
 app.use((0, cookie_parser_1.default)());
 app.use((0, cors_1.default)({
     origin: function (origin, callback) {
@@ -59,6 +58,7 @@ app.use((0, cors_1.default)({
     },
     credentials: true,
 }));
+app.use(express_1.default.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/authorization', userRoute_1.default);
 app.use('/data', dataRoutes_1.default);
 app.use(error_middleware_1.default);

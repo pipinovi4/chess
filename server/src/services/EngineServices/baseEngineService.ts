@@ -27,7 +27,6 @@ class BaseEngineService {
     ) {
         const dataText = data.toString()
         eventFunction(dataText)
-        console.log(dataText)
 
         if (dataText.match(/bestmove\s\w{4}(?:\sponder\s\w{4})?/)) {
             console.log('Calculated move end')

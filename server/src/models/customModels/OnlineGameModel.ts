@@ -23,7 +23,6 @@ class OnlineGameModel extends OnlineGameService {
 
     /**
      * Prepares and starts an online game for the specified player.
-     * @param {string} sender - Socket id which start online game
      * @param {Namespace} server - The socket server namespace.
      * @throws {Error} Throws an error if the data for starting the game is invalid.
      */
@@ -32,17 +31,8 @@ class OnlineGameModel extends OnlineGameService {
         socket: CustomOnlineGameSocket
     ) {
         try {
-            const gameData = await this.startOnlineGame(server, socket)
-            console.log(gameData)
-            if (gameData && gameData.roomId && gameData.gameId) {
-                console.log('roomId and gameId exist', gameData.roomId)
-                this.setRoomId(gameData.roomId)
-                this.setGameId(gameData.gameId)
-            } else {
-                throw new Error(
-                    'Invalid data received when trying to start an online game'
-                )
-            }
+            await this.startOnlineGame(server, socket)
+            console.log(this.gameId, this.roomId)
         } catch (error) {
             throw error
         }

@@ -6,7 +6,7 @@ import { FigureNames } from '../../entites/figures/Figure'
 import ModalPickFigure from '../ModalPickFigure'
 import moveFigureService from '../../services/moveServices/moveFigureService'
 import { Colors } from '../../constants/Colors'
-import createChessNotation from '../../helpers/createChessNotation'
+import createChessNotation from '../../helpers/creatersNotation/createChessNotation'
 
 interface CellProps {
     cell: Cell
@@ -14,7 +14,7 @@ interface CellProps {
     setActiveModal: (activeModal: boolean) => void
     boardRef: RefObject<HTMLDivElement>
     selectedCell: Cell | null
-    moveFigure: (cell: Cell, figureRef?: RefObject<HTMLImageElement>) => void
+    moveFigure: (cell: Cell) => void
 }
 
 const CellComponent: FC<CellProps> = ({
@@ -37,7 +37,7 @@ const CellComponent: FC<CellProps> = ({
                 boardRef
             )
         }
-        moveFigure(cell, figureRef)
+        moveFigure(cell)
     }
 
     return (
@@ -102,6 +102,7 @@ const CellComponent: FC<CellProps> = ({
             ></div>
             {cell.figure?.logo && (
                 <img
+                    id={cell.figure.id}
                     ref={figureRef}
                     src={cell.figure.logo}
                     alt=""

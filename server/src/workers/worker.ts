@@ -48,13 +48,6 @@ if (!isMainThread) {
                     currentStrokeRate: engineCalculateService._currentStrokeRate
                 })
                 break
-
-            case 'stop-engine':
-                console.log(chalk.bgGreen(), 'Stopping the engine...')
-                engineService.stopEngine((status: string) => {
-                    console.log(chalk.bgWhite, 'Status:', status)
-                })
-                break
         }
     })
 }

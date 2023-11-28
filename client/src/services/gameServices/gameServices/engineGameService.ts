@@ -1,9 +1,8 @@
-import { Socket } from 'socket.io-client'
 import { Cell } from '../../../entites/cell/Cell'
-import createChessNotation from '../../../helpers/createChessNotation'
+import createChessNotation from '../../../helpers/creatersNotation/createChessNotation'
 import EngineSocketService from '../socketSevices/egnineSocketService'
 import { ProcessedDataServer, ResponseServerMove } from '../types'
-import convertChessNotation from '../../../helpers/convertChessNotation'
+import convertChessNotation from '../../../helpers/convertersNotation/convertAlgebraicNotation'
 import Board from '../../../entites/board/Board'
 import { Colors } from '../../../constants/Colors'
 
@@ -19,25 +18,22 @@ class EngineGameService extends EngineSocketService {
      * Process a move and receive a response from the server.
      * @param {Cell} selectedCell - The selected cell (starting point of the move).
      * @param {Cell} targetCell - The target cell (ending point of the move).
-     * @param {Socket | null} engineSocket - The socket for communicating with the engine.
      * @returns {Promise<ProcessedDataServer | null>} - Processed data from the server or null in case of an error.
      */
     async processMoveAndReceiveResponse(
         selectedCell: Cell,
         targetCell: Cell,
-        engineSocket: Socket | null,
         movePlayer: Colors
     ): Promise<ProcessedDataServer | null | undefined> {
         try {
-            if (selectedCell && targetCell && engineSocket) {
-                const move = createChessNotation(targetCell, selectedCell)
-                console.log('response')
-                const serverResponse = await this.sendMoveEngine(
-                    move,
-                    engineSocket
+            if (selectedCell && targetCell && this.engineSocket) {
+                const moveChessNotation = createChessNotation(
+                    targetCell,
+                    selectedCell
                 )
-
-                console.log(serverResponse)
+                const serverResponse = await this.sendMoveEngine(
+                    moveChessNotation
+                )
 
                 if (typeof serverResponse === 'string') {
                     console.error(
@@ -51,6 +47,7 @@ class EngineGameService extends EngineSocketService {
                         selectedCell,
                         movePlayer
                     )
+                    console.log(selectedCell, targetCell, this.engineSocket)
                     return processedData
                 }
             }
@@ -82,11 +79,11 @@ class EngineGameService extends EngineSocketService {
 
         const selectedCellEngine = this.getCellByCoordinates(
             selectedCell.board,
-            moveCoordinates.coordinatesSelectedCell
+            moveCoordinates.selectedCell
         )
         const targetCellEngine = this.getCellByCoordinates(
             selectedCell.board,
-            moveCoordinates.coordinatesTargetCell
+            moveCoordinates.targetCell
         )
 
         const correctPawnAdvantage =

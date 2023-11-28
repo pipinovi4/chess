@@ -15,16 +15,8 @@ class OnlineGameModel extends OnlineGameService_1.default {
     }
     async prepareAndStartOnlineGame(server, socket) {
         try {
-            const gameData = await this.startOnlineGame(server, socket);
-            console.log(gameData);
-            if (gameData && gameData.roomId && gameData.gameId) {
-                console.log('roomId and gameId exist', gameData.roomId);
-                this.setRoomId(gameData.roomId);
-                this.setGameId(gameData.gameId);
-            }
-            else {
-                throw new Error('Invalid data received when trying to start an online game');
-            }
+            await this.startOnlineGame(server, socket);
+            console.log(this.gameId, this.roomId);
         }
         catch (error) {
             throw error;

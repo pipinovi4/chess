@@ -38,7 +38,7 @@ class OnlineGameService {
             if (opponent) {
                 const newGame = await GameModel_1.default.create({
                     users: [socket.id, opponent],
-                    status: 'active'
+                    status: 'active',
                 });
                 if (newGame) {
                     const roomId = uuid.v4();
@@ -46,17 +46,14 @@ class OnlineGameService {
                     const opponentSocket = server.sockets.get(opponent);
                     if (opponentSocket) {
                         await opponentSocket.receiveGameData(roomId, gameId);
-                        server.to(roomId).emit('online-game-started', [opponent, socket.id]);
+                        socket.receiveGameData(roomId, gameId);
+                        server
+                            .to(roomId)
+                            .emit('online-game-started', [opponent, socket.id]);
                     }
                     else {
                         throw new Error('Opponent socket not found');
                     }
-                    await new Promise((resolve) => {
-                        socket.on('match-making-success', (roomId, gameId) => {
-                            socket.join(roomId);
-                            resolve({ roomId, gameId });
-                        });
-                    });
                 }
                 else {
                     throw ApiError_1.default.BadRequest('Connection lost during player connection and game creation');
@@ -64,6 +61,17 @@ class OnlineGameService {
             }
             else {
                 QUEUE_MODEL.addToQueue(socket.id);
+                return new Promise((resolve) => {
+                    const checkIsMatchMaking = () => {
+                        if (socket.isMatchMaking) {
+                            resolve();
+                        }
+                        else {
+                            setTimeout(checkIsMatchMaking, 100);
+                        }
+                    };
+                    checkIsMatchMaking();
+                });
             }
         }
         catch (error) {

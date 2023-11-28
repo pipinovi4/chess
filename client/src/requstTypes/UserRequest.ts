@@ -4,6 +4,5 @@ export default interface UserRequest {
     avatar: string,
     activationLink: string,
     isActivated: boolean,
-    password: string,
     id: string,
 }

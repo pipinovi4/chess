@@ -1,0 +1,183 @@
+@import '../../../../shared/globalStyle/colors.scss';
+@import '../../../../shared/globalStyle/fonts.scss';
+
+.leftBar-user__avatar {
+    width: 1.5dvw;
+    height: 1.5dvw;
+    border-radius: 0.1dvw;
+    border: 0.1px solid $globalBorder;
+
+    @media (max-width: 900px) {
+        width: calc((2dvh + 2dvw));
+        height: calc((2dvh + 2dvw));
+    }
+}
+
+.cards-container {
+    flex-grow: 1;
+    display: grid;
+    grid-template-rows: repeat(20, calc((2dvh + 2dvw) / 1.5));
+    font-size: calc((2dvh + 2dvw) / 3);
+    font-weight: 700;
+
+    @media (max-width: 900px) {
+        grid-template-rows: repeat(20, calc((3.5dvh + 3.5dvw) / 1.5));
+    }
+
+    .card {
+        grid-row: span 2;
+        display: flex;
+        align-items: center;
+        padding-left: 10%; /* Добавляем внутренний отступ слева */
+        cursor: pointer;
+        transition: background-color 0.3s; /* Добавляем плавное изменение цвета */
+
+        .title {
+            margin-left: 7%;
+            font-weight: 800;
+            font-size: calc(0.5dvh + 0.5dvw);
+
+            @media (max-width: 900px) {
+                font-size: calc(1dvh + 1dvw);
+            }
+        }
+
+        &:hover {
+            background-color: #181614;
+        }
+    }
+}
+
+.image-card {
+    width: calc((2dvh + 2dvw) / 1.8);
+    height: calc((2dvh + 2dvw) / 1.8);
+
+    @media (max-width: 900px) {
+        width: calc((2.2dvh + 2.2dvw));
+        height: calc((2.2dvh + 2.2dvw));
+    }
+}
+
+.choose-authorization {
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+    font-size: 0.6rem;
+    grid-row: span 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 8%;
+
+    .sign-up__button {
+        width: 85%;
+        height: 90%;
+        background-color: hsla(0, 0%, 100%, 0.08);
+        border-radius: 0.3dvw;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
+        position: relative;
+        font-weight: 800;
+        font-family: $globalSecondaryFont;
+        color: hsla(0, 0%, 100%, 0.72);
+
+        &:hover {
+            background-color: hsla(0, 0%, 100%, 0.16);
+            cursor: pointer;
+            color: #fff;
+        }
+    }
+
+    .sign-in__button {
+        margin-top: 8%;
+        width: 85%;
+        height: 90%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
+        background-color: $greenMainColor;
+        border-radius: 0.3dvw;
+        border: none;
+        position: relative;
+        font-weight: 800;
+        font-family: $globalSecondaryFont;
+        color: #fff;
+
+        &:hover {
+            background-color: $greenBackgroundHover;
+            cursor: pointer;
+        }
+    }
+}
+
+.logo {
+    width: 40%;
+    height: 50%;
+    margin-right: -15%;
+    margin-left: -10%;
+
+    @media (max-width: 900px) {
+        width: 60%;
+        height: 60%;
+        margin-right: -28%;
+        margin-left: -23%;
+    }
+}
+
+.utility-card {
+    width: inherit;
+    height: 4dvh;
+    width: 3dvw;
+    grid-row: 18 / span 2;
+    display: flex;
+    flex-direction: column;
+    grid-row: span 2;
+    display: flex;
+    align-items: center;
+    font-size: calc(0.5dvh + 0.5dvw);
+    position: absolute;
+    top: 90dvh;
+    left: 3dvw;
+    right: 3dvw;
+
+    @media (max-width: 900px) {
+        font-size: calc(0.8dvh + 0.8dvw);
+        left: 13.5dvw;
+    }
+
+    .utility-image {
+        width: 0.8dvw;
+        height: 0.8dvw;
+
+        @media (max-width: 900px) {
+            width: 3dvw;
+            height: 3dvw;
+        }
+    }
+
+    .choose-language {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .choose-color__UI {
+        display: flex;
+        flex-direction: row;
+        margin-left: 0.2dvw;
+    }
+
+    .title-choose__language,
+    .title-choose__colorUI {
+        margin-left: 0.5dvw;
+        white-space: nowrap;
+
+        @media (max-widt: 900px) {
+            margin-left: 1dvw;
+        }
+    }
+}

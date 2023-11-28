@@ -6,7 +6,7 @@ import greyCheckMark from '../../../assets/grey-checkmark.svg'
 import greenCheckMark from '../../../assets/checkmark.svg'
 import eye from '../../../assets/eye.svg'
 import croossedEye from '../../../assets/eye-crossed.svg'
-import './loginForm.scss'
+import './style.scss'
 import AuthService from '../../../../../https/services/UserServices'
 
 interface LoginFormProps {
@@ -55,21 +55,17 @@ const LoginForm: FC<LoginFormProps> = ({
 
     const validatePersonalInformation = async (personalInformation: string) => {
         try {
-            let responseDb
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
             if (emailRegex.test(personalInformation)) {
-                responseDb = await AuthService.validatePersonalInformationData(
-                    personalInformation
-                )
-            } else {
-                responseDb = await AuthService.validatePersonalInformationData(
-                    personalInformation
-                )
-            }
-            if (responseDb) {
-                setIsValidPersonalInformation(false)
-            } else {
-                setIsValidPersonalInformation(true)
+                const responseDb =
+                    await AuthService.validatePersonalInformationData(
+                        personalInformation
+                    )
+                if (responseDb) {
+                    setIsValidPersonalInformation(false)
+                } else {
+                    setIsValidPersonalInformation(true)
+                }
             }
         } catch (error) {
             console.error(
@@ -122,7 +118,7 @@ const LoginForm: FC<LoginFormProps> = ({
                     src={isVisiblePassword ? eye : croossedEye}
                 />
             </div>
-            <div className="utility-function">
+            <div className="authentication-controls">
                 <input
                     className="checkbox-remember__account"
                     type="checkbox"

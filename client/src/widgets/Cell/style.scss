@@ -2,20 +2,53 @@
 
 .cell {
     position: relative;
-    width: calc(87vh / 8);
-    height: calc(87vh / 8);
+    width: calc(85dvh / 8);
+    height: calc(85dvh / 8);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1;
+    @media (max-width: 1300px) {
+        width: calc(75dvh / 8);
+        height: calc(75dvh / 8);
+    }
+    @media (max-width: 1100px) {
+        width: calc(70dvh / 8);
+        height: calc(70dvh / 8);
+    }
+    @media (max-width: 900px) {
+        width: calc(65dvw / 8);
+        height: calc(65dvw / 8);
+    }
+
+    @media (max-width: 700px) {
+        width: calc(75dvw / 8);
+        height: calc(75dvw / 8);
+    }
 }
 
 .cell img {
     position: relative;
-    width: calc(87vh / 8);
-    height: calc(87vh / 8);
+    width: calc(85dvh / 8);
+    height: calc(85dvh / 8);
     cursor: grab;
     z-index: 2;
+    @media (max-width: 1300px) {
+        width: calc(75dvh / 8);
+        height: calc(75dvh / 8);
+    }
+    @media (max-width: 1100px) {
+        width: calc(70dvh / 8);
+        height: calc(70dvh / 8);
+    }
+    @media (max-width: 900px) {
+        width: calc(65dvw / 8);
+        height: calc(65dvw / 8);
+    }
+    @media (max-width: 700px) {
+        width: calc(75dvw / 8);
+        height: calc(75dvw / 8);
+    }
 
     &:active {
         cursor: grabbing;
@@ -45,7 +78,7 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    border: 5px solid rgba(0, 0, 0, 0.1);
+    border: 0.5rem solid rgba(0, 0, 0, 0.1);
     border-radius: 50%;
     background-color: transparent;
 }
@@ -58,7 +91,7 @@
     position: absolute;
     left: 7%;
     top: 7%;
-    font-size: 0.8rem;
+    font-size: calc(((87dvh / 8) + (87dvw / 8)) * 0.08);
     font-weight: 600;
 }
 
@@ -66,7 +99,7 @@
     position: absolute;
     right: 7%;
     bottom: 7%;
-    font-size: 0.8rem;
+    font-size: calc(((87dvh / 8) + (87dvw / 8)) * 0.08);
     font-weight: 600;
 }
 

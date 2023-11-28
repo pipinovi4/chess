@@ -1,56 +1,39 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { FC, RefObject, useEffect, useRef, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import CellComponent from '../Cell/CellComponent'
 import './style.scss'
-import gameBoard from '../../assets/game-board-fs8.png'
+import gameBoardPNG from '../../assets/game-board-fs8.png'
 import Board from '../../entites/board/Board'
 import { Cell } from '../../entites/cell/Cell'
 import moveFigureService from '../../services/moveServices/moveFigureService'
 import EngineModel from '../../entites/EngineModel'
 import OnlineGameModel from '../../entites/OnlineGameModel'
-import _ from 'lodash'
 
 interface BoardComponentProps {
     gameMode: EngineModel | OnlineGameModel
-    setGameBoard: (gameBoard: Board) => void
+    setBoard: React.Dispatch<React.SetStateAction<Board>>
+    board: Board
 }
 
-const BoardComponent: FC<BoardComponentProps> = ({ gameMode, setGameBoard }) => {
+const BoardComponent: FC<BoardComponentProps> = ({ gameMode, board, setBoard }) => {
     const [activeModal, setActiveModal] = useState(false)
-    const [board, setBoard] = useState<Board>(new Board())
     const [selectedCell, setSelectedCell] = useState<Cell | null>(null)
-    const [selectedFigureRef, setSelectedFigureRef] = useState<RefObject<HTMLImageElement> | null>(null)
     const boardRef = useRef<HTMLDivElement | null>(null)
 
-    useEffect(() => {
-        const newBoard = new Board()
-        newBoard.initCells()
-        newBoard.addFigures()
-        setGameBoard(newBoard)
-        setBoard(newBoard)
-        console.log(newBoard)
-    }, [])
-
-    const moveFigure = async (
-        cell: Cell,
-        figureRef?: RefObject<HTMLImageElement>
-    ) => {
-        console.log(figureRef)
+    const moveFigure = async (cell: Cell) => {
         if (gameMode instanceof OnlineGameModel && selectedCell) {
             gameMode.prepareAndSendMoveOpponent(selectedCell, cell)
         } else if (gameMode instanceof EngineModel && selectedCell) {
-            gameMode.prepareAndSendMoveEngine(selectedCell, cell, setBoard)
+            gameMode.prepareAndSendMoveEngine(selectedCell, cell)
         } else if (!(gameMode instanceof OnlineGameModel || EngineModel)) {
             throw new Error('Game mode is incorrect in BoardComponents')
         }
-            moveFigureService.handleMoveFigure(
-                cell,
-                selectedCell,
-                setSelectedCell,
-                selectedFigureRef,
-                setSelectedFigureRef,
-                figureRef,
-            )
+        moveFigureService.handleMoveFigure(
+            cell,
+            selectedCell,
+            setSelectedCell
+        )
     }
 
     useEffect(() => {
@@ -68,7 +51,7 @@ const BoardComponent: FC<BoardComponentProps> = ({ gameMode, setGameBoard }) => 
                 if (selectedCell?.figure?.canMove(targetCell)) {
                     moveFigure(targetCell)
                 }
-                    moveFigureService.handleMouseUp()
+                moveFigureService.handleMouseUp()
             }
         }
 
@@ -113,7 +96,7 @@ const BoardComponent: FC<BoardComponentProps> = ({ gameMode, setGameBoard }) => 
                             </React.Fragment>
                         )
                     })}
-                    <img className="image-board" src={gameBoard} alt="" />
+                    <img className="image-board" src={gameBoardPNG} alt="" />
                 </div>
             </div>
         </>

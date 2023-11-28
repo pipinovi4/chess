@@ -1,0 +1,12 @@
+@import '../../shared/globalStyle/colors.scss';
+
+.container-play__online{
+    display: grid;
+    position: absolute;
+    height: 100dvh;
+    grid-template-columns: repeat(2, 1fr);
+    width: 91dvw;
+    background-color: $greyBackground;
+    top: 0;
+    right: 0;
+}

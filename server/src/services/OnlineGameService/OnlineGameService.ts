@@ -5,7 +5,6 @@ import { ObjectId, Types } from 'mongoose'
 import ApiError from '../../exceptions/ApiError'
 import * as uuid from 'uuid'
 import CustomOnlineGameSocket from '../../sockets/CustomSockets/types/TypesCustomSockets'
-import { addCustomMethods } from '../../sockets/CustomSockets/CustomMethods/CustomMethodOnlineGameSocket'
 
 const QUEUE_MODEL = new QueueModel()
 // const TIMEOUT = 30 * 100 * 60
@@ -14,31 +13,30 @@ class OnlineGameService {
     protected async startOnlineGame(
         server: Namespace,
         socket: CustomOnlineGameSocket
-    ): Promise<{ roomId: string; gameId: Types.ObjectId } | undefined | void> {
+    ): Promise<void> {
         try {
             const opponent = await QUEUE_MODEL.findMatchingPlayer(socket)
             if (opponent) {
                 const newGame = await GameModel.create({
                     users: [socket.id, opponent],
-                    status: 'active'
+                    status: 'active',
                 })
                 if (newGame) {
                     const roomId = uuid.v4()
                     const gameId = newGame._id
-                    const opponentSocket = server.sockets.get(opponent) as CustomOnlineGameSocket;
+                    const opponentSocket = server.sockets.get(
+                        opponent
+                    ) as CustomOnlineGameSocket
 
                     if (opponentSocket) {
-                      await opponentSocket.receiveGameData(roomId, gameId);
-                      server.to(roomId).emit('online-game-started', [opponent, socket.id])
+                        await opponentSocket.receiveGameData(roomId, gameId)
+                        socket.receiveGameData(roomId, gameId)
+                        server
+                            .to(roomId)
+                            .emit('online-game-started', [opponent, socket.id])
                     } else {
-                        throw new Error('Opponent socket not found');
+                        throw new Error('Opponent socket not found')
                     }
-                    await new Promise((resolve) => {
-                        socket.on('match-making-success', (roomId, gameId) => {
-                            socket.join(roomId)
-                            resolve({roomId, gameId})
-                        })
-                    })
                 } else {
                     throw ApiError.BadRequest(
                         'Connection lost during player connection and game creation'
@@ -46,6 +44,17 @@ class OnlineGameService {
                 }
             } else {
                 QUEUE_MODEL.addToQueue(socket.id)
+                return new Promise<void>((resolve) => {
+                    const checkIsMatchMaking = () => {
+                        if (socket.isMatchMaking) {
+                            resolve()
+                        } else {
+                            setTimeout(checkIsMatchMaking, 100)
+                        }
+                    }
+
+                    checkIsMatchMaking()
+                })
             }
         } catch (error) {
             throw ApiError.BadRequest(

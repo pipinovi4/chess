@@ -1,29 +1,58 @@
+import React from 'react'
 import OnlineGameSocketService from '../services/gameServices/socketSevices/onlineGameSocketService'
+import Board from './board/Board'
 import { Cell } from './cell/Cell'
 import { Player } from './player/Player'
+import convertEngleashChessNotation from '../helpers/creatersNotation/createEngleashChessNotation'
 
 /**
  * GameModel class extends GameService to manage game-related logic and socket communication.
  */
 class OnlineGameModel extends OnlineGameSocketService {
-    private players: {currentPlayer: Player, opponentPlayer: Player} | null
-    private moves: Array<string>
+    private opponentPlayer: Player | null
     private gameDuration: string
     private additionAfterMove: number
+    public setBoard: React.Dispatch<React.SetStateAction<Board>>
+    public board: Board
+    public gameStarted = false
 
-    constructor() {
+    constructor(
+        setBoard: React.Dispatch<React.SetStateAction<Board>>,
+        board: Board
+    ) {
         super()
-        this.players = null
-        this.moves = []
+        this.setBoard = setBoard
+        this.board = board
+        this.opponentPlayer = null
         this.gameDuration = '10 min'
         this.additionAfterMove = 0
     }
 
     public async prepareAndStartOnlineGame(): Promise<void> {
         try {
-            const players = await this.startOnlineGame()
-            if (players.currentPlayer && players.opponentPlayer) {
-                this.players = players
+            console.log(this.setBoard, 'fdsljfnsfqq21392031239123-123')
+            const onlineGameData = await this.startOnlineGame()
+            if (onlineGameData.opponentPlayer) {
+                this.gameStarted = true
+                onlineGameData.socket.on(
+                    'opponent-game-move',
+                    (move: string) => {
+                        if (this.setBoard && this.board) {
+                            if (this.board) {
+                                this.onMoveOpponent(
+                                    move,
+                                    this.board,
+                                    this.setBoard
+                                )
+                            }
+                        } else {
+                            throw new Error(
+                                "At the moment of receiving the opponent's move, the board is not defined in the OnlineGameModel class"
+                            )
+                        }
+                    }
+                )
+                this.opponentPlayer = onlineGameData.opponentPlayer
             } else {
                 console.error(
                     'Error: Players after successful match-making are incorrect.'
@@ -40,17 +69,17 @@ class OnlineGameModel extends OnlineGameSocketService {
     ) {
         try {
             if (selectedCell && selectedCell.figure?.canMove(targetCell)) {
-                const moveChessNotation = await this.sendMoveOpponent(
+                await this.sendMoveOpponent(
                     selectedCell,
                     targetCell
                 )
-                if (moveChessNotation.match(/[a-h][1-8][a-h][1-8]/)) {
-                    console.log('Move correct', moveChessNotation)
-                    this.moves.push(moveChessNotation)
+                const moveEngleashNotation = convertEngleashChessNotation(selectedCell, targetCell)
+                if (moveEngleashNotation.engleashNotation.match(/[a-h][1-8][a-h][1-8]/)) {
+                    console.log('Move correct', moveEngleashNotation.engleashNotation)
                 } else {
                     console.error(
                         'When trying to send a move to your opponent, it was not correct: ',
-                        moveChessNotation
+                        moveEngleashNotation.engleashNotation
                     )
                 }
             } else {
@@ -73,8 +102,8 @@ class OnlineGameModel extends OnlineGameSocketService {
         }
     }
 
-    public getPlayers(): {currentPlayer: Player, opponentPlayer: Player} | null {
-        return this.players
+    public getOpponentPlayer(): Player | null {
+        return this.opponentPlayer
     }
 
     public setGameDurationMode(gameDurationMove: string) {

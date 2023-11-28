@@ -10,4 +10,6 @@ router.post('/registration', userController_1.default.registration);
 router.post('/login', userController_1.default.login);
 router.get('/refresh', userController_1.default.refresh);
 router.post('/find-auth-data', userController_1.default.findAuthData);
+router.post('/update-user-avatar', userController_1.default.updateUserAvatar);
+router.post('/update-user-name', userController_1.default.updateUserName);
 exports.default = router;

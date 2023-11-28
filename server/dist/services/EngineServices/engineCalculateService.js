@@ -41,8 +41,8 @@ class EngineCalculateService extends EngineModel_1.default {
                     console.log('resolve');
                     listening = false;
                     this.currentStrokeRate = this.extractDifficaltyBot();
-                    console.log(this.currentStrokeRate, this.bestMoves);
                     this.chess.move(this.bestMoves[this.currentStrokeRate]);
+                    console.log('321321313', this.currentStrokeRate, this._bestMoves[this.currentStrokeRate]);
                     resolve(this.currentStrokeRate);
                 }
             };

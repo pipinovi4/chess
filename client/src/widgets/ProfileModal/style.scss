@@ -1,0 +1,188 @@
+@import '../../shared/globalStyle/colors.scss';
+@import '../../shared/globalStyle/fonts.scss';
+
+.overlay-modal__profile {
+    position: absolute;
+    height: 100dvh;
+    width: 100dvw;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container-modal__profile {
+    position: relative;
+    height: 500px;
+    width: 320px;
+    background-color: $globalOverlayBackground;
+    border-radius: 0.6dvw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    .container-user__data {
+        width: 90%;
+        height: 55%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+        .file-input__avatar {
+            display: none;
+        }
+
+        .file-input-label {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50%;
+            height: 55%;
+            overflow: hidden;
+
+            .user-avatar {
+                width: 85%;
+                height: 85%;
+                border-radius: 0.4dvw;
+                margin-bottom: 8%;
+                border: 0.1dvw solid $greySupportiveColor;
+                transition: border 0.3s;
+                overflow: hidden;
+
+                &:hover {
+                    cursor: pointer;
+                    border: 0.3rem solid #c4c4c4;
+                }
+            }
+
+            .button-change__avatar {
+                position: absolute;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 23%;
+                width: 83%;
+                background-color: hsla(0, 0%, 100%, 0.7);
+                bottom: 11.5%;
+                border-radius: 0.4dvw;
+                cursor: pointer;
+                transition: background-color 0.1s ease;
+
+                &:hover {
+                    background-color: hsla(0, 0%, 100%, 0.9);
+                }
+
+                & p {
+                    font-weight: 700;
+                    font-size: 0.8rem;
+                    color: $color-text-link;
+                }
+
+                .camera-icon {
+                    width: 1.3rem;
+                    height: 1.3rem;
+                    z-index: 15;
+                    margin-right: 0.5dvw;
+                }
+            }
+        }
+
+        .user-name {
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: $globalColorThemeHigh;
+        }
+    }
+
+    .controllers-redactor__userData {
+        width: 90%;
+        height: 45%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        margin-top: -3rem;
+
+        .change-name__button {
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: #3498db;
+            color: #fff;
+            border-radius: .4rem;
+            width: 70%;
+            height: 20%;
+            text-align: center;
+            line-height: 1.5;
+            border-bottom: 0.1rem solid #0b6cad;
+            box-shadow: 0 0.1rem 0 #1d75b0;
+            margin-top: 1rem;
+            font-family: $globalSecondaryFont;
+
+            &:hover {
+                border-bottom: 0.1rem solid #0f7fca;
+                box-shadow: 0 0.1rem 0 #238fd6;
+                background-color: $color-text-link;
+                transition: box-shadow 0.3s;
+
+                &:hover:before {
+                    content: ' ';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 0.7rem;
+                    box-shadow: 0 0 2rem #238ed649;
+                }
+            }
+        }
+
+        .text-input__userName {
+            width: 70%;
+            transition: all 0.1s;
+            height: 2.5rem;
+            margin-bottom: .5rem;
+            background-color: hsla(0, 0%, 100%, 0.1);
+            outline: none;
+            border-radius: 0.15rem;
+            color: $globalColorThemeMid;
+            font-size: 0.8rem;
+            padding: 0.2rem .5rem;
+            border: 0.05rem solid $greySupportiveColor;
+
+            &:hover {
+                border: 0.05rem solid #fff;
+            }
+        }
+
+        .check-makr__userName {
+            position: absolute;
+            width: 1rem;
+            height: 1rem;
+            top: 64%;
+            right: 21%;
+        }
+    }
+}
+
+.close-button__profile {
+    position: absolute;
+    top: 0%;
+    right: -10%;
+    font-size: 3rem;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: #fff;
+    padding: 0;
+}

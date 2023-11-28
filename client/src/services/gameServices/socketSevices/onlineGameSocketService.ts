@@ -1,60 +1,48 @@
 import { Socket, io } from 'socket.io-client'
-import convertChessNotation from '../../../helpers/convertChessNotation'
+import convertChessNotation from '../../../helpers/convertersNotation/convertAlgebraicNotation'
 import { Cell } from '../../../entites/cell/Cell'
-import createChessNotation from '../../../helpers/createChessNotation'
+import createChessNotation from '../../../helpers/creatersNotation/createChessNotation'
 import { Player } from '../../../entites/player/Player'
-import { Colors } from '../../../constants/Colors'
+import Board from '../../../entites/board/Board'
+import moveFigureService from '../../moveServices/moveFigureService'
+import { fetchUserById } from '../../../https/api/databaseApi'
 
 /**
  * Service for managing online game socket communication.
  */
 class OnlineGameSocketService {
     private onlineSocket: Socket | null
-    private currentOpponentMove: string | null
 
     constructor() {
         this.onlineSocket = null
-        this.currentOpponentMove = null
     }
 
     /**
      * Start an online game.
      */
     public startOnlineGame() {
-        return new Promise<{ currentPlayer: Player; opponentPlayer: Player }>(
-            (resolve) => {
-                this.onlineSocket = io('https://localhost:5000/online-game')
+        return new Promise<{
+            opponentPlayer: Player
+            socket: Socket
+        }>((resolve) => {
+            this.onlineSocket = io('https://localhost:5000/online-game')
 
-                this.onlineSocket.emit('start-online-game')
+            this.onlineSocket.emit('start-online-game')
 
-                this.onlineSocket.on(
-                    'online-game-started',
-                    (players: { currentId: string; opponentId: string }) => {
-                        const randomColor =
-                            Math.random() > 0.5 ? Colors.WHITE : Colors.BLACK
-                        const opponentPlayer = new Player(
-                            randomColor,
-                            'player',
-                            players.opponentId
-                        )
-                        const currentPlayer = new Player(
-                            randomColor === Colors.BLACK
-                                ? Colors.WHITE
-                                : Colors.BLACK,
-                            'player',
-                            players.currentId
-                        )
-                        console.log(players)
-                        resolve({ currentPlayer, opponentPlayer })
-                    }
-                )
-
-                this.onlineSocket.on(
-                    'response-opponent-move',
-                    this.onMoveOpponent
-                )
-            }
-        )
+            this.onlineSocket.on(
+                'online-game-started',
+                async (opponentId: string) => {
+                    const opponentData = await fetchUserById(opponentId)
+                    const opponentPlayer = new Player('current', opponentData)
+                    if (this.onlineSocket)
+                        resolve({
+                            opponentPlayer,
+                            socket: this.onlineSocket,
+                        })
+                }
+            )
+            this.onlineSocket.on('response-opponent-move', this.onMoveOpponent)
+        })
     }
 
     /**
@@ -63,26 +51,22 @@ class OnlineGameSocketService {
      * @param {Cell} targetCell
      * @returns {Promise<void>} A promise that resolves when the move is sent.
      */
-    public sendMoveOpponent(
+    public async sendMoveOpponent(
         selectedCell: Cell,
         targetCell: Cell
-    ): Promise<string> {
-        return new Promise((resolve, reject) => {
-            if (targetCell && this.onlineSocket && selectedCell) {
-                const moveChessNotation = createChessNotation(
-                    targetCell,
-                    selectedCell
-                )
-                console.log(moveChessNotation, 'in online game model')
-                this.onlineSocket?.emit('send-move-opponent', moveChessNotation)
-                resolve(moveChessNotation)
-            } else {
-                console.error(
-                    'Unexpected error: targetCell or socket is undefined in send move to opponent'
-                )
-                reject('Send move opponent error')
-            }
-        })
+    ): Promise<void> {
+        if (targetCell && this.onlineSocket && selectedCell) {
+            const moveChessNotation = createChessNotation(
+                targetCell,
+                selectedCell
+            )
+            console.log(moveChessNotation, 'in online game model')
+            this.onlineSocket.emit('send-move-opponent', moveChessNotation)
+        } else {
+            throw new Error(
+                'Unexpected error: targetCell or socket is undefined in send move to opponent'
+            )
+        }
     }
 
     /**
@@ -90,20 +74,53 @@ class OnlineGameSocketService {
      * @param {Object} move - The opponent's move data.
      * @returns {Object | null} The opponent's move if valid, or null.
      */
-    public onMoveOpponent(move: string): string | null {
-        const moveCoordinates = convertChessNotation(move)
-        if (
-            moveCoordinates.selectedCell.figure &&
-            moveCoordinates.targetCell &&
-            moveCoordinates.selectedCell.figure.canMove(
-                moveCoordinates.targetCell
+    public onMoveOpponent(
+        move: string,
+        currentBoard: Board,
+        setBoard: React.Dispatch<React.SetStateAction<Board>>
+    ): void {
+        if (!move) {
+            throw new Error(
+                'Move from opponent is undefined in OnlineGameSocketService'
             )
-        ) {
-            this.currentOpponentMove = move // Сохраняем ход
-            return move
+        }
+
+        const opponentMoveCells = convertChessNotation(move)
+        const selectedCoordinates = opponentMoveCells?.selectedCell
+        const targetCoordinates = opponentMoveCells?.targetCell
+
+        if (!selectedCoordinates || !targetCoordinates) {
+            throw new Error(
+                'After converting the move, either selected or target coordinates were undefined'
+            )
+        }
+
+        const selectedCell = currentBoard?.getCell(
+            selectedCoordinates.x,
+            selectedCoordinates.y
+        )
+        const targetCell = currentBoard?.getCell(
+            targetCoordinates.x,
+            targetCoordinates.y
+        )
+
+        if (!selectedCell || !targetCell) {
+            throw new Error(
+                'Selected or target cell is undefined in OnlineGameSocketService'
+            )
+        }
+
+        if (selectedCell.figure?.canMove(targetCell) && setBoard) {
+            moveFigureService.handleMoveFigure(
+                targetCell,
+                selectedCell,
+                undefined,
+                setBoard
+            )
         } else {
-            console.error('Invalid move received from the opponent')
-            return null
+            throw new Error(
+                'The selected figure cannot move to the target cell'
+            )
         }
     }
 

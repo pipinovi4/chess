@@ -11,7 +11,6 @@ import cookieParser from 'cookie-parser'
 import mongooseConfig from './configs/mongoose-config'
 import dataRoutes from './routes/dataRoutes'
 
-
 const options = {
     key: fs.readFileSync('C:/Users/Пипин/certs/client/client.key'),
     cert: fs.readFileSync('C:/Users/Пипин/certs/client/client.crt'),
@@ -21,8 +20,7 @@ const app: Application = express()
 const httpsServer = https.createServer(options, app)
 const allowedOrigins = ['https://localhost:5173']
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json({limit: '10mb'}))
 app.use(cookieParser())
 app.use(
     cors({
@@ -36,6 +34,7 @@ app.use(
         credentials: true,
     })
 )
+app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 app.use('/authorization', userRoutes)
 app.use('/data', dataRoutes)
 app.use(errorMiddleware)

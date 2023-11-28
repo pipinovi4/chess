@@ -2,6 +2,7 @@
 import React, { RefObject } from 'react'
 import { Cell } from '../../entites/cell/Cell'
 import AnimationMoveFigureService from './AnimationMoveFigureServer'
+import Board from '../../entites/board/Board';
 
 type coordinates = { x: number; y: number }
 
@@ -42,12 +43,8 @@ class moveFigureService {
     public async handleMoveFigure(
         cell: Cell,
         selectedCell: Cell | null,
-        setSelectedCell: (cell: Cell | null) => void,
-        selectedFigureRef: RefObject<HTMLImageElement> | null,
-        setSelectedFigureRef: (
-            figureRef: RefObject<HTMLImageElement> | null
-        ) => void,
-        figureRef?: RefObject<HTMLImageElement> | undefined
+        setSelectedCell?: (cell: Cell | null) => void,
+        setBoard?: React.Dispatch<React.SetStateAction<Board>>
     ) {
         if (
             cell &&
@@ -55,27 +52,29 @@ class moveFigureService {
             selectedCell !== cell &&
             selectedCell.figure?.canMove(cell)
         ) {
-            const tartgetCellIsFigure = cell.figure === null ? false : true
-            await AnimationMoveFigureService.animateMoveFigure(
-                selectedFigureRef,
-                cell,
-                selectedCell,
-                setSelectedCell,
-                setSelectedFigureRef,
-                figureRef
+            const tartgetCellIsFigure = cell.figure !== null
+            const selectedFigureRef = document.getElementById(
+                selectedCell.figure.id
             )
-            if (!figureRef) {
-                selectedCell.moveFigure(cell)
-                setSelectedCell(null)
+            const selectedFigureRect =
+                selectedFigureRef?.getBoundingClientRect()
+            if (selectedFigureRect?.x === 0 && selectedFigureRect?.y === 0) {
+                await AnimationMoveFigureService.animateMoveFigure(
+                    cell,
+                    selectedCell,
+                )
             }
+            selectedCell.moveFigure(cell)
+            if (setSelectedCell) setSelectedCell(null)
             AnimationMoveFigureService.soundMove(
                 cell,
                 selectedCell,
                 tartgetCellIsFigure
             )
+            if (setBoard) 
+            setBoard((prev) => prev.getCopyBoard())
         } else {
-            if (figureRef) setSelectedFigureRef(figureRef)
-            setSelectedCell(cell)
+            if (setSelectedCell) setSelectedCell(cell)
         }
     }
 

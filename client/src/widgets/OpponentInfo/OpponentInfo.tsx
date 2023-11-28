@@ -1,74 +1,69 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useEffect, useState } from 'react'
 import './style.scss'
-import { fetchUserById } from '../../https/api/databaseApi'
-import * as uuid from 'uuid'
-import botAvatar from '../../assets/bot-avatar.png'
+import { getCurrentUser } from '../../https/api/databaseApi'
+import blackPlayerPNG from '../../assets/black-player.png'
 import EngineModel from '../../entites/EngineModel'
-import Board from '../../entites/board/Board'
 import { Player } from '../../entites/player/Player'
-import { Colors } from '../../constants/Colors'
+import OnlineGameModel from '../../entites/OnlineGameModel'
+import UserRequest from '../../requstTypes/UserRequest'
+import LostFigures from './LostFIgures/LostFigures'
+import Board from '../../entites/board/Board'
 
 interface OpponentInfoProps {
-    player: Player | undefined
-    engineModel?: EngineModel
-    gameBoard: Board | null
+    playerStatus: 'current' | 'opponent'
+    gameMode: EngineModel | OnlineGameModel
+    board: Board
 }
 
 const OpponentInfo: FC<OpponentInfoProps> = ({
-    player,
-    engineModel,
-    gameBoard,
+    gameMode,
+    playerStatus,
+    board,
 }) => {
-    const [avatartUrl, setAvatarUrl] = useState<string>('')
-    const [userName, setUserName] = useState<string>('')
     const [botDifficulty, setBotDifficulty] = useState<string>('')
+    const [player, setPlayer] = useState<Player>()
 
     useEffect(() => {
         const fetchUserData = async () => {
-            let user
-            switch (typeof player?.id) {
-                case 'string':
-                    user = await fetchUserById(player.id)
-                    break
-                case 'undefined':
-                    user = await fetchUserById()
-                    break
-                default:
-                    console.log('opponentId in localstorage is undefined')
-            }
-            if (user) {
-                setAvatarUrl(user.avatar)
-                setUserName(user.userName)
-            } else {
-                throw new Error(
-                    "When trying to get the player's data they turned out to be undefined"
-                )
+            if (playerStatus === 'current') {
+                const currentUser: UserRequest = await getCurrentUser()
+                setPlayer(new Player('current', currentUser))
+                if (!currentUser) {
+                    throw new Error(
+                        "When trying to get the player's data they turned out to be undefined"
+                    )
+                }
             }
         }
 
-        if (engineModel && engineModel.difficaltyBot) {
-            setBotDifficulty(engineModel.difficaltyBot)
-            console.log(engineModel.difficaltyBot)
+        if (
+            gameMode &&
+            gameMode instanceof EngineModel &&
+            gameMode.difficaltyBot
+        ) {
+            setBotDifficulty(gameMode.difficaltyBot)
+            console.log(gameMode.difficaltyBot)
         } else {
-            setBotDifficulty('proffesional') // Установите значение по умолчанию
+            setBotDifficulty('proffesional')
         }
 
         fetchUserData()
-    }, [engineModel, engineModel?.difficaltyBot, player?.id])
+    }, [])
 
     return (
         <div
             className={[
-                player?.id || engineModel
-                    ? 'container-opponent__info'
-                    : 'container-currentUser__info',
+                playerStatus === 'current'
+                    ? 'container-currentUser__info'
+                    : 'container-opponent__info',
             ].join(' ')}
         >
-            {engineModel && !player?.id ? (
+            {!player?.userData && (
                 <>
                     <img
                         className="user-info__avatar"
-                        src={botAvatar}
+                        src={blackPlayerPNG}
                         alt="user avatar"
                     />
                     <p className="user-info__name">
@@ -76,41 +71,23 @@ const OpponentInfo: FC<OpponentInfoProps> = ({
                             botDifficulty.slice(1)}
                     </p>
                 </>
-            ) : (
+            )}
+            {player && player.userData?.avatar && (
                 <>
                     <img
                         className="user-info__avatar"
-                        src={`data:image/jpeg;base64,${avatartUrl}`}
+                        src={player.userData.avatar}
                         alt="user avatar"
                     />
-                    <p className="user-info__name">{userName}</p>
+                    <p className="user-info__name">
+                        {player?.userData?.userName
+                            ? player.userData.userName
+                            : 'player'}
+                    </p>
                 </>
             )}
-
             <div className="winning-figures">
-                {player?.color === Colors.WHITE
-                    ? gameBoard?.lostFiguresBlack.map((whiteCapturedPieces) => (
-                          <div className="captured-pieces" key={uuid.v4()}>
-                              {whiteCapturedPieces.logo && (
-                                  <img
-                                      className="capuret-piace__image"
-                                      src={whiteCapturedPieces.logo}
-                                      alt="chess-figure"
-                                  />
-                              )}
-                          </div>
-                      ))
-                    : gameBoard?.lostFiguresWhite.map((whiteCapturedPieces) => (
-                          <div className="captured-pieces" key={uuid.v4()}>
-                              {whiteCapturedPieces.logo && (
-                                  <img
-                                      className="capuret-piace__image"
-                                      src={whiteCapturedPieces.logo}
-                                      alt="chess-figure"
-                                  />
-                              )}
-                          </div>
-                      ))}
+                <LostFigures player={player} board={board} />
             </div>
         </div>
     )

@@ -1,0 +1,66 @@
+@import '../../../../../shared/globalStyle/colors.scss';
+
+.cards-level {
+    margin-top: 1dvw;
+    display: flex;
+    align-items: center;
+    position: absolute;
+}
+.card-skill {
+    width: 9.5dvh;
+    height: 9.5dvh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-color: $globalGraySoft;
+    border-radius: .6dvh;
+    margin: 2.5dvh 1.1dvh;
+    cursor: pointer;
+    position: relative;
+    transition: border 0.3s;
+
+    &:hover {
+        background-color: $globalGraySoftHover;
+    }
+
+    &.active::before {
+        content: '';
+        position: absolute;
+        top: -0.5dvh;
+        right: -0.5dvh;
+        bottom: -0.5dvh;
+        left: -0.5dvh;
+        border: 0.25dvh solid $greenMainColor; /* Border with 10px padding */
+        border-radius: 1dvh;
+    }
+}
+
+.skill-level__image {
+    width: 3.5dvh;
+    height: 3.5dvh;
+}
+
+.level-name {
+    font-size: 1.2dvh;
+    font-weight: 500;
+    color: $globalColorThemeHigh;
+    margin-top: .8dvh;
+}
+
+.skill-level__selection {
+    width: 100%;
+    height: 100%;
+    grid-row: 8 / 11;
+    margin-top: 1.4dvh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+
+    .skill-question {
+        font-size: 1.3dvh;
+        font-weight: 500;
+        color: $globalColorThemeMid;
+    }
+}

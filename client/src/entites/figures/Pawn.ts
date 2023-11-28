@@ -23,10 +23,7 @@ export class Pawn extends Figure {
         if (
             (target.y === this.cell.y + direction ||
                 (this.isFirstStep &&
-                    target.y === this.cell.y + firstStepDirection &&
-                    this.cell.board
-                        .getCell(this.cell.x, this.cell.y + firstStepDirection)
-                        .isEmpty())) &&
+                    target.y === this.cell.y + firstStepDirection)) &&
             target.x === this.cell.x &&
             this.cell.board
                 .getCell(this.cell.x, this.cell.y + direction)
@@ -39,8 +36,6 @@ export class Pawn extends Figure {
 
     logicFigureMove(target: Cell): boolean {
         const direction = this.cell.figure?.color === Colors.BLACK ? 1 : -1
-        const firstStepDirection =
-            this.cell.figure?.color === Colors.BLACK ? 2 : -2
 
         if (
             target.y === this.cell.y + direction &&
@@ -50,19 +45,6 @@ export class Pawn extends Figure {
             if (this.cell.isEnemy(target)) {
                 return true
             }
-        } else if (
-            (target.y === this.cell.y + direction ||
-                (this.isFirstStep &&
-                    target.y === this.cell.y + firstStepDirection &&
-                    this.cell.board
-                        .getCell(this.cell.x, this.cell.y + firstStepDirection)
-                        .isEmpty())) &&
-            target.x === this.cell.x &&
-            this.cell.board
-                .getCell(this.cell.x, this.cell.y + direction)
-                .isEmpty()
-        ) {
-            return true
         }
         return false
     }

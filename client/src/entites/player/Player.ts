@@ -1,15 +1,16 @@
 import { Colors } from '../../constants/Colors'
+import UserRequest from '../../requstTypes/UserRequest'
 
-type typePlayer = 'player' | 'bot'
+type typePlayer = 'current' | 'opponent'
 
 export class Player {
-    color: Colors
-    id?: string
+    color?: Colors
     typePlayer: typePlayer
+    userData: UserRequest | null = null
 
-    constructor(color: Colors, typePlayer: typePlayer, userId?: string) {
+    constructor(typePlayer: typePlayer, userData: UserRequest | null, color?: Colors) {
         this.color = color
-        this.id = userId
+        this.userData = userData
         this.typePlayer = typePlayer
     }
 }

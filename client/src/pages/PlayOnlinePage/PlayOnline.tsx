@@ -1,41 +1,53 @@
-import { useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useMemo, useState } from 'react'
 import OnlineGameModel from '../../entites/OnlineGameModel'
-import Board from '../../entites/board/Board'
 import BoardComponent from '../../widgets/Board/BoardComponent'
 import OpponentInfo from '../../widgets/OpponentInfo/OpponentInfo'
 import StartGameBoard from '../../widgets/StartGameBoard/StartGameBoard'
-import Timer from '../../widgets/Timer/Timer'
-import './playOnline.scss'
+import './style.scss'
+import Board from '../../entites/board/Board'
+import MoveHistoryBoard from '../../widgets/MoveHistoryBoard/MoveHistoryBoard'
 
 const PlayOnline = () => {
-    const [gameBoard, setGameBoard] = useState<Board | null>(null)
-    const onlineGameModel = new OnlineGameModel()
+    const [board, setBoard] = useState<Board>(new Board())
+    const [gameStarted, setGameStarted] = useState(false)
+    const onlineGameModel = useMemo(() => {
+        return new OnlineGameModel(setBoard, board)
+    }, [])
 
-    const players = onlineGameModel.getPlayers()
+    useEffect(() => {
+        setGameStarted(onlineGameModel.gameStarted)
+    }, [onlineGameModel.gameStarted])
+
+    useEffect(() => {
+        const newBoard = new Board()
+        newBoard.initCells()
+        newBoard.addFigures()
+        setBoard(newBoard)
+    }, [])
+
     return (
         <div className="container-play__online">
             <OpponentInfo
-                gameBoard={gameBoard}
-                player={players?.currentPlayer}
-            />
-            <Timer
-                currentPlayer={players?.currentPlayer}
-                onlineGameModel={onlineGameModel}
-            />
-            <BoardComponent
-                setGameBoard={setGameBoard}
+                board={board}
+                playerStatus="current"
                 gameMode={onlineGameModel}
             />
-            {players?.currentPlayer && players?.opponentPlayer ? (
-                <>mama</>
-            ) : (
+            <BoardComponent
+                board={board}
+                setBoard={setBoard}
+                gameMode={onlineGameModel}
+            />
+            <OpponentInfo
+                board={board}
+                playerStatus="opponent"
+                gameMode={onlineGameModel}
+            />
+            {gameStarted ? (
+                <MoveHistoryBoard board={board}/>
+                ) : (
                 <StartGameBoard onlineGameModel={onlineGameModel} />
             )}
-            <OpponentInfo player={players?.opponentPlayer} gameBoard={gameBoard} />
-            <Timer
-                currentPlayer={players?.opponentPlayer}
-                onlineGameModel={onlineGameModel}
-            />
         </div>
     )
 }

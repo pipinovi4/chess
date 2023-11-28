@@ -15,6 +15,7 @@ class EngineModel extends baseEngineService_1.default {
     }
     startEngine(callback, difficultyBot) {
         if (this.engineProcess) {
+            console.log(this.engineProcess);
             this.difficultyBot = difficultyBot;
             this.engineProcess.on('error', (error) => {
                 this.handleEngineError(error, callback);
@@ -23,13 +24,6 @@ class EngineModel extends baseEngineService_1.default {
                 this.handleEngineClose(code, callback);
             });
         }
-    }
-    stopEngine(callback) {
-        if (this.engineProcess) {
-            this.engineProcess.kill();
-            this.engineProcess = null;
-        }
-        callback('Engine stopped');
     }
 }
 exports.default = EngineModel;

@@ -21,7 +21,7 @@ const engineSocket = (server: Namespace) => {
         })
 
         socket.on('start-engine', async (difficultyBot: difficultyBot) => {
-            console.log('diffucaltyBot', difficultyBot)
+            console.log('diffucaltyBot', difficultyBot, engineWorker)
             setupWorkerMessageListener(socket, engineWorker);
             console.log('Socket message to worker to start engine', engineWorker)
 
@@ -39,19 +39,8 @@ const engineSocket = (server: Namespace) => {
             engineWorker.postMessage({ message: 'calculate-move', move })
         })
 
-        socket.on('stop-engine', async (payload) => {
-            setupWorkerMessageListener(socket, engineWorker);
-            console.log('Socket message to worker to stop engine')
-
-            // Send a message to the worker to stop the engine.
-            engineWorker.postMessage({ message: 'stop-engine', payload })
-        })
-
         socket.on('disconnect', () => {
-            console.log('Engine socket disconnected')
-            if (engineWorker) {
-                engineWorker.terminate()
-            }
+            console.log('Engine process disconnected')
         })
     }
     server.on('connection', onConnection)

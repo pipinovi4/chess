@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import pawn from '../../../assets/whitePawnLogo.svg'
 import rook from '../../../assets/whiteRookLogo.svg'
 import queen from '../../../assets/whiteQueenLogo.svg'
 import knight from '../../../assets/whiteKnightLogo.svg'
-import './skillLevelSelection.scss'
+import './style.scss'
 
 enum SkillLevel {
     Pawn = 'pawn',

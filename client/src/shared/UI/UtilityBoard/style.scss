@@ -1,0 +1,67 @@
+@import '../../globalStyle/colors.scss';
+
+.container {
+    position: absolute;
+    width: calc(100dvw - 11dvw);
+    height: 100vh;
+}
+
+.game-board__component {
+    position: relative;
+    top: 0;
+    left: 55dvw;
+    width: 25dvw;
+    height: 96dvh;
+    overflow: hidden;
+    background-color: $globalOverlayBackground;
+    border-radius: 5px;
+    margin: 2dvh;
+
+    @media (max-width: 1400px) {
+        left: 58dvw;
+        width: 28dvw;
+    }
+    @media (max-width: 1350px) {
+        left: 60dvw;
+    }
+    @media (max-width: 1100px) {
+        width: 24dvw;
+        left: 64dvw;
+    }
+    @media (max-width: 950px) {
+        width: 20dvw;
+        left: 68dvw;
+    }
+    @media (max-width: 900px) {
+        width: 80dvw;
+        height: 95dvh;
+        top: 82dvw;
+        left: calc((-1dvw + -1dvh));
+    }
+    @media (max-width: 700px) {
+        width: 80dvw;
+        height: 95dvh;
+        top: 95dvw;
+        left: calc((-1dvw + -1dvh));
+    }
+    @media (max-width: 600px) {
+        top: 105dvw;
+    }
+
+    .semicircle {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 1500px;
+        height: 1000px;
+        border-radius: 50%;
+        background-color: $secondaryGreyBg;
+        bottom: 85dvh;
+
+        @media (max-width: 900px) {
+            width: 200dvw;
+            height: 105dvw;
+            margin-top: -94dvw;
+        }
+    }
+}

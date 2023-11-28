@@ -7,4 +7,5 @@ const express_1 = require("express");
 const GetDataService_1 = __importDefault(require("../services/GetDataService"));
 const router = (0, express_1.Router)();
 router.post('/get-user', GetDataService_1.default.getUserById);
+router.get('/get-current-user', GetDataService_1.default.getCurrentUserId);
 exports.default = router;

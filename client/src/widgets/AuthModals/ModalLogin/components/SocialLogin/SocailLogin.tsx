@@ -1,5 +1,4 @@
-import React from 'react'
-import './socialLogin.scss'
+import './style.scss'
 import appleLogo from '../../../assets/apple-logo.svg'
 import facebookLogo from '../../../assets/facebook-logo.svg'
 import googleLogo from '../../../assets/google-logo.svg'

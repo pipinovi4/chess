@@ -2,15 +2,37 @@
 @import '../../shared/globalStyle/fonts.scss';
 
 .pawn-advantage__column {
-    width: 1.25dvw;
-    height: 87.5dvh;
-    position: absolute; /* Устанавливаем position: relative; */
+    width: 2.3dvh;
+    height: 85.5dvh;
+    position: absolute;
     z-index: 1;
     border: 0.25dvh solid transparent;
     border-radius: 0.1dvh;
-    left: 8dvw;
-    top: 6.25dvh;
-    
+    left: 4dvh;
+    top: 7.25dvh;
+
+    @media (max-width: 1300px) {
+        height: 75.5dvh;
+        left: 1dvh;
+        width: 2dvh;
+    }
+
+    @media (max-width: 1100px) {
+        width: 1.7dvh;
+        height: 70.5dvh;
+        left: 1.4dvh;
+    }
+
+    @media (max-width: 900px) {
+        height: 65.5dvw;
+        left: 4.5dvw;
+    }
+
+    @media (max-width: 700px) {
+        width: 1.9dvh;
+        height: 75.5dvw;
+        left: -.3svh;
+    }
 
     &::before {
         content: attr(data-content);
@@ -18,13 +40,28 @@
         font-weight: 700;
         position: absolute;
         z-index: 11;
-        font-size: 0.35rem;
+        font-size: 1dvh;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 100%; /* Занимает всю ширину блока */
-        height: 100%; /* Занимает всю высоту блока */
-        margin-top: 42dvh;
+        width: 100%;
+        height: 100%;
+        margin-top: 41dvh;
+
+        @media (max-width: 1300px) {
+            margin-top: 36dvh;
+        }
+
+        @media (max-width: 1100px) {
+            margin-top: 33.5dvh;
+        }
+
+        @media (max-width: 900px) {
+            margin-top: 31.3dvw;
+        }
+        @media (max-width: 700px) {
+            margin-top: 35.3dvw;
+        }
     }
 
     &:hover::before {
@@ -34,14 +71,14 @@
         background-color: #fff;
         color: #403d39;
         font-weight: 700;
-        border-radius: 0.1rem;
+        border-radius: 0.3rem;
         position: absolute;
         z-index: 11;
         left: -0.5dvw;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.45rem;
+        font-size: 0.7rem;
     }
 
     .black-scale {

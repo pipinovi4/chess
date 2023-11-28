@@ -4,7 +4,7 @@ import path from 'path';
 
 const defaultAvatarPath = path.join(__dirname, '..', '..', 'assets', 'default-user-avatar.png');
 
-const base64DefaultAvatar = fs.readFileSync(defaultAvatarPath, 'base64');
+const base64DefaultAvatar = `data:image/png;base64,${fs.readFileSync(defaultAvatarPath, 'base64')}`
 
 const UserModel = new Schema({
     email: { type: String, unique: true, required: true },

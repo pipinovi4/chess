@@ -37,12 +37,6 @@ if (!worker_threads_1.isMainThread) {
                     currentStrokeRate: engineCalculateService._currentStrokeRate
                 });
                 break;
-            case 'stop-engine':
-                console.log(chalk_1.default.bgGreen(), 'Stopping the engine...');
-                engineService.stopEngine((status) => {
-                    console.log(chalk_1.default.bgWhite, 'Status:', status);
-                });
-                break;
         }
     });
 }

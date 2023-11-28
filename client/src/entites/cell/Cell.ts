@@ -3,7 +3,8 @@ import { Rook } from '../figures/Rook'
 import Board from '../board/Board'
 import { Colors } from '../../constants/Colors'
 import KingAttackService from './CellServices/KingAttackService'
-import _ from 'lodash'
+import convertEngleashChessNotation from '../../helpers/creatersNotation/createEngleashChessNotation'
+import createAlgebraicNotation from '../../helpers/creatersNotation/createChessNotation'
 
 export class Cell {
     readonly x: number
@@ -67,11 +68,19 @@ export class Cell {
 
     moveFigure(target: Cell) {
         if (this.figure && this.figure?.canMove(target)) {
+            if (target.figure) {
+                this.board.lostFigures.push(target.figure)
+                console.log(this.board.lostFigures)
+            } 
+            const engleashNotationMove = convertEngleashChessNotation(this, target)
+            const algebraicNotation = createAlgebraicNotation(target, this)
             this.validateAndMadeCastle(target)
             this.figure.moveFigure(target)
             target.setFigure(this.figure)
             this.figure = null
             KingAttackService.updateCellUnderAttack(this.board)
+            this.board.historyMoves.push({...engleashNotationMove, algebraicNotation})
+            console.log(213112)
         }
     }
 }

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useEffect, useRef, useState } from 'react'
-import './modalRegistration.scss'
+import './style.scss'
 import SkillLevelSelection from './components/SkillLevelSelection/SkillLevelSelection'
 import SocialRegistration from './components/SocialRegistration/SocialRegistration'
 import RegistrationForm from './components/RegistrationForm/RegistrationForm'
@@ -55,10 +55,18 @@ const ModalRegistration: FC<ModalRegistrationProps> = ({
 
     return (
         <div className="overlay-registration">
-            <div className="container-modal__registration" ref={containerModalRef}>
+            <button className="close-button__registration" onClick={() => setActiveRegistration(false)}>
+                &times;
+            </button>
+            <div
+                className="container-modal__registration"
+                ref={containerModalRef}
+            >
                 <div className="container-title">
                     <h2 className="title-registration__modal">Join Now</h2>
-                    <h3 className="text-registration__modal">and Start Playing Chess!</h3>
+                    <h3 className="text-registration__modal">
+                        and Start Playing Chess!
+                    </h3>
                 </div>
                 <RegistrationForm
                     registrationStart={registrationStart}
@@ -67,7 +75,12 @@ const ModalRegistration: FC<ModalRegistrationProps> = ({
                 />
                 <SkillLevelSelection />
                 <div className="container-submit">
-                    <button onClick={() => setRegistrationStart(true)} className="signUp-button">Sign Up</button>
+                    <button
+                        onClick={() => setRegistrationStart(true)}
+                        className="signUp-button"
+                    >
+                        Sign Up
+                    </button>
                 </div>
                 <div className="footers">
                     <div className="line" />

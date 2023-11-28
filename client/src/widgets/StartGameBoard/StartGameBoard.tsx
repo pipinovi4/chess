@@ -1,12 +1,10 @@
-import './startGameBoard.scss'
+import './style.scss'
 import arrow from '../../assets/arrow.svg'
 import clock from '../../assets/clock.svg'
-import handShake from '../../assets/handshake-fs8.png'
 import { FC, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import CardOptionGames from '../CardsOptionGames/CardsOptionGames'
 import lightning from '../../assets/lightning.svg'
-import bullet from '../../assets/bullet.svg'
+import bullet from '../../assets/bullet.png'
 import OnlineGameModel from '../../entites/OnlineGameModel'
 
 interface StartGameBoardProps {
@@ -17,7 +15,6 @@ const StartGameBoard: FC<StartGameBoardProps> = ({ onlineGameModel }) => {
     const [activeArrow, setActiveArrow] = useState<boolean>(false)
     const [activeOptionsGame, setActiveOptionsGame] = useState<boolean>(false)
     const [gameDurationMode, setGameDurationMode] = useState<string>('10 min')
-    const navigate = useNavigate()
 
     useEffect(() => {
         onlineGameModel.setGameDurationMode(gameDurationMode)
@@ -77,6 +74,11 @@ const StartGameBoard: FC<StartGameBoardProps> = ({ onlineGameModel }) => {
                             className="clock-game__options"
                             src={getGameModeImage()}
                             alt=""
+                            style={
+                                getGameMode() === 'bullet'
+                                    ? { transform: 'rotate(-60deg)', height: '25%', marginTop: '4px' }
+                                    : {}
+                            }
                         />
                         <h3 className="text-game__options">
                             {gameDurationMode ? gameDurationMode : '10 min'}
@@ -98,18 +100,12 @@ const StartGameBoard: FC<StartGameBoardProps> = ({ onlineGameModel }) => {
                         modeGame={gameDurationMode}
                     />
                 )}
-                <button onClick={handleStartOnlineGame} className="button-start__game">Play</button>
-                <div
-                    onClick={() => navigate('/play/friend')}
-                    className="contaier-card__friend"
+                <button
+                    onClick={handleStartOnlineGame}
+                    className="button-start__game"
                 >
-                    <img
-                        className="image-card__friend"
-                        src={handShake}
-                        alt=""
-                    />
-                    <h3 className="text-card__friend">Play a Friend</h3>
-                </div>
+                    Play
+                </button>
             </div>
         </div>
     )

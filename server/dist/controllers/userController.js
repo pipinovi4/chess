@@ -26,8 +26,8 @@ class userController {
             });
             return res.status(200).json({ userData });
         }
-        catch (e) {
-            next(e);
+        catch (error) {
+            next(error);
         }
     }
     async login(req, res, next) {
@@ -47,12 +47,12 @@ class userController {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
                 sameSite: 'none',
-                secure: true
+                secure: true,
             });
             return res.status(200).json(userData);
         }
-        catch (e) {
-            next(e);
+        catch (error) {
+            next(error);
         }
     }
     async activate(req, res, next) {
@@ -61,9 +61,8 @@ class userController {
             await userService_1.default.activate(activationLink);
             return res.redirect('http://localhost:5173');
         }
-        catch (e) {
-            console.error(e);
-            return ApiError_1.default.UnforeseenError();
+        catch (error) {
+            next(error);
         }
     }
     async logout(req, res, next) {
@@ -92,25 +91,60 @@ class userController {
                 });
             }
         }
-        catch (e) {
-            console.error(e);
-            return ApiError_1.default.UnforeseenError();
+        catch (error) {
+            next(error);
         }
     }
     async findAuthData(req, res, next) {
         try {
             const personalInformation = req.body;
+            console.log(personalInformation);
             if (!personalInformation) {
                 return new ApiError_1.default(400, 'Not correct userName');
             }
             const user = await UserModel_1.default.findOne(personalInformation);
+            console.log(user);
             if (!user) {
                 return res.status(200).json(null);
             }
-            res.status(200).json(user);
+            return res.status(200).json(user);
         }
-        catch (e) {
-            next(e);
+        catch (error) {
+            next(error);
+        }
+    }
+    async updateUserAvatar(req, res, next) {
+        try {
+            const { newUserAvatar } = req.body;
+            const { userId } = req.cookies;
+            if (!newUserAvatar) {
+                throw ApiError_1.default.BadRequest('New user avatar is unknown in update avatar');
+            }
+            const user = await UserModel_1.default.findById(userId);
+            user.avatar = newUserAvatar;
+            await user.save();
+            return res.status(200);
+        }
+        catch (error) {
+            console.error('Error during update user avatar:', error);
+            throw error;
+        }
+    }
+    async updateUserName(req, res, next) {
+        try {
+            const { newUserName } = req.body;
+            const { userId } = req.cookies;
+            console.log(newUserName, userId);
+            if (!newUserName) {
+                throw ApiError_1.default.BadRequest('New user name is unknown in update user name');
+            }
+            const user = await UserModel_1.default.findById(userId);
+            user.userName = newUserName;
+            await user.save();
+            return res.status(200);
+        }
+        catch (error) {
+            next(error);
         }
     }
 }

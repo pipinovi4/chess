@@ -1,54 +1,57 @@
 import { Socket, io } from 'socket.io-client'
 import { ResponseServerMove } from '../types'
 
-// Constants
-const TIMEOUT_MS = 20000
-
 /**
  * Service for interacting with the game engine through a socket.
  */
 class EngineSocketService {
+    public engineSocket: Socket | null = null
     /**
      * Start a connection with the game engine socket.
      * @returns {Promise<Socket>} A promise that resolves with the socket connection.
      */
-    async startEngine(difficultyBot: 'begginer' | 'amateur' | 'proffesional'): Promise<Socket> {
-        return new Promise((resolve) => {
-            const engineSocket: Socket = io('https://localhost:5000/engine')
-            engineSocket.emit('start-engine', difficultyBot)
+    async startEngine(
+        difficultyBot: 'begginer' | 'amateur' | 'proffesional'
+    ): Promise<void> {
+        return new Promise<void>((resolve) => {
+            const engineSocket = io('https://localhost:5000/engine')
+            this.engineSocket = engineSocket
+            this.engineSocket.emit('start-engine', difficultyBot)
 
-            engineSocket.once('engine-started', () => {
+            this.engineSocket.once('engine-started', () => {
                 console.log('Game started')
-                resolve(engineSocket)
+                resolve()
             })
+
+            this.engineSocket.once('disconnect', () =>
+                console.log('Socket has been closed')
+            )
+            this.engineSocket.once('close', () =>
+                console.log('Socket has been closed')
+            )
         })
     }
 
     /**
      * Send a move to the game engine and await a response.
      * @param {string} move - The move to send to the engine.
-     * @param {Socket<DefaultEventsMap, DefaultEventsMap>} engineSocket - The game engine socket.
      * @returns {Promise<ResponseServer | void>} A promise that resolves with the response from the engine or null in case of an error.
      */
-    async sendMoveEngine(
-        move: string,
-        engineSocket: Socket
-    ): Promise<ResponseServerMove | void> {
-        return new Promise((resolve, reject) => {
-            engineSocket.emit('calculate-move', move)
-            console.log(313213123)
+    async sendMoveEngine(move: string): Promise<ResponseServerMove | void> {
+        return new Promise((resolve) => {
+            this.engineSocket?.emit('calculate-move', move)
 
-            engineSocket.once(
+            this.engineSocket?.once(
                 'move-calculated',
                 (engineData: ResponseServerMove) => {
-                    console.log('Data from engine', engineData)
+                    console.log(
+                        'Data from engine',
+                        engineData,
+                        this.engineSocket
+                    )
                     resolve(engineData)
                 }
             )
-
-            setTimeout(() => {
-                reject('')
-            }, TIMEOUT_MS)
         })
     }
 

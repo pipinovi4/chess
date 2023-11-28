@@ -4,6 +4,7 @@ import { Cell } from '../cell/Cell'
 import { Colors } from '../../constants/Colors'
 import logo from '../../assets/bishop-black.png'
 import KingAttackService from '../cell/CellServices/KingAttackService'
+import * as uuid from 'uuid'
 
 export enum FigureNames {
     FIGURE = 'Figure',
@@ -25,6 +26,7 @@ export class Figure {
     kingAttacked = false
     prevCellAttacked: number[][] = []
     canMoves: Array<Cell> = []
+    id: string = uuid.v4()
 
     constructor(color: Colors, cell: Cell) {
         this.color = color
@@ -37,7 +39,7 @@ export class Figure {
     canMove(target: Cell): boolean {
         if (target.figure?.name === FigureNames.KING) return false
         if (target.figure?.color === this.color) return false
-        if (!KingAttackService.validateMoveUnderCheck(target, this.cell)) 
+        if (!KingAttackService.validateMoveUnderCheck(target, this.cell))
             return false
 
         return true

@@ -2,18 +2,146 @@
 
 .container-not-found {
     height: 100dvh;
+    width: 100dvw;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     background-color: $greyMainColor;
+}
 
-    @media (max-width: 768px) {
-        padding: 10px;
+.text-colors {
+    color: $whiteMainColor;
+}
+
+.text-proposal {
+    font-weight: 900;
+    font-size: 3rem;
+    color: $globalColorThemeHigh;
+    white-space: nowrap;
+    margin-right: 2.5rem;
+
+    @media (max-width: 1020px) {
+        padding-right: 0.25rem;
+        font-size: 2rem;
+        margin-right: 0.2rem;
     }
+
     @media (min-width: 1920px) {
-        padding: 20px;
+        font-size: 3rem;
     }
+
+    @media (max-width: 900px) {
+        font-size: 1, 5rem;
+        white-space: none;
+    }
+}
+
+.title-status,
+.validation-error {
+    padding: 5px;
+    font-weight: 900;
+    font-size: 3rem;
+
+    @media (max-width: 1020px) {
+        padding-right: 0.25rem;
+        font-size: 2rem;
+    }
+
+    @media (min-width: 1920px) {
+        font-size: 3rem;
+    }
+
+    @media (max-width: 900px) {
+        font-size: 1.5rem;
+    }
+}
+
+.title-status {
+    color: #ff0000ea;
+    margin-bottom: 1.5rem;
+}
+
+.button-go__home {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    background-color: $greenMainColor;
+    box-shadow: 0px 3px 0px $greenInnerBoxShadowrg;
+    border-radius: 0.4rem;
+    border: none;
+    border-bottom: 0.05rem solid $greenBorderBottomLine;
+    position: relative;
+    font-size: 1.5rem;
+    font-weight: 900;
+    font-family: $globalColorThemeLow;
+    color: #fff;
+
+    @media (max-width: 900px) {
+        font-size: 0.5rem;
+        width: 50%;
+    }
+
+    &:hover {
+        background-color: $greenBackgroundHover;
+        border-bottom: 0.01rem solid $greenBorderBottomLineHover;
+        box-shadow: 0px 3px 0px $innerBoxShadow;
+        cursor: pointer;
+        transition: box-shadow 0.3s;
+
+        &:hover:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: 0px 0px 14px $innerBoxShadow;
+            background-color: #d7ff9222;
+            border-radius: 0.4rem;
+        }
+    }
+
+    @media (max-width: 1200px) {
+        padding-right: 0;
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+
+    @media (min-width: 1920px) {
+        padding: 0.5rem 1.25rem;
+        font-size: 2rem;
+    }
+    @media (max-width: 900px) {
+        font-size: 1.5rem;
+    }
+}
+
+.text-containers {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2%;
+
+    @media (max-width: 1020px) {
+        padding: 0.25% 2.5%;
+    }
+
+    @media (max-width: 1920px) {
+        padding: 0.5% 5%;
+        font-size: 3rem;
+    }
+    @media (max-width: 900px) {
+        font-size: 1.5rem;
+    }
+}
+
+.container-text__error,
+.container-redirect {
+    @extend .text-containers;
 }
 
 .container-text__error,
@@ -21,80 +149,7 @@
 .text-error,
 .text-proposal,
 .title-status,
-.validation-error {
-    color: $whiteMainColor;
-}
-
-.container-text__error,
-.container-redirect {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-
-    @media (max-width: 768px) {
-        padding: 15px;
-    }
-}
-
-.text-error {
-    font-weight: 700;
-    font-size: 24px;
-}
-
-.text-proposal {
-    font-weight: 600;
-    font-size: 18px;
-    padding-right: 10px;
-    
-    @media (max-width: 768px) {
-        padding-right: 7px;
-        font-size: 16px;
-    }
-    @media (min-width: 1920px) {
-        font-size: 18px;
-    }
-}
-
-.title-status,
-.validation-error {
-    padding: 5px;
-    font-weight: 700;
-    font-size: 24px;
-
-    @media (max-width: 768px) {
-        padding: 5px;
-        font-size: 18px;
-    }
-    @media (min-width: 1920px) {
-        font-size: 22px;
-    }
-}
-
+.validation-error,
 .button-go__home {
-    background-color: #41a644;
-    color: $whiteMainColor;
-    font-weight: 700;
-    font-size: 18px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.5s;
-
-    @media (max-width: 768px) {
-        padding: 5px 10px;
-        font-size: 12px;
-    }
-    @media (min-width: 1920px) {
-        padding: 30px;
-        font-size: 16px;
-    }
-}
-
-.button-go__home:hover {
-    transition: 0.3s;
-    background-color: #45b049;
-    box-shadow: 0px 0px 6px 0px rgba(68, 176, 73, 0.8);
+    @extend .text-colors;
 }

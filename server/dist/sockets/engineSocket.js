@@ -15,7 +15,7 @@ const engineSocket = (server) => {
             console.error('Socket error:', error);
         });
         socket.on('start-engine', async (difficultyBot) => {
-            console.log('diffucaltyBot', difficultyBot);
+            console.log('diffucaltyBot', difficultyBot, engineWorker);
             (0, setupWorkerMessageListener_1.default)(socket, engineWorker);
             console.log('Socket message to worker to start engine', engineWorker);
             engineWorker.postMessage({
@@ -27,16 +27,8 @@ const engineSocket = (server) => {
             console.log('Move', move);
             engineWorker.postMessage({ message: 'calculate-move', move });
         });
-        socket.on('stop-engine', async (payload) => {
-            (0, setupWorkerMessageListener_1.default)(socket, engineWorker);
-            console.log('Socket message to worker to stop engine');
-            engineWorker.postMessage({ message: 'stop-engine', payload });
-        });
         socket.on('disconnect', () => {
-            console.log('Engine socket disconnected');
-            if (engineWorker) {
-                engineWorker.terminate();
-            }
+            console.log('Engine process disconnected');
         });
     };
     server.on('connection', onConnection);

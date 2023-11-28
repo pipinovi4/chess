@@ -11,9 +11,10 @@ import ErrorPage from './pages/ErrorPage/NotFoundPage'
 import LoadingPage from './pages/LoadingPage/LoadingPage.tsx'
 
 const HomePage = lazy(() => import('./pages/HomePage/HomePage.tsx'))
-const ProfilePage = lazy(() => import('./pages/ProfilePage/ProfilePage.tsx'))
 const PlayPage = lazy(() => import('./pages/PlayPage/PlayPage.tsx'))
-const PlayComputer = lazy(() => import('./pages/PlayComputerPage/PlayComputer.tsx'))
+const PlayComputer = lazy(
+    () => import('./pages/PlayComputerPage/PlayComputer.tsx')
+)
 const PlayOnline = lazy(() => import('./pages/PlayOnlinePage/PlayOnline.tsx'))
 
 const App = () => {
@@ -29,28 +30,24 @@ const App = () => {
             setIsActiveLogin(true)
         }
     }, [location.pathname, navigate])
+
+    const isNotFoundPage = location.pathname === '/not-found'
     return (
         <>
-            <LeftBar
-                isActiveLogin={isActiveLogin}
-                isActiveRegistration={isActiveRegistration}
-                setIsActiveLogin={setIsActiveLogin}
-                setIsActiveRegistration={setIsActiveRegistration}
-            />
+            {!isNotFoundPage && (
+                <LeftBar
+                    isActiveLogin={isActiveLogin}
+                    isActiveRegistration={isActiveRegistration}
+                    setIsActiveLogin={setIsActiveLogin}
+                    setIsActiveRegistration={setIsActiveRegistration}
+                />
+            )}
             <Routes>
                 <Route
-                    path="/"
+                    path={'/home' || '/'}
                     element={
                         <Suspense fallback={<LoadingPage />}>
                             <HomePage />
-                        </Suspense>
-                    }
-                />
-                <Route
-                    path="/profile/:userName"
-                    element={
-                        <Suspense fallback={<LoadingPage />}>
-                            <ProfilePage />
                         </Suspense>
                     }
                 />

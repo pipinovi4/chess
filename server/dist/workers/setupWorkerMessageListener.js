@@ -17,10 +17,6 @@ const setupWorkerMessageListener = (socket, worker) => {
                 console.log(chalk_1.default.bgGreen('listener', JSON.stringify(payloadWithoutMessage, null, 2)));
                 socket.emit('engine-started', payloadWithoutMessage);
                 break;
-            case 'ENGINE_STOPPED':
-                console.log(chalk_1.default.bgGreen('listener', JSON.stringify(payloadWithoutMessage, null, 2)));
-                socket.emit('engine-stopped', payloadWithoutMessage);
-                break;
             case 'MOVE_CALCULATED':
                 console.log(chalk_1.default.bgGreen('listener', JSON.stringify(payloadWithoutMessage, null, 2)));
                 socket.emit('move-calculated', payloadWithoutMessage);

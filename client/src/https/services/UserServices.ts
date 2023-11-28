@@ -25,7 +25,7 @@ class AuthService {
             if (!response?.data) {
                 throw new Error('No response data')
             }
-
+            console.log(response.data)
             localStorage.setItem('accessToken', response.data.accessToken)
 
             return response.data
@@ -84,9 +84,11 @@ class AuthService {
         personalInformation: string
     ): Promise<AuthResponse | null> {
         try {
+            console.log(personalInformation, 'fsdjfns')
             const emailRegex =
                 /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
-            let response: AxiosResponse<AuthResponse | null>
+
+            let response: void | AxiosResponse<AuthResponse | null>
             if (personalInformation.match(emailRegex)) {
                 response = await $userApi.post('/find-auth-data', {
                     email: personalInformation,
@@ -100,9 +102,64 @@ class AuthService {
                     'Incorrect personal information when you try to make a request'
                 )
             }
-            return response.data
+            if (response) {
+                console.log(response)
+                return response.data
+            } else {
+                return null
+            }
         } catch (error) {
             console.error('Error during data search:', error)
+            throw error
+        }
+    }
+
+    static async updateUserAvatar(newUserAvatar: string) {
+        try {
+            if (!newUserAvatar) {
+                throw new Error(
+                    'When you try to send a request to update the user avatar, it is as avatar argument is unknown'
+                )
+            }
+
+            const response = await $userApi.post(
+                '/update-user-avatar',
+                {newUserAvatar}
+            )
+
+            if (response.status !== 200) {
+                throw new Error(
+                    'After attempting to update user avatar, response status was not returned as 200'
+                )
+            }
+        } catch (error) {
+            console.error('Error during update user avatar:', error)
+            throw error
+        }
+    }
+
+    static async updateUserName(newUserName: string) {
+        try {
+            if (!newUserName) {
+                throw new Error(
+                    'When you try to send a request to update the user name, it is as avatar argument is unknown'
+                )
+            }
+
+            const response = await $userApi.post(
+                '/update-user-name',
+                {newUserName}
+            )
+
+            console.log(response)
+
+            if (response.status !== 200) {
+                throw new Error(
+                    'After attempting to update user name, response status was not returned as 200'
+                )
+            }
+        } catch (error) {
+            console.error('Error during update user name:', error)
             throw error
         }
     }

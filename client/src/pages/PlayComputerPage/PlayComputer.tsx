@@ -1,25 +1,56 @@
-import { useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useMemo, useState } from 'react'
 import EngineModel from '../../entites/EngineModel'
-import UtilityBoardUI from '../../shared/UI/GameBoard/UtilityBoardUI'
+import Board from '../../entites/board/Board'
 import BoardComponent from '../../widgets/Board/BoardComponent'
 import ComputerGameBoard from '../../widgets/ComputerGameBoard/ComputerGameBoard'
 import OpponentInfo from '../../widgets/OpponentInfo/OpponentInfo'
 import PawnAdvantageColumn from '../../widgets/PawnAdvantageColumn/PawnAdvantageColumn'
 import './style.scss'
-import Board from '../../entites/board/Board'
+import MoveHistoryBoard from '../../widgets/MoveHistoryBoard/MoveHistoryBoard'
 
 const PlayComputer = () => {
-    const engineModel = new EngineModel()
-    const [gameBoard, setGameBoard] = useState<Board | null>(null)
+    const [board, setBoard] = useState<Board>(new Board())
+    const [gameStarted, setGameStarted] = useState(false)
+
+    const engineModel = useMemo(() => {
+        return new EngineModel(setBoard, board)
+    }, [])
+
+    useEffect(() => {
+        setGameStarted(engineModel.gameStarted)
+    }, [engineModel.gameStarted])
+
+    useEffect(() => {
+        const newBoard = new Board()
+        newBoard.initCells()
+        newBoard.addFigures()
+        setBoard(newBoard)
+    }, [])
+
     return (
         <div className="container-play__computer">
             <PawnAdvantageColumn engineModel={engineModel} />
-            <OpponentInfo player={engineModel.getPlayers()?.opponentPlayer} gameBoard={gameBoard} engineModel={engineModel} />
-            <BoardComponent setGameBoard={setGameBoard} gameMode={engineModel} />
-            <OpponentInfo player={engineModel.getPlayers()?.currentPlayer} gameBoard={gameBoard} />
-            <UtilityBoardUI>
+            <OpponentInfo
+                board={board}
+                playerStatus="current"
+                gameMode={engineModel}
+            />
+            <BoardComponent
+                board={board}
+                setBoard={setBoard}
+                gameMode={engineModel}
+            />
+            <OpponentInfo
+                board={board}
+                playerStatus="opponent"
+                gameMode={engineModel}
+            />
+            {gameStarted ? (
+                <MoveHistoryBoard board={board} />
+            ) : (
                 <ComputerGameBoard engineModel={engineModel} />
-            </UtilityBoardUI>
+            )}
         </div>
     )
 }

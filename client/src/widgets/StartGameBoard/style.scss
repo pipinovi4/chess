@@ -1,0 +1,150 @@
+@import '../../shared/globalStyle/colors.scss';
+@import '../../shared/globalStyle/fonts.scss';
+
+.container-board__startGame {
+    .container-board {
+        position: absolute;
+        left: 55dvw;
+        width: 25dvw;
+        height: 96dvh;
+        background-color: $globalOverlayBackground;
+        border-radius: 1%;
+        top: 2dvh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+        @media (max-width: 1400px) {
+            left: 58dvw;
+            width: 28dvw;
+        }
+        @media (max-width: 1350px) {
+            left: 60dvw;
+        }
+        @media (max-width: 1100px) {
+            width: 24dvw;
+            left: 64dvw;
+        }
+        @media (max-width: 980px) {
+            width: 20dvw;
+            left: 70dvw;
+        }
+        @media (max-width: 900px) {
+            width: 80dvw;
+            height: 95dvh;
+            top: 82dvw;
+            left: 1dvh;
+        }
+        @media (max-width: 700px) {
+            width: 80dvw;
+            height: 95dvh;
+            top: 95dvw;
+        }
+        @media (max-width: 600px) {
+            top: 110dvw;
+        }
+
+        .container-game__options {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 7dvh;
+            width: 85%;
+            height: 7%;
+            background-color: hsla(0, 0%, 100%, 0.08);
+            border-radius: 2%;
+            cursor: pointer;
+
+            &:hover {
+                background-color: $globalGraySoftHover;
+            }
+
+            .main-game__options {
+                display: flex;
+                align-items: center;
+
+                .text-game__options {
+                    font-size: calc(0.6dvw + 0.6dvh);
+                    margin-left: 0.5dvw;
+                    font-weight: 500;
+
+                    @media (max-width: 900px) {
+                        font-size: calc(1.3dvw + 1.3dvh);
+                        margin-left: 1.5dvw;
+                    }
+                }
+
+                .clock-game__options {
+                    width: 1dvw;
+                    height: 1dvw;
+
+                    @media (max-width: 900px) {
+                        width: 2.5dvw;
+                        height: 2.5dvw;
+                    }
+                    @media (max-width: 700px) {
+                        width: 3.5dvw;
+                        height: 3.5dvw;
+                    }
+                }
+            }
+
+            .arrow-game__options {
+                width: 1rem;
+                height: 1rem;
+                position: absolute;
+                right: 11%;
+                transform: rotate(90deg);
+            }
+
+            .active-arrow {
+                transform: rotate(-90deg);
+            }
+        }
+    }
+}
+.button-start__game {
+    margin-top: 2.5rem;
+    width: 84%;
+    height: calc((8dvh + 8dvw) / 3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    background-color: $greenMainColor;
+    box-shadow: 0px 3px 0px $greenInnerBoxShadowrg;
+    border-radius: 0.5rem;
+    border: none;
+    border-bottom: 0.05rem solid $greenBorderBottomLine;
+    position: relative;
+    font-size: 1.3rem;
+    font-weight: 800;
+    font-family: $globalSecondaryFont;
+    color: #fff;
+
+    @media (max-width: 900px) {
+        font-size: calc(1.5dvw + 1.5dvh);
+        height: calc((4.5dvh + 4.6dvw));
+    }
+
+    &:hover {
+        background-color: $greenBackgroundHover;
+        border-bottom: 0.01rem solid $greenBorderBottomLineHover;
+        box-shadow: 0px 3px 0px $innerBoxShadow;
+        cursor: pointer;
+        transition: box-shadow 0.3s;
+
+        &:hover:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: 0px 0px 25px $innerBoxShadow;
+            background-color: #d7ff9222;
+            border-radius: 0.5rem;
+        }
+    }
+}

@@ -21,6 +21,7 @@ class EngineModel extends BaseEngineService {
      */
     public startEngine(callback: (status: string) => void, difficultyBot: difficultyBot) {
         if (this.engineProcess) {
+            console.log(this.engineProcess)
             this.difficultyBot = difficultyBot
             this.engineProcess.on('error', (error) => {
                 this.handleEngineError(error, callback)
@@ -30,18 +31,6 @@ class EngineModel extends BaseEngineService {
                 this.handleEngineClose(code, callback)
             })
         }
-    }
-
-    /**
-     * Stops the chess engine and cleans up resources.
-     * @param {function} callback - Callback function to handle engine status.
-     */
-    public stopEngine(callback: (status: string) => void) {
-        if (this.engineProcess) {
-            this.engineProcess.kill()
-            this.engineProcess = null
-        }
-        callback('Engine stopped')
     }
 }
 

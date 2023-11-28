@@ -1,0 +1,111 @@
+@import '../../../../../shared/globalStyle/colors.scss';
+@import '../../../../../shared/globalStyle/fonts.scss';
+
+.login-modal__form {
+    width: 100%;
+    height: 100%;
+    grid-row: 4 / 8;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    .personal-information__input,
+    .password-input {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        width: 31dvh;
+        height: 4dvh;
+        background-color: hsla(0, 0%, 100%, 0.1);
+        outline: none;
+        border-radius: 0.2dvh;
+        color: $globalColorThemeMid;
+        font-size: 1.4dvh;
+        border: 0.1dvh solid $greySupportiveColor;
+        padding-left: 4dvh;
+        margin-top: 1.5dvh;
+
+        &:hover {
+            border: 0.1dvh solid #fff;
+        }
+    }
+
+    .lock-in__input,
+    .person-in__input {
+        position: absolute;
+        width: 2dvh;
+        height: 2dvh;
+        margin-top: -3dvh;
+        margin-left: 1dvh;
+    }
+
+    .checkmark-personal__information {
+        position: absolute;
+        width: 2dvh;
+        height: 2dvh;
+        margin-top: -3dvh;
+        margin-left: 28dvh;
+    }
+
+    .authentication-controls {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        margin-left:6.7dvh;
+        margin-top: 1.7dvh;
+
+        .checkbox-remember__account {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .checkbox-label {
+            display: flex;
+            cursor: pointer;
+        }
+
+        .custom-checkbox-label {
+            width: 1.4dvh;
+            height: 1.4dvh;
+            border-radius: 0.2dvh;
+            border: 0.08dvh solid $globalColorThemeMid;
+        }
+
+        .active {
+            background-color: $globalColorThemeLow;
+        }
+
+        .checkbox-checkmark__label {
+            fill: $globalColorThemeHigh;
+            width: 1.1dvh;
+            height: 1.1dvh;
+            margin-left: .12dvh;
+            margin-bottom: .35dvh;
+        }
+
+
+        .label-checkbox__text {
+            font-size: 1.2dvh;
+            margin-left: 0.8dvh;
+            font-weight: 600;
+            color: $globalColorThemeMid;
+        }
+
+        .text-question__password {
+            font-size: 1.1dvh;
+            margin-left: 11.8dvh;
+            color: $color-text-link;
+            font-weight: 500;
+            cursor: pointer;
+        }
+    }
+
+    .eye-password__visible {
+        position: absolute;
+        width: 25%;
+        height: 3%;
+        margin-top: -3.1dvh;
+        margin-left: 24.5dvh;
+    }
+}

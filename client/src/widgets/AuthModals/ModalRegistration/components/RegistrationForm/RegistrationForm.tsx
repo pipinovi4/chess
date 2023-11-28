@@ -6,7 +6,7 @@ import lock from '../../../assets/lock.svg'
 import eye from '../../../assets/eye.svg'
 import eyeCrossed from '../../../assets/eye-crossed.svg'
 import checkmark from '../../../assets/checkmark.svg'
-import './registrationForm.scss'
+import './style.scss'
 import AuthService from '../../../../../https/services/UserServices'
 
 interface RegistrationFormProps {
@@ -101,31 +101,43 @@ const RegistrationForm: FC<RegistrationFormProps> = ({
 
     return (
         <div className="container-registration__form">
-            <input
-                onChange={handleChangeUsernameInput}
-                value={userName}
-                className="username-input"
-                type="text"
-                placeholder="Username"
-            />
-            {isValidUserName && (
-                <img
-                    className="checkmark-validation__userName"
-                    src={checkmark}
+            <div className="username-input__container">
+                <input
+                    onChange={handleChangeUsernameInput}
+                    value={userName}
+                    className="username-input"
+                    type="text"
+                    placeholder="Username"
                 />
-            )}
-            <img className="username-input__image" src={pesron} alt="person" />
-            <input
-                onChange={handleChangeEmailInput}
-                value={email}
-                className="email-input"
-                type="text"
-                placeholder="Email"
-            />
-            {isValidEmail && (
-                <img className="checkmark-validation__email" src={checkmark} />
-            )}
-            <img className="email-input__image" src={mail} alt="" />
+                {isValidUserName && (
+                    <img
+                        className="checkmark-validation__userName"
+                        src={checkmark}
+                    />
+                )}
+                <img
+                    className="username-input__image"
+                    src={pesron}
+                    alt="person"
+                />
+            </div>
+            <div className="email-input__container">
+                <input
+                    onChange={handleChangeEmailInput}
+                    value={email}
+                    className="email-input"
+                    type="text"
+                    placeholder="Email"
+                />
+                {isValidEmail && (
+                    <img
+                        className="checkmark-validation__email"
+                        src={checkmark}
+                    />
+                )}
+                <img className="email-input__image" src={mail} alt="" />
+            </div>
+            <div className="password-input__container">
             <input
                 onChange={handleChangePasswordInput}
                 value={password}
@@ -140,6 +152,7 @@ const RegistrationForm: FC<RegistrationFormProps> = ({
                 src={passwordVisibylity ? eye : eyeCrossed}
                 alt="eye"
             />
+            </div>
         </div>
     )
 }

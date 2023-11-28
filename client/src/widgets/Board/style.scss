@@ -1,23 +1,62 @@
 .board {
-    margin-left: 10dvw;
-    margin-top: 6.5dvh;
-    width: 87dvh;
-    height: 87dvh;
+    margin-left: 7.5dvh;
+    margin-top: 7.5dvh;
+    width: 85dvh;
+    height: 85dvh;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    z-index: 999;
+    z-index: 10;
+
+    @media (max-width: 1300px) {
+        width: 75dvh;
+        height: 75dvh;
+        margin-left: 4dvh;
+    }
+    @media (max-width: 1100px) {
+        width: 70dvh;
+        height: 70dvh;
+    }
+    @media (max-width: 900px) {
+        width: 65dvw;
+        height: 65dvw;
+        margin-left: 7.5dvw;
+    }
+
+    @media (max-width: 700px) {
+        width: 75dvw;
+        height: 75dvw;
+        margin-left: 3dvw;
+    }
 }
 
 .image-board {
     position: absolute;
-    width: 87dvh;
-    height: 87dvh;
+    width: 85dvh;
+    height: 85dvh;
     z-index: 0;
+
+    @media (max-width: 1300px) {
+        width: 75dvh;
+        height: 75dvh;
+    }
+    @media (max-width: 1100px) {
+        width: 70dvh;
+        height: 70dvh;
+    }
+    @media (max-width: 900px) {
+        width: 65dvw;
+        height: 65dvw;
+    }
+
+    @media (max-width: 700px) {
+        width: 75dvw;
+        height: 75dvw;
+    }
 }
 
 .container-board {
-    width: 100dvw;
+    width: 91dvw;
     height: 100dvh;
 }

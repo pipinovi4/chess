@@ -11,10 +11,37 @@
     right: 0;
     overflow: hidden;
 
+    @media (max-width: 900px) {
+        overflow: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
     .play-image__board {
-        width: 87dvh;
-        height: 87dvh;
-        margin-left: 10dvw;
-        margin-top: 6.5dvh;
+        margin-left: 7.5dvh;
+        margin-top: 7.5dvh;
+        width: 85dvh;
+        height: 85dvh;
+
+        @media (max-width: 1300px) {
+            width: 75dvh;
+            height: 75dvh;
+            margin-left: 4dvh;
+        }
+        @media (max-width: 1100px) {
+            width: 70dvh;
+            height: 70dvh;
+        }
+        @media (max-width: 900px) {
+            width: 65dvw;
+            height: 65dvw;
+            margin-left: 7.5dvw;
+        }
+    
+        @media (max-width: 700px) {
+            width: 75dvw;
+            height: 75dvw;
+            margin-left: 3dvw;
+        }
     }
 }
