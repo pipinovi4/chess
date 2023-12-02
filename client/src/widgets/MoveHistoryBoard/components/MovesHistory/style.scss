@@ -5,6 +5,15 @@
     height: calc(96dvh * 0.89);
     overflow-y: auto;
 
+    @media (max-width: 900px) {
+        height: 18dvh;
+    }
+
+    @media (max-width: 700px) {
+        top: 90dvw;
+        height: 22dvh;
+    }
+
     &::-webkit-scrollbar {
         width: 0.8dvh;
     }
@@ -15,35 +24,52 @@
     }
 
     .moves-container {
+        position: relative;
         height: calc((96dvh * 0.89) / 22);
         width: 100%;
         display: flex;
-        align-items: center;
         padding-left: 5%;
         font-size: 0.65dvw;
+
+        @media (max-width: 900px) {
+            font-size: 1.2dvw;
+        }
 
         .row-number {
             display: flex;
             align-items: center;
+            justify-content: center;
             width: 3%;
             height: 100%;
             color: hsla(0, 0%, 100%, 0.5);
             margin-right: -7%;
         }
         .container-notation__move {
-            width: 6%;
-            height: 75%;
+            top: 15%;
+            bottom: 15%;
             display: flex;
             align-items: center;
-            justify-content: start;
-            margin-left: 13%;
             cursor: pointer;
+            padding: 0.5% 1%;
+            border-radius: 1px;
+
+            @media (max-width: 900px) {
+                border-radius: 2px;
+            }
+
+            &:has(img) {
+                padding: 0 0.5%;
+            }
 
             .notation-figure__logo {
                 width: 1dvw;
                 height: 1dvw;
-                margin-left: -13%;
-                margin-right: -6%;
+                margin-left: -6%;
+                @media (max-width: 900px) {
+                    width: 2.4dvw;
+                    height: 2.4dvw;
+                    margin-left: -15%;
+                }
             }
 
             .move {
@@ -51,7 +77,27 @@
                 color: hsla(0, 0%, 100%, 0.72);
                 font-size: 0.7dvw;
                 text-wrap: nowrap;
+                margin-left: -3%;
+                @media (max-width: 900px) {
+                    font-size: 1.5dvw;
+                    margin-left: -3%;
+                }
             }
+        }
+
+        .white-notation__move {
+            position: absolute;
+            left: 12%;
+        }
+
+        .black-notation__move {
+            position: absolute;
+            left: 35%;
+        }
+
+        .selected-move__index {
+            background-color: hsla(0, 0%, 100%, 0.2);
+            border-bottom: 0.2dvw solid hsla(0, 0%, 100%, 0.1);
         }
     }
 

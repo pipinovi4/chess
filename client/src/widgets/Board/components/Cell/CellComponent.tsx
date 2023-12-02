@@ -1,17 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, RefObject, useRef } from 'react'
-import { Cell } from '../../entites/cell/Cell'
+import { Cell } from '../../../../entites/cell/Cell'
 import './style.scss'
-import { FigureNames } from '../../entites/figures/Figure'
-import ModalPickFigure from '../ModalPickFigure'
-import moveFigureService from '../../services/moveServices/moveFigureService'
-import { Colors } from '../../constants/Colors'
-import createChessNotation from '../../helpers/creatersNotation/createChessNotation'
+import { FigureNames } from '../../../../entites/figures/Figure'
+import moveFigureService from '../../../../services/moveServices/moveFigureService'
+import { Colors } from '../../../../constants/Colors'
+import createChessNotation from '../../../../helpers/creatersNotation/createAlgebraicNotation'
 
 interface CellProps {
     cell: Cell
-    activeModal: boolean
-    setActiveModal: (activeModal: boolean) => void
+    cellPawnPromotion: Cell | null
     boardRef: RefObject<HTMLDivElement>
     selectedCell: Cell | null
     moveFigure: (cell: Cell) => void
@@ -19,8 +17,6 @@ interface CellProps {
 
 const CellComponent: FC<CellProps> = ({
     cell,
-    activeModal,
-    setActiveModal,
     selectedCell,
     moveFigure,
     boardRef,
@@ -42,6 +38,7 @@ const CellComponent: FC<CellProps> = ({
 
     return (
         <div
+            id={cell.id.toString()}
             onMouseDown={handleMouseDown}
             className={[
                 'cell',
@@ -83,16 +80,6 @@ const CellComponent: FC<CellProps> = ({
                     ? Colors.WHITE
                     : Colors.BLACK
             ) && <div className="king-attacked" />}
-            {activeModal &&
-                cell.figure?.name === FigureNames.PAWN &&
-                cell.y === 0 &&
-                cell && (
-                    <ModalPickFigure
-                        activeModal={activeModal}
-                        cell={cell}
-                        setActiveModal={setActiveModal}
-                    />
-                )}
             <div
                 className={
                     selectedCell?.figure?.canMove(cell) && cell.figure

@@ -12,12 +12,9 @@ export default class Board {
     public cells: Cell[][] = []
     public kingCheckCell: Cell | null = null
     public lostFigures: Array<Figure> = []
-    public historyMoves: Array<{
-        engleashNotation: string,
-        algebraicNotation: string,
-        selectedFigureLogo: string | undefined | null
-    }> = []
+    public historyMoves: Array<string> = []
     public historyBoardCells: Array<Board> = []
+    public isCheckMate = false
 
     public initCells() {
         for (let i = 0; i < 8; i++) {

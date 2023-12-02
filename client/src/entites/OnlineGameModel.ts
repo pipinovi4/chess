@@ -3,7 +3,6 @@ import OnlineGameSocketService from '../services/gameServices/socketSevices/onli
 import Board from './board/Board'
 import { Cell } from './cell/Cell'
 import { Player } from './player/Player'
-import convertEngleashChessNotation from '../helpers/creatersNotation/createEngleashChessNotation'
 
 /**
  * GameModel class extends GameService to manage game-related logic and socket communication.
@@ -73,15 +72,6 @@ class OnlineGameModel extends OnlineGameSocketService {
                     selectedCell,
                     targetCell
                 )
-                const moveEngleashNotation = convertEngleashChessNotation(selectedCell, targetCell)
-                if (moveEngleashNotation.engleashNotation.match(/[a-h][1-8][a-h][1-8]/)) {
-                    console.log('Move correct', moveEngleashNotation.engleashNotation)
-                } else {
-                    console.error(
-                        'When trying to send a move to your opponent, it was not correct: ',
-                        moveEngleashNotation.engleashNotation
-                    )
-                }
             } else {
                 console.error(
                     'Move is incorrect when trying send move opponent'

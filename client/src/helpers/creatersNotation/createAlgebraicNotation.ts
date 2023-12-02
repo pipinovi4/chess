@@ -1,4 +1,5 @@
 import { Cell } from '../../entites/cell/Cell'
+import { FigureNames } from '../../entites/figures/Figure'
 
 /**
  * Converts chess move coordinates from system coordinates to Algebraic notation.
@@ -28,6 +29,13 @@ const createChessNotation = (
 
         // Convert target y-coordinate to corresponding number (1-8) in Algebraic notation
         algebraicNotation += 8 - targetCell.y
+
+        if (
+            selectedCell?.figure?.name === FigureNames.PAWN &&
+            (targetCell?.y === 0 || targetCell.y === 7)
+        ) {
+            algebraicNotation += `=${selectedCell.figure.promotedTo}`
+        }
     }
 
     return algebraicNotation

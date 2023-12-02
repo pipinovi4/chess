@@ -5,7 +5,7 @@ import { FigureNames } from '../../figures/Figure'
 import { Cell } from '../Cell'
 
 class KingAttackService {
-    updateCellUnderAttack(board: Board) {
+    async updateCellsUnderAttack(board: Board) {
         this.resetCellsUnderAttack(board)
         for (let x = 0; x < 8; x++) {
             for (let y = 0; y < 8; y++) {
@@ -29,6 +29,7 @@ class KingAttackService {
                         targetCell.figure?.name === FigureNames.KING &&
                         selectedCell.figure.color !== targetCell.figure.color
                     ) {
+                        console.log('king under check')
                         selectedCell.board.kingCheckCell = targetCell
                     }
                     targetCell.underAtack.push(selectedCell.figure.color)
@@ -42,9 +43,9 @@ class KingAttackService {
             for (let j = 0; j < 8; j++) {
                 const currentIterationCell = board.getCell(i, j)
                 currentIterationCell.underAtack = []
-                board.kingCheckCell = null
             }
         }
+        board.kingCheckCell = null 
     }
 
     validateMoveUnderCheck(targetCell: Cell, selectedCell: Cell) {
@@ -67,8 +68,14 @@ class KingAttackService {
                     const copy = _.cloneDeep(virtualBoard.kingCheckCell)
                     virtualTargetCell.setFigure(virtualSelectedCell.figure)
                     virtualSelectedCell.figure = null
-                    this.updateCellUnderAttack(virtualBoard)
-                    if (copy && virtualBoard.kingCheckCell && copy.figure?.color !== virtualBoard.kingCheckCell?.figure?.color) return false
+                    this.updateCellsUnderAttack(virtualBoard)
+                    if (
+                        copy &&
+                        virtualBoard.kingCheckCell &&
+                        copy.figure?.color !==
+                            virtualBoard.kingCheckCell?.figure?.color
+                    )
+                        return false
                     if (
                         virtualBoard.kingCheckCell &&
                         virtualBoard.kingCheckCell.figure?.color !==

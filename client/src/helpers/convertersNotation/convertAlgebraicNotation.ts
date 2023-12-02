@@ -13,6 +13,7 @@ import { coordinatesCells } from '../types'
  * @returns {coordinatesCells | null} An object containing the selected and target cell coordinates, or null if the move is invalid.
  */
 const convertAlgebraicNotation = (move: string): coordinatesCells | null => {
+    console.log(move)
     // Check if the provided move follows the correct format
     if (!move.match(/^[a-h][1-8][a-h][1-8]$/)) {
         console.error('The move sent from the server is incorrect.')

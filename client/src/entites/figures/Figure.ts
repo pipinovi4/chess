@@ -27,6 +27,7 @@ export class Figure {
     prevCellAttacked: number[][] = []
     canMoves: Array<Cell> = []
     id: string = uuid.v4()
+    promotedTo: string | null
 
     constructor(color: Colors, cell: Cell) {
         this.color = color
@@ -34,6 +35,7 @@ export class Figure {
         this.cell.figure = this
         this.logo = null
         this.name = FigureNames.FIGURE
+        this.promotedTo = null
     }
 
     canMove(target: Cell): boolean {

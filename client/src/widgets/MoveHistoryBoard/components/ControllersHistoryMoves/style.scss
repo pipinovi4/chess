@@ -11,15 +11,25 @@
     align-self: flex-end;
     padding-left: 3%;
 
+    @media (max-width: 900px) {
+        height: 30%;
+    }
+
     .end-game__button,
     .forward-move__button,
     .backward-move__button {
+        position: relative;
         width: 25%;
         height: 50%;
         background-color: $globalGraySoft;
         border: none;
         border-radius: 8%;
         margin-right: 3%;
+
+        @media (max-width: 900px) {
+            height: 43%;
+            width: 30%;
+        }
 
         &::before {
             content: attr(data-tooltip);
@@ -29,31 +39,52 @@
             justify-content: center;
             font-weight: 500;
             font-size: 1.5dvh;
-            width: 11dvh;
-            height: 3dvh;
-            bottom: 9dvh;
+            width: 105%;
+            height: 65%;
+            bottom: 130%;
             background-color: rgba(0, 0, 0, 0.8);
             color: #fff;
             text-wrap: nowrap;
-            left: calc(12.5dvw - 5.5dvh);
+            left: -2.5%;
             border-radius: 5%;
             opacity: 0;
             transition: opacity 0.3s ease;
+
+            @media (max-width: 900px) {
+                width: 50%;
+                height: 85%;
+                bottom: 140%;
+                left: 25%;
+            }
         }
 
         &::after {
             content: '';
-            bottom: 8.3dvh;
+            position: absolute;
+            display: block;
+            bottom: 110%;
             transition: opacity 0.3s ease;
             width: 0;
             opacity: 0;
             height: 0;
-            border-left: 0.3dvw solid transparent;
-            border-right: 0.3dvw solid transparent;
-            border-top: 0.4dvw solid #000;
-            left: calc(12.5dvw - 0.3dvw);
+            border-left: .5rem solid transparent;
+            border-right: .5rem solid transparent;
+            border-top: .7rem solid #000;
+            left: 43.5%;
             position: absolute;
-            display: block;
+
+            @media (max-width: 1100px) {
+                border-left: .4rem solid transparent;
+                border-right: .4rem solid transparent;
+                border-top: .6rem solid #000;
+            }
+
+            @media (max-width: 900px) {
+                border-left: .2rem solid transparent;
+                border-right: .2rem solid transparent;
+                border-top: .4rem solid #000;
+                left: 47%;
+            }
         }
 
         &:hover {
@@ -81,24 +112,14 @@
         .backward-image__arrow {
             width: 20%;
             max-height: 80%;
+
+            @media (max-width: 900px) {
+                max-height: 60%;
+            }
         }
 
         .backward-image__arrow {
             rotate: 180deg;
         }
-    }
-
-    .end-game__button::before {
-        left: 5.6dvh;
-    }
-    .end-game__button::after {
-        left: 10.4dvh;
-    }
-
-    .forward-move__button::before {
-        left: 16.3dvw;
-    }
-    .forward-move__button::after {
-        left: 18.9dvw;
     }
 }

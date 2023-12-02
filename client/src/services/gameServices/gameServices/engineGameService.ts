@@ -1,5 +1,5 @@
 import { Cell } from '../../../entites/cell/Cell'
-import createChessNotation from '../../../helpers/creatersNotation/createChessNotation'
+import createChessNotation from '../../../helpers/creatersNotation/createAlgebraicNotation'
 import EngineSocketService from '../socketSevices/egnineSocketService'
 import { ProcessedDataServer, ResponseServerMove } from '../types'
 import convertChessNotation from '../../../helpers/convertersNotation/convertAlgebraicNotation'

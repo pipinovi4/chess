@@ -6,33 +6,27 @@ import { FigureNames } from '../../entites/figures/Figure'
 import moveCheckSoundMP3 from '../../sounds/move-check.mp3'
 
 class AnimationMoveFigureService {
-    public async animateMoveFigure(
-        targetCell: Cell,
-        selectedCell: Cell,
-    ) {
+    public animateMoveFigure(targetCell: Cell, selectedCell: Cell) {
         if (selectedCell.figure) {
             const selectedFigureRect = document
                 .getElementById(selectedCell.figure.id)
                 ?.getBoundingClientRect()
+            console.log(document.getElementById(selectedCell.figure.id))
             const figureRef = document.getElementById(selectedCell.figure.id)
             if (selectedFigureRect && figureRef) {
                 const xOffset =
                     (targetCell.x - selectedCell.x) * selectedFigureRect.width
                 const yOffset =
                     (targetCell.y - selectedCell.y) * selectedFigureRect.height
-                figureRef.style.transition = `transform 0.075s ease`
+                figureRef.style.transition = `transform 0.5s ease`
                 figureRef.style.transform = `translate(${xOffset}px, ${yOffset}px)`
 
-                const listener = async () => {
-                    await new Promise<void>((resolve) => {
-                        if (selectedCell.figure) {
-                            figureRef.style.transition = `none`
-                            document
-                                .getElementById(selectedCell.figure.id)
-                                ?.removeEventListener('transitionend', listener)
-                            resolve()
-                        }
-                    })
+                const listener = () => {
+                    if (selectedCell.figure) {
+                        document
+                            .getElementById(selectedCell.figure.id)
+                            ?.removeEventListener('transitionend', listener)
+                    }
                 }
                 document
                     .getElementById(selectedCell.figure.id)
@@ -46,7 +40,12 @@ class AnimationMoveFigureService {
         selectedCell: Cell | null,
         targetIsFigure: boolean
     ) {
-        if (selectedCell?.board.kingCheckCell) {
+        if (
+            selectedCell?.board.historyMoves[
+                selectedCell.board.historyMoves.length - 1
+            ].includes('+')
+        ) {
+            console.log(selectedCell.board)
             const checkSound = new Audio(moveCheckSoundMP3)
             await checkSound.play()
         } else if (

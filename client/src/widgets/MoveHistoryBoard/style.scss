@@ -7,6 +7,40 @@
     position: absolute;
     left: calc(85dvh + 8dvw);
     top: 2dvh;
-    border-radius: 1dvh;
+    border-radius: .1dvh;
     overflow: hidden;
+
+    @media (max-width: 1400px) {
+        left: 58dvw;
+        width: 28dvw;
+    }
+    @media (max-width: 1350px) {
+        left: 60dvw;
+    }
+    @media (max-width: 1100px) {
+        width: 24dvw;
+        left: 64dvw;
+    }
+    @media (max-width: 950px) {
+        width: 20dvw;
+        left: 68dvw;
+    }
+    @media (max-width: 900px) {
+        border-radius: 2dvh;
+        width: 80dvw;
+        height: 25%;
+        top: 80dvw;
+        left: 0;
+        margin-bottom: 4dvh;
+    }
+    @media (max-width: 700px) {
+        top: 90dvw;
+        height: 30%;
+    }
+    @media (max-width: 600px) {
+        top: 100dvw;
+    }
+    @media (max-width: 600px) {
+        top: 105dvw;
+    }
 }

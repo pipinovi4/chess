@@ -3,8 +3,9 @@ import { Rook } from '../figures/Rook'
 import Board from '../board/Board'
 import { Colors } from '../../constants/Colors'
 import KingAttackService from './CellServices/KingAttackService'
-import convertEngleashChessNotation from '../../helpers/creatersNotation/createEngleashChessNotation'
-import createAlgebraicNotation from '../../helpers/creatersNotation/createChessNotation'
+import createUpdatedEnglishNotation from '../../helpers/creatersNotation/createUpdatedEnglishNotation'
+import _ from 'lodash'
+import { RefObject } from 'react'
 
 export class Cell {
     readonly x: number
@@ -13,6 +14,7 @@ export class Cell {
     board: Board
     available: boolean
     underAtack: Array<Colors> = []
+    ref: RefObject<HTMLDivElement> | null = null
     id: number
 
     constructor(board: Board, x: number, y: number) {
@@ -71,16 +73,21 @@ export class Cell {
             if (target.figure) {
                 this.board.lostFigures.push(target.figure)
                 console.log(this.board.lostFigures)
-            } 
-            const engleashNotationMove = convertEngleashChessNotation(this, target)
-            const algebraicNotation = createAlgebraicNotation(target, this)
+            }
+            const copySelectedCell = _.cloneDeep(this)
+            const copyTargetCell = _.cloneDeep(target)
             this.validateAndMadeCastle(target)
             this.figure.moveFigure(target)
             target.setFigure(this.figure)
             this.figure = null
-            KingAttackService.updateCellUnderAttack(this.board)
-            this.board.historyMoves.push({...engleashNotationMove, algebraicNotation})
-            console.log(213112)
+            KingAttackService.updateCellsUnderAttack(this.board)
+            const advancedEngleashNotation = createUpdatedEnglishNotation(
+                copySelectedCell,
+                copyTargetCell,
+                this.board,
+                copySelectedCell.figure?.promotedTo
+            )
+            this.board.historyMoves.push(advancedEngleashNotation)
         }
     }
 }

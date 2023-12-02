@@ -1,0 +1,53 @@
+.pawn-promotion__dialog {
+    position: absolute;
+    width: calc(100% / 8);
+    height: calc((100% / 8)) * 4.5;
+    display: grid;
+    grid-template-rows: 22.5% 22.5% 22.5% 22.5% 10%;
+    background-color: #fff;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.45);
+    z-index: 100;
+    cursor: pointer;
+
+    .promotion-figure {
+        width: 100%;
+    }
+
+    .queen {
+        grid-row: 1;
+    }
+    .rook {
+        grid-row: 2;
+    }
+    .knight {
+        grid-row: 3;
+    }
+    .bishop {
+        grid-row: 4;
+    }
+
+    .close-promotion__dialog {
+        grid-row: 5;
+        background-color: #f1f1f1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .button-close__promotion {
+            height: 50%;
+            cursor: pointer;
+            font-size: calc(1dvw + 1dvh);
+            color: #8b8987;
+
+            @media (max-width: 900px) {
+                font-size: calc(1.1dvw + 1.1dvh);
+            }
+            @media (max-width: 700px) {
+                font-size: calc(1.3dvw + 1.3dvh);
+            }
+            @media (max-width: 600px) {
+                font-size: calc(1.4dvw + 1.4dvh);
+            }
+        }
+    }
+}

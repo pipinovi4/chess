@@ -5,13 +5,15 @@ import './style.scss'
 import { FC } from 'react'
 
 interface ControllersHistoryMovesProps {
-    handleChangeCurrentViewedMove: () => void
-    setCurrentViewedIndexMove:  React.Dispatch<React.SetStateAction<number>>
+    handleChangeCurrentViewedMove: (newCurrentViewedIndexMove: number) => void
+    historyMoves: Array<string>
+    currentViewedIndexMove: number
 }
 
 const ControllersHistoryMoves: FC<ControllersHistoryMovesProps> = ({
     handleChangeCurrentViewedMove,
-    setCurrentViewedIndexMove
+    currentViewedIndexMove,
+    historyMoves,
 }) => {
     const navigate = useNavigate()
     return (
@@ -28,19 +30,29 @@ const ControllersHistoryMoves: FC<ControllersHistoryMovesProps> = ({
             >
                 <img className="endGame-image__plus" src={plus} alt="plus" />
             </button>
-            <button data-tooltip="Move Back" className="backward-move__button">
+            <button
+                onClick={() => {
+                    if (currentViewedIndexMove >= 0)
+                        handleChangeCurrentViewedMove(
+                            currentViewedIndexMove - 1
+                        )
+                }}
+                data-tooltip="Move Back"
+                className="backward-move__button"
+            >
                 <img
-                    onClick={() => {
-                        setCurrentViewedIndexMove((prev: number) => prev - 1)
-                        handleChangeCurrentViewedMove
-                    }}
                     className="backward-image__arrow"
                     src={arrow}
                     alt="arrow"
                 />
             </button>
             <button
-                onClick={handleChangeCurrentViewedMove}
+                onClick={() => {
+                    if (currentViewedIndexMove + 1 < historyMoves.length)
+                        handleChangeCurrentViewedMove(
+                            currentViewedIndexMove + 1
+                        )
+                }}
                 data-tooltip="Move Forward"
                 className="forward-move__button"
             >

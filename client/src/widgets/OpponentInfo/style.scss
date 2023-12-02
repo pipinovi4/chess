@@ -84,12 +84,13 @@
     font-size: calc(0.5dvh + 0.5dvw);
     font-weight: 600;
     margin-left: -10%;
+    text-wrap: nowrap;
 
     @media (max-width: 1100px) {
         font-size: calc(0.6dvh + 0.6dvw);
     }
     @media (max-width: 900px) {
-        font-size: calc(0.8dvh + 0.8dvw);
+        font-size: calc(0.75dvh + 0.75dvw);
     }
 }
 

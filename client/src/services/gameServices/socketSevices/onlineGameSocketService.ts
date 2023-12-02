@@ -1,7 +1,7 @@
 import { Socket, io } from 'socket.io-client'
 import convertChessNotation from '../../../helpers/convertersNotation/convertAlgebraicNotation'
 import { Cell } from '../../../entites/cell/Cell'
-import createChessNotation from '../../../helpers/creatersNotation/createChessNotation'
+import createChessNotation from '../../../helpers/creatersNotation/createAlgebraicNotation'
 import { Player } from '../../../entites/player/Player'
 import Board from '../../../entites/board/Board'
 import moveFigureService from '../../moveServices/moveFigureService'

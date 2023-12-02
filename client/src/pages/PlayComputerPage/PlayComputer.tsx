@@ -12,6 +12,7 @@ import MoveHistoryBoard from '../../widgets/MoveHistoryBoard/MoveHistoryBoard'
 const PlayComputer = () => {
     const [board, setBoard] = useState<Board>(new Board())
     const [gameStarted, setGameStarted] = useState(false)
+    const [nowCanMakeMove, setNowCanMakeMove] = useState(true)
 
     const engineModel = useMemo(() => {
         return new EngineModel(setBoard, board)
@@ -37,6 +38,7 @@ const PlayComputer = () => {
                 gameMode={engineModel}
             />
             <BoardComponent
+                nowCanMakeMove={nowCanMakeMove}
                 board={board}
                 setBoard={setBoard}
                 gameMode={engineModel}
@@ -47,7 +49,7 @@ const PlayComputer = () => {
                 gameMode={engineModel}
             />
             {gameStarted ? (
-                <MoveHistoryBoard board={board} />
+                <MoveHistoryBoard board={board} setBoard={setBoard} />
             ) : (
                 <ComputerGameBoard engineModel={engineModel} />
             )}

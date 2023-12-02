@@ -97,10 +97,11 @@ video {
     font-family: $globalPrimaryFont;
     font-weight: 700;
     color: #fff;
-	user-select: none;
+    user-select: none;
     -webkit-user-drag: none;
 }
-p, input {
+p,
+input {
     user-select: text;
 }
 article,
