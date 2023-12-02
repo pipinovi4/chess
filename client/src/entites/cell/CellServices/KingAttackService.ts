@@ -3,6 +3,7 @@ import _ from 'lodash'
 import Board from '../../board/Board'
 import { FigureNames } from '../../figures/Figure'
 import { Cell } from '../Cell'
+import { Colors } from '../../../constants/Colors'
 
 class KingAttackService {
     async updateCellsUnderAttack(board: Board) {
@@ -21,7 +22,25 @@ class KingAttackService {
         for (let j = 0; j < 8; j++) {
             for (let i = 0; i < 8; i++) {
                 const targetCell = board.getCell(i, j)
-                if (
+                if (selectedCell.figure?.name === FigureNames.PAWN) {
+                    const direction =
+                        selectedCell.figure?.color === Colors.BLACK ? 1 : -1
+                    if (
+                        targetCell.y === selectedCell.y + direction &&
+                        (targetCell.x === selectedCell.x + 1 ||
+                            targetCell.x === selectedCell.x - 1)
+                    ) {
+                        if (
+                            targetCell.figure?.name === FigureNames.KING &&
+                            selectedCell.figure.color !==
+                                targetCell.figure.color
+                        ) {
+                            console.log('king under check')
+                            selectedCell.board.kingCheckCell = targetCell
+                        }
+                        targetCell.underAtack.push(selectedCell.figure.color)
+                    }
+                } else if (
                     selectedCell.figure?.logicFigureMove(targetCell) &&
                     selectedCell !== targetCell
                 ) {
@@ -29,7 +48,6 @@ class KingAttackService {
                         targetCell.figure?.name === FigureNames.KING &&
                         selectedCell.figure.color !== targetCell.figure.color
                     ) {
-                        console.log('king under check')
                         selectedCell.board.kingCheckCell = targetCell
                     }
                     targetCell.underAtack.push(selectedCell.figure.color)
@@ -45,7 +63,7 @@ class KingAttackService {
                 currentIterationCell.underAtack = []
             }
         }
-        board.kingCheckCell = null 
+        board.kingCheckCell = null
     }
 
     validateMoveUnderCheck(targetCell: Cell, selectedCell: Cell) {
@@ -65,14 +83,16 @@ class KingAttackService {
                     targetCell.y
                 )
                 if (virtualSelectedCell.figure && virtualTargetCell) {
-                    const copy = _.cloneDeep(virtualBoard.kingCheckCell)
+                    const savedVirtualBoard = _.cloneDeep(
+                        virtualBoard.kingCheckCell
+                    )
                     virtualTargetCell.setFigure(virtualSelectedCell.figure)
                     virtualSelectedCell.figure = null
                     this.updateCellsUnderAttack(virtualBoard)
                     if (
-                        copy &&
+                        savedVirtualBoard &&
                         virtualBoard.kingCheckCell &&
-                        copy.figure?.color !==
+                        savedVirtualBoard.figure?.color !==
                             virtualBoard.kingCheckCell?.figure?.color
                     )
                         return false
@@ -87,6 +107,46 @@ class KingAttackService {
             }
         }
         return true
+    }
+
+    validateCheckMate = (board: Board) => {
+        for (let i = 0; i < 8; i++) {
+            for (let y = 0; y < 8; y++) {
+                const selectedCell = board.getCell(i, y)
+                if (
+                    selectedCell.figure &&
+                    selectedCell.figure?.color ===
+                        board.kingCheckCell?.figure?.color
+                ) {
+                    for (let j = 0; j < 8; j++) {
+                        for (let w = 0; w < 8; w++) {
+                            const targetCell = board.getCell(j, w)
+                            if (
+                                targetCell.figure?.color !==
+                                    selectedCell.figure.color &&
+                                selectedCell.figure.logicFigureMove(
+                                    targetCell
+                                ) &&
+                                this.validateMoveUnderCheck(
+                                    targetCell,
+                                    selectedCell
+                                ) &&
+                                board.kingCheckCell !== targetCell
+                            ) {
+                                return
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        console.log(
+            true,
+            true,
+            true,
+            'fsdfksd fdks fnks fnksfknds fsd'
+        )
+        board.isCheckMate = true
     }
 }
 

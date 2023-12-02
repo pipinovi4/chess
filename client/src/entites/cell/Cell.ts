@@ -88,6 +88,8 @@ export class Cell {
                 copySelectedCell.figure?.promotedTo
             )
             this.board.historyMoves.push(advancedEngleashNotation)
+            if (this.board.kingCheckCell)
+                KingAttackService.validateCheckMate(this.board)
         }
     }
 }
